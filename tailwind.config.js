@@ -5,7 +5,15 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'segoe': ['Segoe UI', 'sans-serif'],
+      },
+      colors: {
+        primary: '#003399',
+        secondary: '#DC2626',
+      }
+    },
   },
   plugins: [],
 }
