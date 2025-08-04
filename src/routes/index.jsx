@@ -5,16 +5,8 @@ import AllLeads from "../pages/User/AllLeads";
 import AdminLayout from "../layouts/AdminLayout";
 import AdminLeads from "../pages/Admin/AdminLeads";
 import Settings from "../pages/Admin/Settings";
-
-const RootRedirect = () => {
-  // const isAuthenticated = localStorage.getItem('userToken');
-
-  // Redirect to the dashboard if the user is authenticated, otherwise redirect to the login
-  // return isAuthenticated ? <Navigate to="/dashboard" /> : <Navigate to="/auth/login" />;
-
-  //TODO: Remove this temporary redirect
-  return <Navigate to="/" />;
-};
+import Home from "@/components/pages/Home";
+import RootRedirect from "./RootRedirect";
 
 export const router = createBrowserRouter([
   {
@@ -38,7 +30,7 @@ export const router = createBrowserRouter([
       {
         path: "my-leads",
         element: (
-          <MyLeads />
+          <Home />
         ),
       },
     ],
