@@ -5,7 +5,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 import { Checkbox } from "./checkbox";
 import { Select, SelectItem } from "./select";
 import Papa from "papaparse";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuCheckboxItem } from "@radix-ui/react-dropdown-menu";
+import { useDebounce } from "@/hooks/useDebounce";
 
 /**
  * TableColumn: { key: string, header: string|ReactNode, render?: (row) => ReactNode, sortable?: boolean, filterable?: boolean }
@@ -53,38 +53,49 @@ export function Table({
   selectedRows = [],
   onRowSelect,
   onSelectAll,
-  filters = [], // [{ key, label, options, value, onChange }]
+  filters = [],
   footerContent = null,
   paginationDelta = 2,
 }) {
   const [internalSearch, setInternalSearch] = React.useState(search);
+  const debouncedSearch = useDebounce(internalSearch, 500);
+
+  // Calculate if all rows are selected
+  const allSelected = data.length > 0 && selectedRows.length === data.length && 
+    data.every(row => selectedRows.some(selected => selected.id === row.id));
+
+  // Reset internal search when external search prop changes
   React.useEffect(() => {
     setInternalSearch(search);
   }, [search]);
 
+  // Notify parent of debounced search changes
+  React.useEffect(() => {
+    if (onSearch && debouncedSearch !== search) {
+      onSearch(debouncedSearch);
+    }
+  }, [debouncedSearch, onSearch, search]);
+
   const handleSearch = (e) => {
-    setInternalSearch(e.target.value);
-    if (onSearch) onSearch(e.target.value);
+    const value = e.target.value;
+    setInternalSearch(value);
   };
 
   const handleSort = (col) => {
-    if (!col.sortable) return;
+    if (!col.sortable || loading) return;
     let direction = "asc";
     if (sort?.key === col.key && sort.direction === "asc") direction = "desc";
     if (onSortChange) onSortChange(col.key, direction);
   };
 
   const handlePageChange = (newPage) => {
+    const totalPages = Math.ceil(total / pageSize);
+    if (newPage < 1 || newPage > totalPages || loading) return;
     if (onPageChange) onPageChange(newPage);
   };
 
-  // Row selection logic
-  const allSelected = data.length > 0 && selectedRows?.length === data.length;
-  const handleSelectAll = () => {
-    if (onSelectAll) onSelectAll(!allSelected);
-  };
-  const handleRowSelect = (row, checked) => {
-    if (onRowSelect) onRowSelect(row, checked);
+  const handleFilterChange = (filter, value) => {
+    filter.onChange(value);
   };
 
   // Export to CSV
@@ -101,6 +112,18 @@ export function Table({
     a.download = "table.csv";
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const handleSelectAllRows = (checked) => {
+    if (onSelectAll) {
+      onSelectAll(checked);
+    }
+  };
+
+  const handleRowSelect = (row, checked) => {
+    if (onRowSelect) {
+      onRowSelect(row, checked);
+    }
   };
 
   // Pagination logic
@@ -139,7 +162,7 @@ export function Table({
           <Select
             key={filter.key}
             value={filter.value || "__ALL__"}
-            onValueChange={filter.onChange}
+            onValueChange={(value) => handleFilterChange(filter, value)}
           >
             <SelectItem value="__ALL__">{filter.label}</SelectItem>
             {filter.options.filter(opt => opt.value !== "__ALL__").map((opt) => (
@@ -155,7 +178,10 @@ export function Table({
             <tr>
               {rowSelection && (
                 <th className="px-2 py-2">
-                  <Checkbox checked={allSelected} onCheckedChange={handleSelectAll} />
+                  <Checkbox 
+                    checked={allSelected} 
+                    onCheckedChange={handleSelectAllRows} 
+                  />
                 </th>
               )}
               {columns.map((col) => (
@@ -206,7 +232,7 @@ export function Table({
                   {rowSelection && (
                     <td className="px-2 py-2">
                       <Checkbox
-                        checked={selectedRows?.includes(row)}
+                        checked={selectedRows?.some(selected => selected.id === row.id)}
                         onCheckedChange={(checked) => handleRowSelect(row, checked)}
                       />
                     </td>
