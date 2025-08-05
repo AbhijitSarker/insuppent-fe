@@ -164,16 +164,19 @@ export function Table({
   const paginationRange = getPaginationRange(page, totalPages, paginationDelta);
 
   return (
-    <div className={cn("space-y-4", className)}>
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl p-4">
+    <div className={cn("", className)}>
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl pb-4">
         <div className="flex flex-1 flex-wrap items-center gap-4">
-          <div className="w-[400px]">
+          <div className="relative w-[400px]">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xl text-gray-400 pointer-events-none">
+              <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" /></svg>
+            </span>
             <Input
               type="text"
               placeholder="Search leads..."
               value={internalSearch}
               onChange={handleSearch}
-              className="h-9 bg-[rgb(var(--input-bg))] border-none rounded-lg text-[rgb(var(--table-text))]"
+              className="w-[400px] h-10 pl-10 bg-white border border-[#D6D3D1] rounded-xl text-sm text-[rgb(var(--table-text))] focus:ring-2 focus:ring-gray-200 placeholder:text-gray-400  text-[14px] leading-[20px] tracking-normal font-['Inter','sans-serif']"
             />
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -182,7 +185,7 @@ export function Table({
                 key={filter.key}
                 value={filter.value || (filter.isMulti ? [] : "__ALL__")}
                 onValueChange={(value) => handleFilterChange(filter, value)}
-                className="w-[106px] h-9 bg-[rgb(var(--table-filter-bg))/var(--table-filter-bg-opacity)] border-none rounded-lg text-[rgb(var(--table-text))]"
+                className="h-10 bg-[#0000000F] border-none rounded-xl text-[rgb(var(--table-text))] text-black focus:ring-2 focus:ring-gray-200 font-semibold text-[14px] leading-[20px] tracking-normal font-['Inter','sans-serif']"
                 icon={filter.icon}
                 label={filter.label}
                 isMulti={filter.isMulti}
@@ -199,7 +202,7 @@ export function Table({
                   <SelectItem 
                     key={opt.value} 
                     value={opt.value}
-                    icon={filter.icon}
+                    // icon={filter.icon}
                     isMulti={filter.isMulti}
                     data-state={filter.value}
                   >
@@ -213,9 +216,9 @@ export function Table({
                 variant="outline"
                 size="sm"
                 onClick={handleClearFilters}
-                className="flex items-center gap-2 px-3 py-2 h-9 text-xs font-medium border-none text-[rgb(var(--table-text))] rounded-md hover:bg-[rgb(var(--table-row-hover))] bg-transparent"
+                className="flex items-center gap-2 px-3 py-2 h-9 text-xs font-medium border-none text-[rgb(var(--table-text))] rounded-md hover:bg-[rgb(var(--table-row-hover))] bg-transparent shadow-none text-primary"
               >
-                Clear&nbsp;filter
+                <span className="text-primary text-lg">X</span>Clear&nbsp;filter
               </Button>
             )}
           </div>
@@ -224,7 +227,7 @@ export function Table({
           variant="default" 
           size="lg"
           onClick={handleExport}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-2xl h-12 min-w-[140px]"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 h-10 min-w-[140px] rounded-md"
         >
           Export CSV
         </Button>
@@ -293,7 +296,7 @@ export function Table({
                   <tr 
                     key={i} 
                     className={cn(
-                      "border-b border-[rgb(var(--table-border))] last:border-0 transition-colors",
+                      "border-b border-[rgb(var(--table-border))] last:border-0 transition-colors h-[46px]",
                       isSelected ? "bg-[rgb(var(--table-selected-row))]" : "hover:bg-[rgb(var(--table-row-hover))]"
                     )}
                   >
@@ -308,8 +311,8 @@ export function Table({
                       </td>
                     )}
                     {columns.map((col) => (
-                      <td key={col.key} className="px-4 py-2.5 text-sm whitespace-nowrap">
-                        <div className="flex items-center gap-1.5">
+                      <td key={col.key} className="px-4 py-0 align-middle text-sm whitespace-nowrap">
+                        <div className="flex items-center gap-1.5 h-full min-h-[32px]">
                           {col.render ? col.render(row) : row[col.key]}
                         </div>
                       </td>

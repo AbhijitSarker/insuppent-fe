@@ -14,6 +14,7 @@ import LocalActivityIcon from '@mui/icons-material/LocalActivity';
 import PublicIcon from '@mui/icons-material/Public';
 import LockIcon from '@mui/icons-material/Lock';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import { Bookmark, Discount, Sell } from '@mui/icons-material';
 
 const typeIcons = {
 	auto: DirectionsCarIcon,
@@ -129,7 +130,7 @@ const stateOptions = [
 const AdminLeads = () => {
 	const [tableState, setTableState] = useState({
 		page: 1,
-		pageSize: 10,
+		pageSize: 15,
 		sort: { key: 'createdAt', direction: 'desc' },
 		search: '',
 		types: [],
@@ -227,7 +228,7 @@ const AdminLeads = () => {
 			options: typeOptions,
 			value: tableState.types,
 			onChange: handleTypeChange,
-			icon: BusinessIcon,
+			icon: Sell,
 			isMulti: true
 		},
 		{
