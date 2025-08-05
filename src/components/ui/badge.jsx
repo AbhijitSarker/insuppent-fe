@@ -3,7 +3,7 @@ import { cva } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
-  "inline-flex items-center gap-1.5 rounded-lg px-3 py-1 text-xs font-semibold transition-colors",
+  "inline-flex items-center justify-center gap-1.5 min-w-[56px] h-[24px] px-2 py-[6px] box-border rounded-lg text-xs font-semibold transition-colors",
   {
     variants: {
       variant: {
@@ -33,9 +33,13 @@ function Badge({
   ...props
 }) {
   return (
-    <div className={cn(badgeVariants({ variant }), className)}>
-      {Icon && <Icon className="h-4 w-4 shrink-0" />}
-      <span>{props.children}</span>
+    <div className={cn(badgeVariants({ variant }), "text-center font-['Inter','sans-serif'] text-[12px] font-medium leading-4", className)}>
+      {Icon && (typeof Icon === 'string' ? (
+        <span className="material-icons-outlined text-[14px] align-middle" style={{ lineHeight: '1' }}>{Icon}</span>
+      ) : (
+        <Icon className="h-3 w-3 shrink-0 align-middle" />
+      ))}
+      <span className="ml-1 align-middle">{props.children}</span>
     </div>
   )
 }

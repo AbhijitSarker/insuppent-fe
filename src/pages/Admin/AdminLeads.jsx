@@ -32,25 +32,29 @@ const columns = [
 		key: 'type', 
 		header: 'Type', 
 		sortable: true, 
-		icon: <BusinessIcon fontSize="small" />,
-		render: (row) => {
-			const Icon = typeIcons[row.type] || BusinessIcon;
-			return (
-				<Badge variant={row.type} icon={Icon}>
-					{row.type}
-				</Badge>
-			);
-		}
+		icon: 'business',
+		render: (row) => (
+			<Badge variant={row.type} icon={
+				row.type === 'auto' ? 'directions_car' :
+				row.type === 'business' ? 'business' :
+				row.type === 'commercial' ? 'apartment' :
+				row.type === 'home' ? 'home' :
+				row.type === 'lifestyle' ? 'local_activity' :
+				'business'
+			}>
+				{row.type}
+			</Badge>
+		)
 	},
 	{ 
 		key: 'status', 
 		header: 'Status', 
 		sortable: true, 
-		icon: <PublicIcon fontSize="small" />,
+		icon: 'public',
 		render: (row) => (
 			<Badge 
 				variant={row.status} 
-				icon={row.status === 'public' ? PublicIcon : LockIcon}
+				icon={row.status === 'public' ? 'public' : 'lock'}
 			>
 				{row.status}
 			</Badge>
