@@ -4,6 +4,7 @@ import { Button } from "./button";
 import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 import { Checkbox } from "./checkbox";
 import { Select, SelectItem } from "./select";
+import { Input } from "./input";
 import Papa from "papaparse";
 import { useDebounce } from "@/hooks/useDebounce";
 
@@ -164,15 +165,15 @@ export function Table({
 
   return (
     <div className={cn("space-y-4", className)}>
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl bg-white p-4 border shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl p-4">
         <div className="flex flex-1 flex-wrap items-center gap-4">
-          <div className="relative flex-1 max-w-sm">
-            <input
+          <div className="w-[400px]">
+            <Input
               type="text"
               placeholder="Search leads..."
               value={internalSearch}
               onChange={handleSearch}
-              className="w-full h-12 rounded-2xl border border-gray-200 bg-gray-100/50 pl-4 pr-10 text-base shadow-sm transition-colors placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-200"
+              className="h-9 bg-[rgb(var(--input-bg))] border-none rounded-lg text-[rgb(var(--table-text))]"
             />
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -181,7 +182,7 @@ export function Table({
                 key={filter.key}
                 value={filter.value || (filter.isMulti ? [] : "__ALL__")}
                 onValueChange={(value) => handleFilterChange(filter, value)}
-                className="min-w-[160px]"
+                className="w-[106px] h-9 bg-[rgb(var(--table-filter-bg))/var(--table-filter-bg-opacity)] border-none rounded-lg text-[rgb(var(--table-text))]"
                 icon={filter.icon}
                 label={filter.label}
                 isMulti={filter.isMulti}
@@ -212,7 +213,7 @@ export function Table({
                 variant="outline"
                 size="sm"
                 onClick={handleClearFilters}
-                className="flex items-center gap-2 px-3 py-2 h-9 text-xs font-medium border border-none  text-primary rounded-md hover:bg-gray-50 bg-transparent"
+                className="flex items-center gap-2 px-3 py-2 h-9 text-xs font-medium border-none text-[rgb(var(--table-text))] rounded-md hover:bg-[rgb(var(--table-row-hover))] bg-transparent"
               >
                 Clear&nbsp;filter
               </Button>
@@ -228,9 +229,9 @@ export function Table({
           Export CSV
         </Button>
       </div>
-      <div className="overflow-x-auto rounded-lg border border-border bg-white">
-        <table className="min-w-full divide-y divide-border bg-white text-sm">
-          <thead className="bg-muted/50">
+      <div className="overflow-x-auto rounded-lg border border-[rgb(var(--table-border))] bg-white">
+        <table className="min-w-full divide-y divide-[rgb(var(--table-border))] bg-white text-sm">
+          <thead className="bg-[rgb(var(--table-header-bg))]">
             <tr>
               {rowSelection && (
                 <th className="px-2 py-2.5 w-[48px]">
@@ -247,7 +248,7 @@ export function Table({
                 <th
                   key={col.key}
                   className={cn(
-                    "px-4 py-2.5 text-left font-semibold uppercase tracking-wider select-none cursor-pointer whitespace-nowrap",
+                    "px-4 py-2.5 text-left font-semibold uppercase tracking-wider select-none cursor-pointer whitespace-nowrap text-[rgb(var(--table-text))]",
                     col.sortable && "hover:underline"
                   )}
                   onClick={() => handleSort(col)}
@@ -292,8 +293,8 @@ export function Table({
                   <tr 
                     key={i} 
                     className={cn(
-                      "border-b last:border-0 transition-colors",
-                      isSelected ? "bg-blue-50/80" : "hover:bg-accent/30"
+                      "border-b border-[rgb(var(--table-border))] last:border-0 transition-colors",
+                      isSelected ? "bg-[rgb(var(--table-selected-row))]" : "hover:bg-[rgb(var(--table-row-hover))]"
                     )}
                   >
                     {rowSelection && (
@@ -319,7 +320,7 @@ export function Table({
             )}
           </tbody>
         </table>
-        <div className="flex items-center justify-between px-4 py-2 border-t border-border bg-muted/50 rounded-b-lg">
+        <div className="flex items-center justify-between px-4 py-2 border-t border-[rgb(var(--table-border))] bg-[rgb(var(--table-header-bg))] rounded-b-lg">
           <div>{footerContent}</div>
           <div className="flex items-center gap-2">
             <Button
