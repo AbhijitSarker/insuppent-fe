@@ -3,46 +3,27 @@ import { Table } from '@/components/ui/Table';
 import { useLeads } from '@/api/hooks/useLeads';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import PersonIcon from '@mui/icons-material/Person';
-import EmailIcon from '@mui/icons-material/Email';
-import PhoneIcon from '@mui/icons-material/Phone';
-import BusinessIcon from '@mui/icons-material/Business';
-import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
-import HomeIcon from '@mui/icons-material/Home';
-import ApartmentIcon from '@mui/icons-material/Apartment';
-import LocalActivityIcon from '@mui/icons-material/LocalActivity';
-import PublicIcon from '@mui/icons-material/Public';
-import LockIcon from '@mui/icons-material/Lock';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { Bookmark, Discount, Sell } from '@mui/icons-material';
+import { FaUser, FaEnvelope, FaPhone, FaBuilding, FaCar, FaHome, FaCity, FaTicketAlt, FaGlobe, FaLock, FaMapMarkerAlt, FaBookmark, FaPercent, FaTag } from 'react-icons/fa';
 
 const typeIcons = {
-	auto: DirectionsCarIcon,
-	business: BusinessIcon,
-	commercial: ApartmentIcon,
-	home: HomeIcon,
-	lifestyle: LocalActivityIcon,
+	auto: FaCar,
+	commercial: FaCity,
+	home: FaHome,
+	mortgage: FaBuilding,
 };
 
 const columns = [
-	{ key: 'name', header: 'Name', sortable: true, icon: <PersonIcon fontSize="small" /> },
-	{ key: 'email', header: 'Email', sortable: true, icon: <EmailIcon fontSize="small" /> },
-	{ key: 'phone', header: 'Phone', sortable: true, icon: <PhoneIcon fontSize="small" /> },
+	{ key: 'name', header: 'Name', sortable: true, icon: <FaUser size={14} /> },
+	{ key: 'email', header: 'Email', sortable: true, icon: <FaEnvelope size={14} /> },
+	{ key: 'phone', header: 'Phone', sortable: true, icon: <FaPhone size={14} /> },
 	{ 
 		key: 'type', 
 		header: 'Type', 
 		sortable: true, 
-		icon: 'business',
+		icon: <FaBookmark size={14} />, 
 		render: (row) => (
-			<Badge variant={row.type} icon={
-				row.type === 'auto' ? 'directions_car' :
-				row.type === 'business' ? 'business' :
-				row.type === 'commercial' ? 'apartment' :
-				row.type === 'home' ? 'home' :
-				row.type === 'lifestyle' ? 'local_activity' :
-				'business'
-			}>
-				{row.type}
+			<Badge variant={row.type} icon={row.type}>
+				{row.type.charAt(0).toUpperCase() + row.type.slice(1)}
 			</Badge>
 		)
 	},
@@ -50,14 +31,16 @@ const columns = [
 		key: 'status', 
 		header: 'Status', 
 		sortable: true, 
-		icon: 'public',
+		icon: <FaGlobe size={14} />,
 		render: (row) => (
-			<Badge 
-				variant={row.status} 
-				icon={row.status === 'public' ? 'public' : 'lock'}
-			>
-				{row.status}
-			</Badge>
+			<div className="flex items-center gap-2 justify-center">
+				<span className={row.status === 'public' ? 'w-2 h-2 rounded-full bg-[#15803D]' : 'w-2 h-2 rounded-full bg-[#B91C1C]'} />
+				<span className={`font-['Inter'] font-medium text-[14px] leading-[16px] tracking-[0%] text-center ${
+					row.status === 'public' ? 'text-[#15803D]' : 'text-[#B91C1C]'
+				}`}>
+					{row.status.charAt(0).toUpperCase() + row.status.slice(1)}
+				</span>
+			</div>
 		)
 	},
 ];
@@ -71,10 +54,8 @@ const statusOptions = [
 const typeOptions = [
 	{ value: '__ALL__', label: 'Type' },
 	{ value: 'auto', label: 'Auto' },
-	{ value: 'business', label: 'Business' },
-	{ value: 'commercial', label: 'Commercial' },
+	{ value: 'mortgage', label: 'Mortgage' },
 	{ value: 'home', label: 'Home' },
-	{ value: 'lifestyle', label: 'Lifestyle' },
 ];
 
 const stateOptions = [
@@ -232,7 +213,7 @@ const AdminLeads = () => {
 			options: typeOptions,
 			value: tableState.types,
 			onChange: handleTypeChange,
-			icon: Sell,
+			icon: FaTag,
 			isMulti: true
 		},
 		{
@@ -241,7 +222,7 @@ const AdminLeads = () => {
 			options: stateOptions,
 			value: tableState.states,
 			onChange: handleStateChange,
-			icon: LocationOnIcon,
+			icon: FaMapMarkerAlt,
 			isMulti: true
 		},
 		{
@@ -250,7 +231,7 @@ const AdminLeads = () => {
 			options: statusOptions,
 			value: tableState.statuses,
 			onChange: handleStatusChange,
-			icon: PublicIcon,
+			icon: FaGlobe,
 			isMulti: true
 		}
 	];

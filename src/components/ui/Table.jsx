@@ -1,7 +1,7 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
-import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
+import { FaChevronLeft, FaChevronRight, FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 import { Checkbox } from "./checkbox";
 import { Select, SelectItem } from "./select";
 import { Input } from "./input";
@@ -234,7 +234,7 @@ export function Table({
       </div>
       <div className="overflow-x-auto rounded-lg border border-[rgb(var(--table-border))] bg-white">
         <table className="min-w-full divide-y divide-[rgb(var(--table-border))] bg-white text-sm">
-          <thead className="bg-[rgb(var(--table-header-bg))]">
+          <thead className="bg-white">
             <tr>
               {rowSelection && (
                 <th className="px-2 py-2.5 w-[48px]">
@@ -251,16 +251,26 @@ export function Table({
                 <th
                   key={col.key}
                   className={cn(
-                    "px-4 py-2.5 text-left font-semibold uppercase tracking-wider select-none cursor-pointer whitespace-nowrap text-[rgb(var(--table-text))]",
-                    col.sortable && "hover:underline"
+                    "px-4 py-2.5 text-left font-['Inter'] font-medium text-[12px] leading-[16px] tracking-[0%] select-none cursor-pointer whitespace-nowrap text-[rgb(var(--table-text))]",
+                    col.sortable && "hover:bg-[rgb(var(--table-row-hover))] transition-colors"
                   )}
                   onClick={() => handleSort(col)}
                 >
-                  <span className="flex items-center gap-1.5">
-                    {col.icon}
-                    {col.header}
-                    {col.sortable && sort?.key === col.key && (
-                      <span>{sort.direction === "asc" ? "▲" : "▼"}</span>
+                  <span className="flex items-center justify-start gap-2">
+                    {col.icon && <span className="text-gray-500">{col.icon}</span>}
+                    <span>{col.header}</span>
+                    {col.sortable && (
+                      <span className="text-gray-400">
+                        {sort?.key === col.key ? (
+                          sort.direction === "asc" ? (
+                            <FaSortUp className="h-3 w-3" />
+                          ) : (
+                            <FaSortDown className="h-3 w-3" />
+                          )
+                        ) : (
+                          <FaSort className="h-3 w-3" />
+                        )}
+                      </span>
                     )}
                   </span>
                 </th>
@@ -312,7 +322,10 @@ export function Table({
                     )}
                     {columns.map((col) => (
                       <td key={col.key} className="px-4 py-0 align-middle text-sm whitespace-nowrap">
-                        <div className="flex items-center gap-1.5 h-full min-h-[32px]">
+                        <div className={cn(
+                          "flex items-center gap-1.5 h-full min-h-[32px]",
+                          col.key === "name" ? "font-['Inter'] font-medium text-[14px] leading-[20px]" : "font-['Inter'] font-normal text-[14px] leading-[20px]"
+                        )}>
                           {col.render ? col.render(row) : row[col.key]}
                         </div>
                       </td>
@@ -323,7 +336,7 @@ export function Table({
             )}
           </tbody>
         </table>
-        <div className="flex items-center justify-between px-4 py-2 border-t border-[rgb(var(--table-border))] bg-[rgb(var(--table-header-bg))] rounded-b-lg">
+        <div className="flex items-center justify-between h-12 px-4 py-2 border-t border-[rgb(var(--table-border))] bg-[rgb(var(--table-header-bg))] rounded-b-lg">
           <div>{footerContent}</div>
           <div className="flex items-center gap-2">
             <Button
@@ -333,7 +346,7 @@ export function Table({
               disabled={page <= 1 || loading}
               className="rounded-full"
             >
-              <ChevronLeftIcon />
+              <FaChevronLeft />
             </Button>
             {paginationRange.map((p, idx) =>
               p === '...'
@@ -344,7 +357,7 @@ export function Table({
                     size="icon"
                     onClick={() => handlePageChange(p)}
                     className={cn(
-                      "rounded-full w-8 h-8",
+                      "rounded-lg w-8 h-8",
                       p === page && "border border-primary bg-white shadow"
                     )}
                     disabled={p === page}
@@ -359,7 +372,7 @@ export function Table({
               disabled={page >= totalPages || loading}
               className="rounded-full"
             >
-              <ChevronRightIcon />
+              <FaChevronRight />
             </Button>
           </div>
         </div>
