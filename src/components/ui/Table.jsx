@@ -98,6 +98,20 @@ export function Table({
     filter.onChange(value);
   };
 
+  const handleClearFilters = () => {
+    // Clear all filters
+    filters.forEach(filter => {
+      if (filter.onChange) {
+        filter.onChange(filter.isMulti ? [] : '__ALL__');
+      }
+    });
+    // Clear search
+    if (onSearch) {
+      setInternalSearch('');
+      onSearch('');
+    }
+  };
+
   // Export to CSV
   const handleExport = () => {
     const exportCols = columns;
@@ -150,50 +164,95 @@ export function Table({
 
   return (
     <div className={cn("space-y-4", className)}>
-      <div className="flex flex-wrap items-center gap-2 rounded-lg bg-white px-4 py-3 mb-2">
-        <input
-          type="text"
-          placeholder="Search"
-          value={internalSearch}
-          onChange={handleSearch}
-          className="border border-input bg-muted rounded-md px-3 py-2 text-sm w-56 focus:outline-none focus:ring focus:ring-primary/20"
-        />
-        {filters.map((filter) => (
-          <Select
-            key={filter.key}
-            value={filter.value || "__ALL__"}
-            onValueChange={(value) => handleFilterChange(filter, value)}
-          >
-            <SelectItem value="__ALL__">{filter.label}</SelectItem>
-            {filter.options.filter(opt => opt.value !== "__ALL__").map((opt) => (
-              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl bg-white p-4 border shadow-sm">
+        <div className="flex flex-1 flex-wrap items-center gap-4">
+          <div className="relative flex-1 max-w-sm">
+            <input
+              type="text"
+              placeholder="Search leads..."
+              value={internalSearch}
+              onChange={handleSearch}
+              className="w-full h-12 rounded-2xl border border-gray-200 bg-gray-100/50 pl-4 pr-10 text-base shadow-sm transition-colors placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-200"
+            />
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            {filters.map((filter) => (
+              <Select
+                key={filter.key}
+                value={filter.value || (filter.isMulti ? [] : "__ALL__")}
+                onValueChange={(value) => handleFilterChange(filter, value)}
+                className="min-w-[160px]"
+                icon={filter.icon}
+                label={filter.label}
+                isMulti={filter.isMulti}
+              >
+                <SelectItem 
+                  value="__ALL__" 
+                  icon={filter.icon}
+                  isMulti={filter.isMulti}
+                  data-state={filter.value}
+                >
+                  {filter.label}
+                </SelectItem>
+                {filter.options.filter(opt => opt.value !== "__ALL__").map((opt) => (
+                  <SelectItem 
+                    key={opt.value} 
+                    value={opt.value}
+                    icon={filter.icon}
+                    isMulti={filter.isMulti}
+                    data-state={filter.value}
+                  >
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </Select>
             ))}
-          </Select>
-        ))}
-        <Button variant="outline" size="sm" onClick={handleExport} className="ml-auto">Export CSV</Button>
+            {(filters.length > 0 || search) && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleClearFilters}
+                className="flex items-center gap-2 px-3 py-2 h-9 text-xs font-medium border border-none  text-primary rounded-md hover:bg-gray-50 bg-transparent"
+              >
+                Clear&nbsp;filter
+              </Button>
+            )}
+          </div>
+        </div>
+        <Button 
+          variant="default" 
+          size="lg"
+          onClick={handleExport}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-2xl h-12 min-w-[140px]"
+        >
+          Export CSV
+        </Button>
       </div>
-      <div className="overflow-x-auto rounded-xl border border-border bg-white">
+      <div className="overflow-x-auto rounded-lg border border-border bg-white">
         <table className="min-w-full divide-y divide-border bg-white text-sm">
           <thead className="bg-muted/50">
             <tr>
               {rowSelection && (
-                <th className="px-2 py-2">
-                  <Checkbox 
-                    checked={allSelected} 
-                    onCheckedChange={handleSelectAllRows} 
-                  />
+                <th className="px-2 py-2.5 w-[48px]">
+                  <div className="flex items-center justify-center">
+                    <Checkbox 
+                      checked={allSelected} 
+                      onCheckedChange={handleSelectAllRows}
+                      className="data-[state=checked]:bg-blue-600"
+                    />
+                  </div>
                 </th>
               )}
               {columns.map((col) => (
                 <th
                   key={col.key}
                   className={cn(
-                    "px-4 py-2 text-left font-semibold uppercase tracking-wider select-none cursor-pointer whitespace-nowrap",
+                    "px-4 py-2.5 text-left font-semibold uppercase tracking-wider select-none cursor-pointer whitespace-nowrap",
                     col.sortable && "hover:underline"
                   )}
                   onClick={() => handleSort(col)}
                 >
-                  <span className="flex items-center gap-1">
+                  <span className="flex items-center gap-1.5">
                     {col.icon}
                     {col.header}
                     {col.sortable && sort?.key === col.key && (
@@ -209,12 +268,12 @@ export function Table({
               Array.from({ length: pageSize }).map((_, rowIdx) => (
                 <tr key={rowIdx} className="border-b last:border-0">
                   {rowSelection && (
-                    <td className="px-2 py-2">
+                    <td className="px-2 py-2.5">
                       <span className="block h-5 w-4 bg-gray-200 rounded-md shimmer" />
                     </td>
                   )}
                   {columns.map((col, colIdx) => (
-                    <td key={col.key || colIdx} className="px-4 py-2 text-sm">
+                    <td key={col.key || colIdx} className="px-4 py-2.5 text-sm">
                       <span className="block h-5 w-full bg-gray-200 rounded-md shimmer" />
                     </td>
                   ))}
@@ -227,27 +286,40 @@ export function Table({
                 </td>
               </tr>
             ) : (
-              data.map((row, i) => (
-                <tr key={i} className="border-b last:border-0 hover:bg-accent/30">
-                  {rowSelection && (
-                    <td className="px-2 py-2">
-                      <Checkbox
-                        checked={selectedRows?.some(selected => selected.id === row.id)}
-                        onCheckedChange={(checked) => handleRowSelect(row, checked)}
-                      />
-                    </td>
-                  )}
-                  {columns.map((col) => (
-                    <td key={col.key} className="px-4 py-2 text-sm whitespace-nowrap">
-                      {col.render ? col.render(row) : row[col.key]}
-                    </td>
-                  ))}
-                </tr>
-              ))
+              data.map((row, i) => {
+                const isSelected = selectedRows?.some(selected => selected.id === row.id);
+                return (
+                  <tr 
+                    key={i} 
+                    className={cn(
+                      "border-b last:border-0 transition-colors",
+                      isSelected ? "bg-blue-50/80" : "hover:bg-accent/30"
+                    )}
+                  >
+                    {rowSelection && (
+                      <td className="px-2 py-2.5">
+                        <div className="flex items-center justify-center">
+                          <Checkbox
+                            checked={isSelected}
+                            onCheckedChange={(checked) => handleRowSelect(row, checked)}
+                          />
+                        </div>
+                      </td>
+                    )}
+                    {columns.map((col) => (
+                      <td key={col.key} className="px-4 py-2.5 text-sm whitespace-nowrap">
+                        <div className="flex items-center gap-1.5">
+                          {col.render ? col.render(row) : row[col.key]}
+                        </div>
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>
-        <div className="flex items-center justify-between px-4 py-2 border-t border-border bg-muted/50 rounded-b-xl">
+        <div className="flex items-center justify-between px-4 py-2 border-t border-border bg-muted/50 rounded-b-lg">
           <div>{footerContent}</div>
           <div className="flex items-center gap-2">
             <Button
