@@ -238,9 +238,9 @@ const AdminLeads = () => {
 
 	return (
 		<div className="p-4">
-			<div className="flex items-center justify-between mb-6">
-				<h1 className="text-2xl font-bold">Manage Leads</h1>
-				<Button
+			<div className="flex items-center justify-between mb-3 mt-0">
+				<h1 className="text-2xl font-bold">All Leads</h1>
+				{/* <Button
 					variant="default"
 					size="lg"
 					onClick={handleExportSelected}
@@ -248,7 +248,7 @@ const AdminLeads = () => {
 					className="bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-xl h-10"
 				>
 					{selectedRows.length ? `Export ${selectedRows.length} Selected` : 'Export Selected'}
-				</Button>
+				</Button> */}
 			</div>
 			
 			<Table
