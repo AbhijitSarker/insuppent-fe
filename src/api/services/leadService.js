@@ -14,3 +14,12 @@ export const getLeads = async ({ page = 1, limit = 15, sortBy = 'createdAt', sor
   const response = await axiosSecure.get(`/leads?${queryParams}`);
   return response.data;
 };
+
+export const updateStatus = async (leadId, status) => {
+  try {
+    const response = await axiosSecure.patch(`/leads/${leadId}/status`, { status });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

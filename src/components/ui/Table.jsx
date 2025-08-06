@@ -1,12 +1,18 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
-import { FaChevronLeft, FaChevronRight, FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaSort, FaSortUp, FaSortDown, FaEllipsisV } from "react-icons/fa";
 import { Checkbox } from "./checkbox";
 import { Select, SelectItem } from "./select";
 import { Input } from "./input";
 import Papa from "papaparse";
 import { useDebounce } from "@/hooks/useDebounce";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "./dropdown-menu";
 
 /**
  * TableColumn: { key: string, header: string|ReactNode, render?: (row) => ReactNode, sortable?: boolean, filterable?: boolean }
@@ -324,7 +330,8 @@ export function Table({
                       <td key={col.key} className="px-4 py-0 align-middle text-sm whitespace-nowrap">
                         <div className={cn(
                           "flex items-center gap-1.5 h-full min-h-[32px]",
-                          col.key === "name" ? "font-['Inter'] font-medium text-[14px] leading-[20px]" : "font-['Inter'] font-normal text-[14px] leading-[20px]"
+                          col.key === "name" ? "font-['Inter'] font-medium text-[14px] leading-[20px]" : "font-['Inter'] font-normal text-[14px] leading-[20px]",
+                          col.key === "actions" && "justify-end"
                         )}>
                           {col.render ? col.render(row) : row[col.key]}
                         </div>
