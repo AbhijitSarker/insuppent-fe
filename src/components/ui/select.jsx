@@ -2,9 +2,12 @@ import * as React from "react";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "./checkbox";
+import { Input } from "./input";
 
-const Select = React.forwardRef(({ className, children, icon: Icon, label, value, isMulti = false, onValueChange, ...props }, ref) => {
+const Select = React.forwardRef(({ className, children, icon: Icon, label, value, isMulti = false, onValueChange, hasSearch = false, ...props }, ref) => {
   const [isOpen, setIsOpen] = React.useState(false);
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const selectRef = React.useRef(null);
   const selectedValues = isMulti ? (Array.isArray(value) ? value : []) : value;
 
   const selectedLabels = React.Children.toArray(children)
@@ -22,6 +25,7 @@ const Select = React.forwardRef(({ className, children, icon: Icon, label, value
     if (!isMulti) {
       onValueChange?.(newValue);
       setIsOpen(false);
+      setSearchQuery("");
       return;
     }
 
@@ -32,6 +36,7 @@ const Select = React.forwardRef(({ className, children, icon: Icon, label, value
 
     if (newValue === "__ALL__") {
       onValueChange?.([]);
+      setSearchQuery("");
       return;
     }
 
@@ -41,17 +46,24 @@ const Select = React.forwardRef(({ className, children, icon: Icon, label, value
   // Handle clicking outside to close dropdown
   React.useEffect(() => {
     const handleClickOutside = (event) => {
-      if (isOpen && !event.target.closest('.select-container')) {
+      if (selectRef.current && !selectRef.current.contains(event.target)) {
         setIsOpen(false);
+        setSearchQuery("");
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isOpen]);
+  }, []);
+
+  // Filter children based on search query
+  const filteredChildren = React.Children.toArray(children).filter(child => {
+    if (!searchQuery || child.props.value === "__ALL__") return true;
+    return child.props.children.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
   return (
-    <div className="relative select-container">
+    <div className="relative" ref={selectRef}>
       <button
         type="button"
         ref={ref}
@@ -70,8 +82,20 @@ const Select = React.forwardRef(({ className, children, icon: Icon, label, value
 
       {isOpen && (
         <div className="absolute z-50 mt-2 min-w-[240px] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
+          {hasSearch && (
+            <div className="p-2 border-b border-gray-100">
+              <Input
+                type="text"
+                placeholder="Search states..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-8 w-full bg-transparent border-gray-200"
+                onClick={(e) => e.stopPropagation()}
+              />
+            </div>
+          )}
           <div className="p-1.5 max-h-[300px] overflow-y-auto">
-            {React.Children.map(children, child => {
+            {filteredChildren.map(child => {
               if (!React.isValidElement(child)) return null;
 
               const isSelected = isMulti
@@ -84,6 +108,11 @@ const Select = React.forwardRef(({ className, children, icon: Icon, label, value
                 isMulti
               });
             })}
+            {filteredChildren.length === 0 && (
+              <div className="px-3 py-2 text-sm text-gray-500">
+                No results found
+              </div>
+            )}
           </div>
         </div>
       )}

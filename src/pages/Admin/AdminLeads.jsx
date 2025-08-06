@@ -323,7 +323,8 @@ const AdminLeads = () => {
 			value: tableState.states,
 			onChange: handleStateChange,
 			icon: FaMapMarkerAlt,
-			isMulti: true
+			isMulti: true,
+			hasSearch: true
 		},
 		{
 			key: 'status',

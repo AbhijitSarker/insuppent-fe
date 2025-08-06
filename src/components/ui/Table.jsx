@@ -195,6 +195,7 @@ export function Table({
                 icon={filter.icon}
                 label={filter.label}
                 isMulti={filter.isMulti}
+                hasSearch={filter.hasSearch}
               >
                 <SelectItem 
                   value="__ALL__" 
