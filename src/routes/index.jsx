@@ -13,28 +13,28 @@ export const router = createBrowserRouter([
     path: "/",
     element: <RootRedirect />,
   },
-  {
-    path: "/",
-    element: (
-      <UserLayout />
-    ),
-    children: [
-      {
-        index: true,
-        element: (
+  // {
+  //   path: "/",
+  //   element: (
+  //     <UserLayout />
+  //   ),
+  //   children: [
+  //     {
+  //       index: true,
+  //       element: (
 
-          <AllLeads />
+  //         <AllLeads />
 
-        ),
-      },
-      {
-        path: "my-leads",
-        element: (
-          <Home />
-        ),
-      },
-    ],
-  },
+  //       ),
+  //     },
+  //     {
+  //       path: "my-leads",
+  //       element: (
+  //         <Home />
+  //       ),
+  //     },
+  //   ],
+  // },
   {
     path: "admin",
     element: (
