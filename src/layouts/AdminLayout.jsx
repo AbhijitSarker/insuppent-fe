@@ -29,7 +29,7 @@ const AdminLayout = () => {
       />
       <div className="flex-1 lg:pl-56 pl-14">
         <Navbar onMenuClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} />
-        <main className="min-h-[calc(100vh-3.5rem)] bg-[#F9FAFB]">
+        <main className="min-h-[calc(100vh-3.5rem)] bg-[#FAFAF9]">
           <Outlet />
         </main>
       </div>

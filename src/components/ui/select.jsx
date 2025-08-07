@@ -145,7 +145,7 @@ const SelectItem = React.forwardRef(({ className, children, icon: Icon, isSelect
             className="rounded-[4px] border-gray-300"
           />
         </div>
-        {Icon && <Icon className="h-5 w-5 text-gray-500 shrink-0" />}
+        {/* {Icon && <Icon className="h-5 w-5 text-gray-500 shrink-0"  />} */}
         <span className="truncate text-gray-700">{children}</span>
       </div>
     </div>

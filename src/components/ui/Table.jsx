@@ -1,18 +1,14 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
-import { FaChevronLeft, FaChevronRight, FaSort, FaSortUp, FaSortDown, FaEllipsisV } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaAngleDown, FaAngleUp } from "react-icons/fa";
+import { LuChevronsUpDown } from "react-icons/lu";
+import { RxCross2 } from "react-icons/rx";
 import { Checkbox } from "./checkbox";
 import { Select, SelectItem } from "./select";
 import { Input } from "./input";
 import Papa from "papaparse";
 import { useDebounce } from "@/hooks/useDebounce";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "./dropdown-menu";
 
 /**
  * TableColumn: { key: string, header: string|ReactNode, render?: (row) => ReactNode, sortable?: boolean, filterable?: boolean }
@@ -197,19 +193,10 @@ export function Table({
                 isMulti={filter.isMulti}
                 hasSearch={filter.hasSearch}
               >
-                <SelectItem 
-                  value="__ALL__" 
-                  icon={filter.icon}
-                  isMulti={filter.isMulti}
-                  data-state={filter.value}
-                >
-                  {filter.label}
-                </SelectItem>
                 {filter.options.filter(opt => opt.value !== "__ALL__").map((opt) => (
                   <SelectItem 
                     key={opt.value} 
                     value={opt.value}
-                    // icon={filter.icon}
                     isMulti={filter.isMulti}
                     data-state={filter.value}
                   >
@@ -218,14 +205,14 @@ export function Table({
                 ))}
               </Select>
             ))}
-            {(filters.length > 0 || search) && (
+            {(filters.some(f => (f.isMulti ? (f.value && f.value.length > 0) : (f.value && f.value !== "__ALL__")))) && (
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handleClearFilters}
-                className="flex items-center gap-2 px-3 py-2 h-9 text-xs font-medium border-none text-[rgb(var(--table-text))] rounded-md hover:bg-[rgb(var(--table-row-hover))] bg-transparent shadow-none text-primary"
+                className="flex items-center gap-2 px-3 py-2 h-9 text-xs font-semibold border-none text-[rgb(var(--table-text))] rounded-md hover:bg-transparent bg-transparent shadow-none text-primary hover:text-primary-600"
               >
-                <span className="text-primary text-lg">X</span>Clear&nbsp;filter
+                <span className="text-primary text-sm"><RxCross2 className="w-4 h-4 font-semibold"/></span>Clear&nbsp;filter
               </Button>
             )}
           </div>
@@ -270,12 +257,12 @@ export function Table({
                       <span className="text-gray-400">
                         {sort?.key === col.key ? (
                           sort.direction === "asc" ? (
-                            <FaSortUp className="h-3 w-3" />
+                            <FaAngleUp className="h-3 w-3" />
                           ) : (
-                            <FaSortDown className="h-3 w-3" />
+                              <FaAngleDown className="h-3 w-3" />
                           )
                         ) : (
-                          <FaSort className="h-3 w-3" />
+                          <LuChevronsUpDown className="h-3 w-3" />
                         )}
                       </span>
                     )}
@@ -290,7 +277,7 @@ export function Table({
                 <tr key={rowIdx} className="border-b last:border-0">
                   {rowSelection && (
                     <td className="px-2 py-2.5">
-                      <span className="block h-5 w-4 bg-gray-200 rounded-md shimmer" />
+                      <span className="block h-5 w-4 bg-gray-800 rounded-md shimmer" />
                     </td>
                   )}
                   {columns.map((col, colIdx) => (
@@ -313,7 +300,7 @@ export function Table({
                   <tr 
                     key={i} 
                     className={cn(
-                      "border-b border-[rgb(var(--table-border))] last:border-0 transition-colors h-[46px]",
+                      "border-b border-gray-100 last:border-0 transition-colors h-[46px]",
                       isSelected ? "bg-[rgb(var(--table-selected-row))]" : "hover:bg-[rgb(var(--table-row-hover))]"
                     )}
                   >
@@ -344,8 +331,10 @@ export function Table({
             )}
           </tbody>
         </table>
-        <div className="flex items-center justify-between h-12 px-4 py-2 border-t border-[rgb(var(--table-border))] bg-[rgb(var(--table-header-bg))] rounded-b-lg">
-          <div>{footerContent}</div>
+        <div className="flex items-center bg-[#F7F7F7] justify-between h-12 px-4 py-2 border-t border-[rgb(var(--table-border))] bg-[rgb(var(--table-header-bg))] rounded-b-lg">
+          <div className="text-gray-900 text-[13px] leading-5 tracking-normal font-normal">{footerContent}</div>
+          <span className="text-sm text-muted-foreground">
+          </span>
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
@@ -354,19 +343,19 @@ export function Table({
               disabled={page <= 1 || loading}
               className="rounded-full"
             >
-              <FaChevronLeft />
+              <FaChevronLeft className="text-gray-500 w-5" />
             </Button>
             {paginationRange.map((p, idx) =>
               p === '...'
-                ? <span key={idx} className="px-2 text-muted-foreground">...</span>
+                ? <span key={idx} className="px-2">...</span>
                 : <Button
                     key={p}
                     variant={p === page ? "outline" : "ghost"}
                     size="icon"
                     onClick={() => handlePageChange(p)}
                     className={cn(
-                      "rounded-lg w-8 h-8",
-                      p === page && "border border-primary bg-white shadow"
+                      "rounded-[8px] w-8 h-8",
+                      p === page && "border border-gray-300 bg-red shadow text-gray-900"
                     )}
                     disabled={p === page}
                   >
@@ -380,7 +369,7 @@ export function Table({
               disabled={page >= totalPages || loading}
               className="rounded-full"
             >
-              <FaChevronRight />
+              <FaChevronRight className="text-gray-500 w-5" />
             </Button>
           </div>
         </div>

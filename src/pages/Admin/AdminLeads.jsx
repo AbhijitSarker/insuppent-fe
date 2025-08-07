@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { FaUser, FaEnvelope, FaPhone, FaBookmark, FaGlobe, FaMapMarkerAlt, FaTag, FaCar, FaCity, FaHome, FaBuilding } from 'react-icons/fa';
+import { FaUser, FaEnvelope, FaPhone, FaBookmark, FaGlobe, FaMapMarkerAlt, FaTag, FaCar, FaCity, FaHome, FaBuilding, FaCalendarAlt, FaCalendar } from 'react-icons/fa';
 import {
 	DropdownMenu,
 	DropdownMenuTrigger,
@@ -15,6 +15,7 @@ import {
 	DropdownMenuSubTrigger,
 	DropdownMenuSubContent,
 } from "@/components/ui/dropdown-menu";
+import { MdFlag, MdGroup, MdHomeWork, MdLocalPhone, MdLocationOn, MdOutlineDateRange } from 'react-icons/md';
 
 const typeIcons = {
 	auto: FaCar,
@@ -133,31 +134,32 @@ const AdminLeads = () => {
 			key: 'createdAt',
 			header: 'Date Added',
 			sortable: true,
+			icon: <MdOutlineDateRange size={14} />,
 			render: (row) => (
 				<span>{new Date(row.createdAt).toLocaleDateString()}</span>
 			)
 		},
-		{ key: 'name', header: 'Name', sortable: true, icon: <FaUser size={14} /> },
+		{ key: 'name', header: 'Name', sortable: true, icon: <MdGroup size={14} /> },
 		{ key: 'email', header: 'Email', sortable: true, icon: <FaEnvelope size={14} /> },
-		{ key: 'phone', header: 'Phone', sortable: true, icon: <FaPhone size={14} /> },
+		{ key: 'phone', header: 'Phone', sortable: true, icon: <MdLocalPhone size={14} /> },
 		{ 
 			key: 'type', 
 			header: 'Type', 
 			sortable: true, 
-			icon: <FaBookmark size={14} />, 
+			icon: <FaTag size={14} />, 
 			render: (row) => (
 				<Badge variant={row.type} icon={row.type}>
 					{row.type.charAt(0).toUpperCase() + row.type.slice(1)}
 				</Badge>
 			)
 		},
-		{ key: 'address', header: 'Address', sortable: true, icon: <FaMapMarkerAlt size={14} /> },
-		{ key: 'state', header: 'State', sortable: true, icon: <FaMapMarkerAlt size={14} /> },
+		{ key: 'address', header: 'Address', sortable: true, icon: <MdHomeWork size={14} /> },
+		{ key: 'state', header: 'State', sortable: true, icon: <MdLocationOn size={14} /> },
 		{ 
 			key: 'status', 
 			header: 'Status', 
 			sortable: true, 
-			icon: <FaGlobe size={14} />,
+			icon: <MdFlag size={14} />,
 			render: (row) => (
 				<div className="flex items-center gap-2">
 					<div className={cn(
@@ -241,20 +243,17 @@ const AdminLeads = () => {
 	];
 
 	const statusOptions = [
-		{ value: '__ALL__', label: 'Status' },
 		{ value: 'public', label: 'Public' },
 		{ value: 'private', label: 'Private' },
 	];
 
 	const typeOptions = [
-		{ value: '__ALL__', label: 'Type' },
 		{ value: 'auto', label: 'Auto' },
 		{ value: 'mortgage', label: 'Mortgage' },
 		{ value: 'home', label: 'Home' },
 	];
 
 	const stateOptions = [
-		{ value: '__ALL__', label: 'All States' },
 		{ value: 'AL', label: 'Alabama' },
 		{ value: 'AK', label: 'Alaska' },
 		{ value: 'AZ', label: 'Arizona' },
@@ -339,18 +338,9 @@ const AdminLeads = () => {
 	];
 
 	return (
-		<div className="p-4">
+		<div className="p-4 !bg-transparent">
 			<div className="flex items-center justify-between mb-3 mt-0">
 				<h1 className="text-2xl font-bold">All Leads</h1>
-				{/* <Button
-					variant="default"
-					size="lg"
-					onClick={handleExportSelected}
-					disabled={selectedRows.length === 0}
-					className="bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-xl h-10"
-				>
-					{selectedRows.length ? `Export ${selectedRows.length} Selected` : 'Export Selected'}
-				</Button> */}
 			</div>
 			
 			<Table
@@ -371,7 +361,7 @@ const AdminLeads = () => {
 				onSelectAll={handleSelectAll}
 				filters={filters}
 				footerContent={
-					<span className="text-sm text-muted-foreground">
+					<span>
 						Showing {leadsData?.data?.length || 0} of {leadsData?.meta?.total || 0} results
 					</span>
 				}
