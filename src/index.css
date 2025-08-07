@@ -104,7 +104,7 @@
   }
 
   body {
-    background: red !important;
+    background: #FAFAF9 !important;
     @apply text-foreground min-h-screen;
   }
 }
