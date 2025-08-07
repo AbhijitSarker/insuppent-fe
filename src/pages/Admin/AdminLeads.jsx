@@ -48,6 +48,7 @@ const AdminLeads = () => {
 		sortOrder: tableState.sort.direction,
 		type: tableState.types.length ? tableState.types.join(',') : undefined,
 		status: tableState.statuses.length ? tableState.statuses.join(',') : undefined,
+		state: tableState.states.length ? tableState.states.join(',') : undefined, // <-- Added this line
 		searchTerm: tableState.search || undefined,
 	});
 

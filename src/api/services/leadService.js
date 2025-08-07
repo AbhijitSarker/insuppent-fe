@@ -1,6 +1,6 @@
 import { axiosSecure } from '../axios/config';
 
-export const getLeads = async ({ page = 1, limit = 15, sortBy = 'createdAt', sortOrder = 'desc', type, status, searchTerm }) => {
+export const getLeads = async ({ page = 1, limit = 15, sortBy = 'createdAt', sortOrder = 'desc', type, status, state, searchTerm }) => {
   const queryParams = new URLSearchParams({
     page,
     limit,
@@ -8,6 +8,7 @@ export const getLeads = async ({ page = 1, limit = 15, sortBy = 'createdAt', sor
     sortOrder,
     ...(type && { type }),
     ...(status && { status }),
+    ...(state && { state }),
     ...(searchTerm && { searchTerm }),
   });
 

@@ -1,8 +1,8 @@
 import * as React from "react";
-import { ChevronDownIcon } from "@radix-ui/react-icons";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "./checkbox";
 import { Input } from "./input";
+import { FaAngleDown, FaChevronDown } from "react-icons/fa";
 
 const Select = React.forwardRef(({ className, children, icon: Icon, label, value, isMulti = false, onValueChange, hasSearch = false, ...props }, ref) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -19,7 +19,10 @@ const Select = React.forwardRef(({ className, children, icon: Icon, label, value
     .map(child => child.props.children)
     .join(", ");
 
-  const displayLabel = selectedLabels || label;
+  // Show label and count for multi-select when items are selected
+  const displayLabel = isMulti && selectedValues.length > 0 
+    ? `${label}: ${selectedValues.length} selected`
+    : selectedLabels || label;
 
   const handleItemClick = (newValue) => {
     if (!isMulti) {
@@ -63,25 +66,25 @@ const Select = React.forwardRef(({ className, children, icon: Icon, label, value
   });
 
   return (
-    <div className="relative" ref={selectRef}>
+    <div className="relative !rounded-[8px]" ref={selectRef}>
       <button
         type="button"
         ref={ref}
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "flex h-9 min-h-[36px] w-full items-center justify-between gap-2 whitespace-nowrap rounded-xl border border-gray-200 bg-[#0000000F] px-3 text-[14px] leading-[20px] font-semibold text-gray-900 shadow-sm transition-colors hover:bg-gray-100/80 focus:outline-none focus:ring-2 focus:ring-gray-200 disabled:cursor-not-allowed disabled:opacity-50",
+          "flex h-9 min-h-[36px] w-full items-center justify-between gap-2 !rounded-[8px] whitespace-nowrap px-4 text-[14px] leading-[20px] font-semibold text-gray-900 shadow-sm transition-colors hover:bg-[#0000001F] focus:outline-none focus:bg-[#0000001F]",
           className
         )}
       >
-        <div className="flex items-center gap-1 min-w-0">
-          {Icon && <Icon className="h-[18px] w-[18px] text-gray-700 shrink-0" />}
+        <div className="flex items-center gap-2 min-w-0 rounded-[8px]">
+          {Icon && <Icon className="h-[12px] w-[12px] text-gray-900 shrink-0" />}
           <span className="truncate font-semibold text-[14px] leading-[20px]">{displayLabel}</span>
         </div>
-        <ChevronDownIcon className="h-[18px] w-[18px] text-gray-400" />
+        <FaChevronDown className="h-[14px] w-[14px] text-gray-900" />
       </button>
 
       {isOpen && (
-        <div className="absolute z-50 mt-2 min-w-[240px] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
+        <div className="absolute z-50 mt-2 min-w-[240px] overflow-hidden rounded-[8px] border border-gray-200 bg-white shadow-lg">
           {hasSearch && (
             <div className="p-2 border-b border-gray-100">
               <Input
