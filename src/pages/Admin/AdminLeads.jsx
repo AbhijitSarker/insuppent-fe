@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Table } from '@/components/ui/Table';
 import { useLeads } from '@/api/hooks/useLeads';
 import { Button } from '@/components/ui/button';
@@ -42,16 +42,87 @@ const AdminLeads = () => {
 		setSelectedRows([]);
 	}, [tableState]);
 
-	const { data: leadsData, isLoading, isUpdating, updateStatus } = useLeads({
-		page: tableState.page,
-		limit: tableState.pageSize,
-		sortBy: tableState.sort.key,
-		sortOrder: tableState.sort.direction,
-		type: tableState.types.length ? tableState.types.join(',') : undefined,
-		status: tableState.statuses.length ? tableState.statuses.join(',') : undefined,
-		state: tableState.states.length ? tableState.states.join(',') : undefined, // <-- Added this line
-		searchTerm: tableState.search || undefined,
-	});
+	const { data: leadsData, isLoading, isUpdating, updateStatus } = useLeads();
+
+	// Filter and sort data on frontend
+	const filteredAndSortedData = useMemo(() => {
+		if (!leadsData?.data) return [];
+
+		let filteredData = [...leadsData.data];
+
+		// Apply search filter
+		if (tableState.search) {
+			const searchTerm = tableState.search.toLowerCase();
+			filteredData = filteredData.filter(lead =>
+				lead.name?.toLowerCase().includes(searchTerm) ||
+				lead.email?.toLowerCase().includes(searchTerm) ||
+				lead.phone?.toLowerCase().includes(searchTerm) ||
+				lead.address?.toLowerCase().includes(searchTerm) ||
+				lead.state?.toLowerCase().includes(searchTerm)
+			);
+		}
+
+		// Apply type filter
+		if (tableState.types.length > 0) {
+			filteredData = filteredData.filter(lead =>
+				tableState.types.includes(lead.type)
+			);
+		}
+
+		// Apply status filter
+		if (tableState.statuses.length > 0) {
+			filteredData = filteredData.filter(lead =>
+				tableState.statuses.includes(lead.status)
+			);
+		}
+
+		// Apply state filter
+		if (tableState.states.length > 0) {
+			filteredData = filteredData.filter(lead =>
+				tableState.states.includes(lead.state)
+			);
+		}
+
+		// Apply sorting
+		if (tableState.sort.key) {
+			filteredData.sort((a, b) => {
+				let aVal = a[tableState.sort.key];
+				let bVal = b[tableState.sort.key];
+
+				// Handle date sorting
+				if (tableState.sort.key === 'createdAt') {
+					aVal = new Date(aVal);
+					bVal = new Date(bVal);
+				}
+
+				// Handle string sorting
+				if (typeof aVal === 'string') {
+					aVal = aVal.toLowerCase();
+					bVal = bVal.toLowerCase();
+				}
+
+				if (aVal < bVal) {
+					return tableState.sort.direction === 'asc' ? -1 : 1;
+				}
+				if (aVal > bVal) {
+					return tableState.sort.direction === 'asc' ? 1 : -1;
+				}
+				return 0;
+			});
+		}
+
+		return filteredData;
+	}, [leadsData?.data, tableState]);
+
+	// Paginate the filtered data
+	const paginatedData = useMemo(() => {
+		const startIndex = (tableState.page - 1) * tableState.pageSize;
+		const endIndex = startIndex + tableState.pageSize;
+		return filteredAndSortedData.slice(startIndex, endIndex);
+	}, [filteredAndSortedData, tableState.page, tableState.pageSize]);
+
+	// Calculate total count for pagination
+	const totalCount = filteredAndSortedData.length;
 
 	// Table state update handlers
 	const handlePageChange = (newPage) => {
@@ -98,7 +169,7 @@ const AdminLeads = () => {
 	};
 
 	const handleSelectAll = (checked) => {
-		setSelectedRows(checked ? leadsData?.data || [] : []);
+		setSelectedRows(checked ? paginatedData || [] : []);
 	};
 
 	// Export selected rows
@@ -345,11 +416,11 @@ const AdminLeads = () => {
 			
 			<Table
 				columns={columns}
-				data={leadsData?.data || []}
+				data={paginatedData}
 				loading={isLoading}
 				page={tableState.page}
 				pageSize={tableState.pageSize}
-				total={leadsData?.meta?.total || 0}
+				total={totalCount}
 				onPageChange={handlePageChange}
 				onSortChange={handleSortChange}
 				sort={tableState.sort}
@@ -362,7 +433,7 @@ const AdminLeads = () => {
 				filters={filters}
 				footerContent={
 					<span>
-						Showing {leadsData?.data?.length || 0} of {leadsData?.meta?.total || 0} results
+						Showing {paginatedData?.length || 0} of {totalCount || 0} results
 					</span>
 				}
 				paginationDelta={2}

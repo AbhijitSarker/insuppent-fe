@@ -14,6 +14,41 @@ export default {
         body: ['Inter', 'system-ui', 'sans-serif']
       },
       colors: {
+        // Core colors
+        core: {
+          topbar: 'rgb(255 255 255)', // Core/white
+          white: 'rgb(255 255 255)', // White
+          black: 'rgb(0 0 0)', // Black
+        },
+        
+        // Content colors
+        content: {
+          brand: 'rgb(37 99 235)', // Blue/600
+          primary: 'rgb(17 24 39)', // Gray/900
+          secondary: 'rgb(107 114 128)', // Gray/500
+          tertiary: 'rgb(156 163 175)', // Gray/400
+          inversePrimary: 'rgb(255 255 255)', // White
+          inverseSecondary: 'rgb(156 163 175)', // Gray/400
+          inverseTertiary: 'rgb(107 114 128)', // Gray/500
+        },
+        
+        // Background colors
+        bg: {
+          primary: 'rgb(255 255 255)', // White
+          secondary: 'rgb(249 250 251)', // Gray/50
+          tertiary: 'rgb(243 244 246)', // Gray/100
+          brand: 'rgb(37 99 235)', // Blue/600
+        },
+        
+        // Border colors
+        borderColor: {
+          primary: 'rgb(209 213 219)', // Gray/300
+          secondary: 'rgb(243 244 246)', // Gray/100
+          tertiary: 'rgb(249 250 251)', // Gray/50
+          brand: 'rgb(37 99 235)', // Blue/600
+        },
+        
+        // Semantic colors for components
         primary: {
           '50': '#eff6ff',
           '100': '#dbeafe',
@@ -81,6 +116,8 @@ export default {
           '900': '#111827',
           DEFAULT: '#6b7280'
         },
+        
+        // Legacy support - keeping these for backward compatibility
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {

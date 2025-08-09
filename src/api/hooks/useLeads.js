@@ -1,12 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getLeads, updateStatus } from '../services/leadService';
 
-export const useLeads = (params) => {
+export const useLeads = () => {
   const queryClient = useQueryClient();
 
   const query = useQuery({
-    queryKey: ['leads', params],
-    queryFn: () => getLeads(params),
+    queryKey: ['leads'],
+    queryFn: () => getLeads(),
     keepPreviousData: true,
   });
 
@@ -14,13 +14,13 @@ export const useLeads = (params) => {
     mutationFn: ({ leadId, status }) => updateStatus(leadId, status),
     onMutate: async ({ leadId, status }) => {
       // Cancel any outgoing refetches
-      await queryClient.cancelQueries({ queryKey: ['leads', params] });
+      await queryClient.cancelQueries({ queryKey: ['leads'] });
 
       // Snapshot the previous value
-      const previousLeads = queryClient.getQueryData(['leads', params]);
+      const previousLeads = queryClient.getQueryData(['leads']);
 
       // Optimistically update to the new value
-      queryClient.setQueryData(['leads', params], old => ({
+      queryClient.setQueryData(['leads'], old => ({
         ...old,
         data: old.data.map(lead =>
           lead.id === leadId ? { ...lead, status } : lead
@@ -32,11 +32,11 @@ export const useLeads = (params) => {
     },
     onError: (err, { leadId }, context) => {
       // If the mutation fails, use the context returned from onMutate to roll back
-      queryClient.setQueryData(['leads', params], context.previousLeads);
+      queryClient.setQueryData(['leads'], context.previousLeads);
     },
     onSettled: () => {
       // Always refetch after error or success to ensure cache is in sync with server
-      queryClient.invalidateQueries({ queryKey: ['leads', params] });
+      queryClient.invalidateQueries({ queryKey: ['leads'] });
     },
   });
 

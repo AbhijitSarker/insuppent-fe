@@ -23,31 +23,7 @@
     --border: 0 0% 89.8%;
     --input: 0 0% 89.8%;
     --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
     --radius: 0.5rem;
-    /* Custom color */
-    --warning: 40 100% 50%;
-    --warning-foreground: 0 0% 100%;
-
-    /* Table specific colors */
-    --table-border: 229 231 235;
-    --table-header-bg: 249 250 251;
-    --table-row-hover: 243 244 246;
-    --table-selected-row: 239 246 255;
-    --table-text: 55 65 81;
-    --table-search-bg: 243 244 246;
-    --table-filter-bg: 0 0 0;
-    --table-filter-bg-opacity: 0.06;
-
-    /* Input specific colors */
-    --input-bg: 250 250 250;
-    --input-border: 234 236 240;
-    --input-ring: 234 236 240;
-    --input-placeholder: 102 112 133;
   }
 
   .dark {
@@ -70,31 +46,7 @@
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
     --radius: 0.5rem;
-    /* Custom color */
-    --warning: 40 100% 40%;
-    --warning-foreground: 0 0% 100%;
-
-    /* Table specific colors - dark mode */
-    --table-border: 55 65 81;
-    --table-header-bg: 31 41 55;
-    --table-row-hover: 55 65 81;
-    --table-selected-row: 30 58 138;
-    --table-text: 156 163 175;
-    --table-search-bg: 31 41 55;
-    --table-filter-bg: 255 255 255;
-    --table-filter-bg-opacity: 0.06;
-
-    /* Input specific colors - dark mode */
-    --input-bg: 17 24 39;
-    --input-border: 55 65 81;
-    --input-ring: 55 65 81;
-    --input-placeholder: 156 163 175;
   }
 }
 
@@ -104,7 +56,6 @@
   }
 
   body {
-    background: #FAFAF9 !important;
-    @apply text-foreground min-h-screen;
+    @apply bg-bg-primary text-content-primary min-h-screen;
   }
 }
