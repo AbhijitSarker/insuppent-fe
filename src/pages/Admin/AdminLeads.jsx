@@ -4,8 +4,7 @@ import { useLeads } from '@/api/hooks/useLeads';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { BsThreeDotsVertical } from "react-icons/bs";
-import { FaUser, FaEnvelope, FaPhone, FaBookmark, FaGlobe, FaMapMarkerAlt, FaTag, FaCar, FaCity, FaHome, FaBuilding, FaCalendarAlt, FaCalendar } from 'react-icons/fa';
+import MaterialIcon from '@/components/ui/MaterialIcon';
 import {
 	DropdownMenu,
 	DropdownMenuTrigger,
@@ -15,13 +14,12 @@ import {
 	DropdownMenuSubTrigger,
 	DropdownMenuSubContent,
 } from "@/components/ui/dropdown-menu";
-import { MdFlag, MdGroup, MdHomeWork, MdLocalPhone, MdLocationOn, MdOutlineDateRange } from 'react-icons/md';
 
 const typeIcons = {
-	auto: FaCar,
-	commercial: FaCity,
-	home: FaHome,
-	mortgage: FaBuilding,
+	auto: 'directions_car',
+	commercial: 'location_city',
+	home: 'home',
+	mortgage: 'business',
 };
 
 const AdminLeads = () => {
@@ -205,32 +203,32 @@ const AdminLeads = () => {
 			key: 'createdAt',
 			header: 'Date Added',
 			sortable: true,
-			icon: <MdOutlineDateRange size={14} />,
+			icon: <MaterialIcon icon="date_range" size={14} />,
 			render: (row) => (
 				<span>{new Date(row.createdAt).toLocaleDateString()}</span>
 			)
 		},
-		{ key: 'name', header: 'Name', sortable: true, icon: <MdGroup size={14} /> },
-		{ key: 'email', header: 'Email', sortable: true, icon: <FaEnvelope size={14} /> },
-		{ key: 'phone', header: 'Phone', sortable: true, icon: <MdLocalPhone size={14} /> },
+		{ key: 'name', header: 'Name', sortable: true, icon: <MaterialIcon icon="group" size={14} /> },
+		{ key: 'email', header: 'Email', sortable: true, icon: <MaterialIcon icon="email" size={14} /> },
+		{ key: 'phone', header: 'Phone', sortable: true, icon: <MaterialIcon icon="phone" size={14} /> },
 		{ 
 			key: 'type', 
 			header: 'Type', 
 			sortable: true, 
-			icon: <FaTag size={14} />, 
+			icon: <MaterialIcon icon="local_offer" size={14} />, 
 			render: (row) => (
 				<Badge variant={row.type} icon={row.type}>
 					{row.type.charAt(0).toUpperCase() + row.type.slice(1)}
 				</Badge>
 			)
 		},
-		{ key: 'address', header: 'Address', sortable: true, icon: <MdHomeWork size={14} /> },
-		{ key: 'state', header: 'State', sortable: true, icon: <MdLocationOn size={14} /> },
+		{ key: 'address', header: 'Address', sortable: true, icon: <MaterialIcon icon="home_work" size={14} /> },
+		{ key: 'state', header: 'State', sortable: true, icon: <MaterialIcon icon="location_on" size={14} /> },
 		{ 
 			key: 'status', 
 			header: 'Status', 
 			sortable: true, 
-			icon: <MdFlag size={14} />,
+			icon: <MaterialIcon icon="flag" size={14} />,
 			render: (row) => (
 				<div className="flex items-center gap-2">
 					<div className={cn(
@@ -257,7 +255,7 @@ const AdminLeads = () => {
 							size="icon"
 							className="h-8 w-8 p-0"
 						>
-							<BsThreeDotsVertical className="h-5 w-5" />
+							<MaterialIcon icon="more_vert" size={20} />
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent 
@@ -384,7 +382,7 @@ const AdminLeads = () => {
 			options: typeOptions,
 			value: tableState.types,
 			onChange: handleTypeChange,
-			icon: FaTag,
+			icon: 'local_offer',
 			isMulti: true
 		},
 		{
@@ -393,7 +391,7 @@ const AdminLeads = () => {
 			options: stateOptions,
 			value: tableState.states,
 			onChange: handleStateChange,
-			icon: FaMapMarkerAlt,
+			icon: 'location_on',
 			isMulti: true,
 			hasSearch: true
 		},
@@ -403,7 +401,7 @@ const AdminLeads = () => {
 			options: statusOptions,
 			value: tableState.statuses,
 			onChange: handleStatusChange,
-			icon: FaGlobe,
+			icon: 'public',
 			isMulti: true
 		}
 	];
@@ -422,6 +420,13 @@ const AdminLeads = () => {
 				pageSize={tableState.pageSize}
 				total={totalCount}
 				onPageChange={handlePageChange}
+				onPageSizeChange={(newPageSize) => {
+					setTableState(prev => ({
+						...prev,
+						pageSize: newPageSize,
+						page: 1 // Reset to first page when changing page size
+					}));
+				}}
 				onSortChange={handleSortChange}
 				sort={tableState.sort}
 				search={tableState.search}

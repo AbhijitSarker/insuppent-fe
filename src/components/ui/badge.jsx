@@ -1,9 +1,7 @@
 import * as React from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
-import { MdDirectionsCar } from "react-icons/md";
-import { TiHome } from "react-icons/ti";
-import { IoMdBusiness } from "react-icons/io";
+import MaterialIcon from "./MaterialIcon";
 
 
 const badgeVariants = cva(
@@ -23,18 +21,17 @@ const badgeVariants = cva(
 );
 
 const iconMap = {
-  'home': TiHome,
-  'mortgage': IoMdBusiness,
-  'auto': MdDirectionsCar
-,
+  'home': 'home',
+  'mortgage': 'business',
+  'auto': 'directions_car'
 };
 
 function Badge({ className, variant, icon, children, ...props }) {
-  const IconComponent = typeof icon === 'string' ? iconMap[icon] : null;
+  const iconName = typeof icon === 'string' ? iconMap[icon] : null;
   
   return (
     <div className={cn(badgeVariants({ variant }), className)} {...props}>
-      {IconComponent && <IconComponent size={12} />}
+      {iconName && <MaterialIcon icon={iconName} size={12} />}
       {children}
     </div>
   );

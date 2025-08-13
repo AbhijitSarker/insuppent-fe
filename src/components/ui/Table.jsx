@@ -1,10 +1,7 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
-import { FaChevronLeft, FaChevronRight, FaAngleDown, FaAngleUp } from "react-icons/fa";
-import { LuChevronsUpDown } from "react-icons/lu";
-import { RxCross2 } from "react-icons/rx";
-import { Checkbox } from "./checkbox";
+import MaterialIcon from "./MaterialIcon";
 import { Select, SelectItem } from "./select";
 import { Input } from "./input";
 import Papa from "papaparse";
@@ -39,6 +36,30 @@ import { useDebounce } from "@/hooks/useDebounce";
  * }
  */
 
+// Custom Material Icon Checkbox Component
+const MaterialCheckbox = ({ checked, onChange, className }) => {
+  return (
+    <button
+      type="button"
+      onClick={onChange}
+      className={cn(
+        "w-4 h-4 rounded-sm border border-gray-300 flex items-center justify-center transition-all duration-200 cursor-pointer",
+        checked && "bg-blue-600 border-blue-600",
+        !checked && "bg-white hover:border-gray-400",
+        className
+      )}
+    >
+      {checked && (
+        <MaterialIcon 
+          icon="check" 
+          size={12} 
+          className="text-white" 
+        />
+      )}
+    </button>
+  );
+};
+
 export function Table({
   columns,
   data,
@@ -47,6 +68,7 @@ export function Table({
   pageSize = 15,
   total = 0,
   onPageChange,
+  onPageSizeChange,
   onSortChange,
   onSearch,
   sort,
@@ -61,6 +83,7 @@ export function Table({
   paginationDelta = 2,
 }) {
   const [internalSearch, setInternalSearch] = React.useState(search);
+  const [pageSizeInput, setPageSizeInput] = React.useState(pageSize.toString());
   const debouncedSearch = useDebounce(internalSearch, 500);
 
   // Calculate if all rows are selected
@@ -71,6 +94,11 @@ export function Table({
   React.useEffect(() => {
     setInternalSearch(search);
   }, [search]);
+
+  // Reset page size input when pageSize prop changes
+  React.useEffect(() => {
+    setPageSizeInput(pageSize.toString());
+  }, [pageSize]);
 
   // Notify parent of debounced search changes
   React.useEffect(() => {
@@ -99,6 +127,37 @@ export function Table({
 
   const handleFilterChange = (filter, value) => {
     filter.onChange(value);
+  };
+
+  const handlePageSizeInputChange = (e) => {
+    const value = e.target.value;
+    setPageSizeInput(value);
+  };
+
+  const handlePageSizeInputKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      const newPageSize = parseInt(pageSizeInput);
+      if (newPageSize && newPageSize >= 1 && newPageSize <= 100) {
+        // Reset to first page when changing page size
+        if (onPageChange) onPageChange(1);
+        // Call the onPageSizeChange prop to update page size
+        if (onPageSizeChange) onPageSizeChange(newPageSize);
+      } else {
+        setPageSizeInput(pageSize.toString());
+      }
+    }
+  };
+
+  const handlePageSizeInputBlur = () => {
+    const newPageSize = parseInt(pageSizeInput);
+    if (newPageSize && newPageSize >= 1 && newPageSize <= 100) {
+      // Reset to first page when changing page size
+      if (onPageChange) onPageChange(1);
+      // Call the onPageSizeChange prop to update page size
+      if (onPageSizeChange) onPageSizeChange(newPageSize);
+    } else {
+      setPageSizeInput(pageSize.toString());
+    }
   };
 
   const handleClearFilters = () => {
@@ -170,15 +229,17 @@ export function Table({
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl pb-4">
         <div className="flex flex-1 flex-wrap items-center gap-4">
           <div className="relative w-[400px]">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xl text-gray-400 pointer-events-none">
-              <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" /></svg>
-            </span>
+            <MaterialIcon 
+              icon="search" 
+              size={16} 
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" 
+            />
             <Input
               type="text"
-              placeholder="Search leads..."
+              placeholder="Search"
               value={internalSearch}
               onChange={handleSearch}
-              className="w-[400px] h-10 pl-10 bg-white border border-[#D6D3D1] rounded-xl text-sm text-[rgb(var(--table-text))] focus:ring-2 focus:ring-gray-200 placeholder:text-gray-400  text-[14px] leading-[20px] tracking-normal font-['Inter','sans-serif']"
+              className="w-[400px] h-9 pl-10 pr-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400 font-['Inter'] font-normal text-[14px] leading-[20px] tracking-[0%]"
             />
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -187,7 +248,7 @@ export function Table({
                 key={filter.key}
                 value={filter.value || (filter.isMulti ? [] : "__ALL__")}
                 onValueChange={(value) => handleFilterChange(filter, value)}
-                className="h-10 bg-[#0000000F] border-none rounded-xl text-[rgb(var(--table-text))] text-black focus:ring-2 focus:ring-gray-200 font-semibold text-[14px] leading-[20px] tracking-normal font-['Inter','sans-serif']"
+                className="h-[36px]"
                 icon={filter.icon}
                 label={filter.label}
                 isMulti={filter.isMulti}
@@ -210,9 +271,10 @@ export function Table({
                 variant="outline"
                 size="sm"
                 onClick={handleClearFilters}
-                className="flex items-center gap-2 px-3 py-2 h-9 text-xs font-semibold border-none text-[rgb(var(--table-text))] rounded-md hover:bg-transparent bg-transparent shadow-none text-primary hover:text-primary-600"
+                className="flex items-center gap-2 px-3 py-2 h-9 text-sm font-semibold border-none rounded-lg !hover:bg-blue-100 !bg-transparent text-blue-600 hover:text-blue-600 shadow-none"
               >
-                <span className="text-primary text-sm"><RxCross2 className="w-4 h-4 font-semibold"/></span>Clear&nbsp;filter
+                <MaterialIcon icon="close" size={20} className="text-blue-600 p-0" />
+                Clear filter
               </Button>
             )}
           </div>
@@ -226,17 +288,16 @@ export function Table({
           Export CSV
         </Button>
       </div>
-      <div className="overflow-x-auto rounded-lg border border-[rgb(var(--table-border))] bg-white">
-        <table className="min-w-full divide-y divide-[rgb(var(--table-border))] bg-white text-sm">
+      <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white">
+        <table className="min-w-full bg-white text-sm">
           <thead className="bg-white">
             <tr>
               {rowSelection && (
-                <th className="px-2 py-2.5 w-[48px]">
+                <th className="px-2 py-3 w-[48px] border-b border-gray-200">
                   <div className="flex items-center justify-center">
-                    <Checkbox 
+                    <MaterialCheckbox 
                       checked={allSelected} 
-                      onCheckedChange={handleSelectAllRows}
-                      className="data-[state=checked]:bg-blue-600"
+                      onChange={() => handleSelectAllRows(!allSelected)}
                     />
                   </div>
                 </th>
@@ -244,29 +305,38 @@ export function Table({
               {columns.map((col) => (
                 <th
                   key={col.key}
-                  className={cn(
-                    "px-4 py-2.5 text-left font-['Inter'] font-medium text-[12px] leading-[16px] tracking-[0%] select-none cursor-pointer whitespace-nowrap text-[rgb(var(--table-text))]",
-                    col.sortable && "hover:bg-[rgb(var(--table-row-hover))] transition-colors"
+                                      className={cn(
+                      "px-3 py-3 text-left font-['Inter'] font-medium text-[12px] leading-[16px] tracking-[0%] select-none cursor-pointer whitespace-nowrap text-[rgb(var(--table-text))] border-b border-gray-200",
+                    col.sortable && "hover:bg-[rgb(var(--table-row-hover))] transition-colors",
+                    col.key === "createdAt" && "w-[140px]",
+                    col.key === "name" && "w-[200px]",
+                    col.key === "email" && "w-[220px]",
+                    col.key === "phone" && "w-[150px]",
+                    col.key === "type" && "w-[120px]",
+                    col.key === "address" && "w-[250px]",
+                    col.key === "state" && "w-[100px]",
+                    col.key === "status" && "w-[120px]",
+                    col.key === "actions" && "w-[80px]"
                   )}
                   onClick={() => handleSort(col)}
                 >
-                  <span className="flex items-center justify-start gap-2">
-                    {col.icon && <span className="text-gray-500">{col.icon}</span>}
+                  <div className="flex items-center justify-start gap-[6px] h-5">
+                    {col.icon && <span className="text-gray-500 flex items-center justify-center">{col.icon}</span>}
                     <span>{col.header}</span>
                     {col.sortable && (
                       <span className="text-gray-400">
                         {sort?.key === col.key ? (
                           sort.direction === "asc" ? (
-                            <FaAngleUp className="h-3 w-3" />
+                            <MaterialIcon icon="keyboard_arrow_up" size={12} />
                           ) : (
-                              <FaAngleDown className="h-3 w-3" />
+                              <MaterialIcon icon="keyboard_arrow_down" size={12} />
                           )
                         ) : (
-                          <LuChevronsUpDown className="h-3 w-3" />
+                          <MaterialIcon icon="unfold_more" size={12} />
                         )}
                       </span>
                     )}
-                  </span>
+                  </div>
                 </th>
               ))}
             </tr>
@@ -281,7 +351,21 @@ export function Table({
                     </td>
                   )}
                   {columns.map((col, colIdx) => (
-                    <td key={col.key || colIdx} className="px-4 py-2.5 text-sm">
+                    <td 
+                      key={col.key || colIdx} 
+                      className={cn(
+                        "px-4 py-2.5 text-sm",
+                        col.key === "createdAt" && "w-[140px]",
+                        col.key === "name" && "w-[200px]",
+                        col.key === "email" && "w-[220px]",
+                        col.key === "phone" && "w-[150px]",
+                        col.key === "type" && "w-[120px]",
+                        col.key === "address" && "w-[250px]",
+                        col.key === "state" && "w-[100px]",
+                        col.key === "status" && "w-[120px]",
+                        col.key === "actions" && "w-[80px]"
+                      )}
+                    >
                       <span className="block h-5 w-full bg-gray-200 rounded-md shimmer" />
                     </td>
                   ))}
@@ -296,26 +380,41 @@ export function Table({
             ) : (
               data.map((row, i) => {
                 const isSelected = selectedRows?.some(selected => selected.id === row.id);
+                const nextRowSelected = i < data.length - 1 && selectedRows?.some(selected => selected.id === data[i + 1].id);
                 return (
                   <tr 
                     key={i} 
                     className={cn(
-                      "border-b border-gray-100 last:border-0 transition-colors h-[46px]",
-                      isSelected ? "bg-[rgb(var(--table-selected-row))]" : "hover:bg-[rgb(var(--table-row-hover))]"
+                      "border-b last:border-0 transition-colors h-[48px]",
+                      isSelected ? "bg-gray-100 border-blue-50" : nextRowSelected ? "border-blue-50 hover:bg-gray-50" : "border-gray-200 hover:bg-gray-50"
                     )}
                   >
                     {rowSelection && (
-                      <td className="px-2 py-2.5">
+                      <td className="px-2 py-2">
                         <div className="flex items-center justify-center">
-                          <Checkbox
+                          <MaterialCheckbox
                             checked={isSelected}
-                            onCheckedChange={(checked) => handleRowSelect(row, checked)}
+                            onChange={() => handleRowSelect(row, !isSelected)}
                           />
                         </div>
                       </td>
                     )}
                     {columns.map((col) => (
-                      <td key={col.key} className="px-4 py-0 align-middle text-sm whitespace-nowrap">
+                      <td 
+                        key={col.key} 
+                        className={cn(
+                          "px-3 py-2 align-middle text-sm whitespace-nowrap",
+                          col.key === "createdAt" && "w-[140px]",
+                          col.key === "name" && "w-[200px]",
+                          col.key === "email" && "w-[220px]",
+                          col.key === "phone" && "w-[150px]",
+                          col.key === "type" && "w-[120px]",
+                          col.key === "address" && "w-[250px]",
+                          col.key === "state" && "w-[100px]",
+                          col.key === "status" && "w-[120px]",
+                          col.key === "actions" && "w-[80px]"
+                        )}
+                      >
                         <div className={cn(
                           "flex items-center gap-1.5 h-full min-h-[32px]",
                           col.key === "name" ? "font-['Inter'] font-medium text-[14px] leading-[20px]" : "font-['Inter'] font-normal text-[14px] leading-[20px]",
@@ -331,8 +430,11 @@ export function Table({
             )}
           </tbody>
         </table>
-        <div className="flex items-center bg-[#F7F7F7] justify-between h-12 px-4 py-2 border-t border-[rgb(var(--table-border))] bg-[rgb(var(--table-header-bg))] rounded-b-lg">
-          <div className="text-gray-900 text-[13px] leading-5 tracking-normal font-normal">{footerContent}</div>
+        <div className="flex items-center bg-[#F7F7F7] justify-between h-12 px-4 py-2 border-t border-gray-200] bg-white rounded-b-lg">
+          <div className="text-gray-900 text-[13px] leading-5 tracking-normal font-normal flex items-center justify-start">{footerContent}
+
+
+          </div>
           <span className="text-sm text-muted-foreground">
           </span>
           <div className="flex items-center gap-2">
@@ -343,7 +445,7 @@ export function Table({
               disabled={page <= 1 || loading}
               className="rounded-full"
             >
-              <FaChevronLeft className="text-gray-500 w-5" />
+              <MaterialIcon icon="chevron_left" size={20} className="text-gray-500" />
             </Button>
             {paginationRange.map((p, idx) =>
               p === '...'
@@ -362,6 +464,7 @@ export function Table({
                     {p}
                   </Button>
             )}
+           
             <Button
               variant="ghost"
               size="icon"
@@ -369,8 +472,22 @@ export function Table({
               disabled={page >= totalPages || loading}
               className="rounded-full"
             >
-              <FaChevronRight className="text-gray-500 w-5" />
+              <MaterialIcon icon="chevron_right" size={20} className="text-gray-500" />
             </Button>
+            <div className="flex items-center gap-1">
+              {/* <span className="text-sm text-gray-600">Show</span> */}
+              <Input
+                type="number"
+                value={pageSizeInput}
+                onChange={handlePageSizeInputChange}
+                onKeyDown={handlePageSizeInputKeyDown}
+                onBlur={handlePageSizeInputBlur}
+                min={1}
+                max={100}
+                className="w-16 h-8 text-center text-sm border-gray-300 rounded-md"
+              />
+              {/* <span className="text-sm text-gray-600">entries</span> */}
+            </div>
           </div>
         </div>
       </div>

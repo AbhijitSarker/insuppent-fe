@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Table } from "../ui/Table";
-import SortIcon from '@mui/icons-material/Sort';
-import PersonIcon from '@mui/icons-material/Person';
-import EmailIcon from '@mui/icons-material/Email';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import MaterialIcon from "../ui/MaterialIcon";
 
 const mockData = Array.from({ length: 57 }, (_, i) => ({
   id: i + 1,
@@ -14,10 +11,10 @@ const mockData = Array.from({ length: 57 }, (_, i) => ({
 }));
 
 const columns = [
-  { key: "id", header: "ID", sortable: true, icon: <SortIcon fontSize="small" /> },
-  { key: "name", header: "Name", sortable: true, icon: <PersonIcon fontSize="small" /> },
-  { key: "email", header: "Email", icon: <EmailIcon fontSize="small" /> },
-  { key: "role", header: "Role", sortable: true, icon: <AdminPanelSettingsIcon fontSize="small" /> },
+  { key: "id", header: "ID", sortable: true, icon: <MaterialIcon icon="sort" size={16} /> },
+  { key: "name", header: "Name", sortable: true, icon: <MaterialIcon icon="person" size={16} /> },
+  { key: "email", header: "Email", icon: <MaterialIcon icon="email" size={16} /> },
+  { key: "role", header: "Role", sortable: true, icon: <MaterialIcon icon="admin_panel_settings" size={16} /> },
 ];
 
 const statusOptions = [

@@ -170,4 +170,12 @@ export default {
     }
   },
   plugins: [animate],
+  // Add custom utilities for font smoothing
+  addUtilities: {
+    '.font-smooth': {
+      '-webkit-font-smoothing': 'antialiased',
+      '-moz-osx-font-smoothing': 'grayscale',
+      'text-rendering': 'optimizeLegibility',
+    },
+  },
 }

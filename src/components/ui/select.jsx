@@ -2,9 +2,9 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "./checkbox";
 import { Input } from "./input";
-import { FaAngleDown, FaChevronDown } from "react-icons/fa";
+import MaterialIcon from "./MaterialIcon";
 
-const Select = React.forwardRef(({ className, children, icon: Icon, label, value, isMulti = false, onValueChange, hasSearch = false, ...props }, ref) => {
+const Select = React.forwardRef(({ className, children, icon, label, value, isMulti = false, onValueChange, hasSearch = false, ...props }, ref) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
   const selectRef = React.useRef(null);
@@ -72,15 +72,15 @@ const Select = React.forwardRef(({ className, children, icon: Icon, label, value
         ref={ref}
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "flex h-9 min-h-[36px] w-full items-center justify-between gap-2 !rounded-[8px] whitespace-nowrap px-4 text-[14px] leading-[20px] font-semibold text-gray-900 shadow-sm transition-colors hover:bg-[#0000001F] focus:outline-none focus:bg-[#0000001F]",
+          "flex h-9 min-h-[36px] w-full items-center justify-between gap-2 rounded-lg whitespace-nowrap px-3 py-2 text-[14px] leading-[20px] font-semibold text-gray-900 bg-[#0000000F] transition-colors hover:bg-[#0000001A] focus:outline-none focus:bg-[#0000001A]",
           className
         )}
       >
-        <div className="flex items-center gap-2 min-w-0 rounded-[8px]">
-          {Icon && <Icon className="h-[12px] w-[12px] text-gray-900 shrink-0" />}
+        <div className="flex items-center gap-2 min-w-0">
+          {icon && <MaterialIcon icon={icon} size={16} className="text-gray-900 shrink-0" />}
           <span className="truncate font-semibold text-[14px] leading-[20px]">{displayLabel}</span>
         </div>
-        <FaChevronDown className="h-[14px] w-[14px] text-gray-900" />
+        <MaterialIcon icon="keyboard_arrow_down" size={16} className="text-gray-900" />
       </button>
 
       {isOpen && (
@@ -124,7 +124,7 @@ const Select = React.forwardRef(({ className, children, icon: Icon, label, value
 });
 Select.displayName = "Select";
 
-const SelectItem = React.forwardRef(({ className, children, icon: Icon, isSelected, onSelect, isMulti, ...props }, ref) => {
+const SelectItem = React.forwardRef(({ className, children, icon, isSelected, onSelect, isMulti, ...props }, ref) => {
   return (
     <div
       ref={ref}
@@ -145,7 +145,7 @@ const SelectItem = React.forwardRef(({ className, children, icon: Icon, isSelect
             className="rounded-[4px] border-gray-300"
           />
         </div>
-        {/* {Icon && <Icon className="h-5 w-5 text-gray-500 shrink-0"  />} */}
+        {icon && <MaterialIcon icon={icon} size={16} className="text-gray-500 shrink-0" />}
         <span className="truncate text-gray-700">{children}</span>
       </div>
     </div>

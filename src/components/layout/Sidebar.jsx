@@ -1,24 +1,24 @@
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { useLocation, Link } from "react-router-dom";
-import { FaChartPie, FaUserFriends, FaCog } from "react-icons/fa";
+import MaterialIcon from "../ui/MaterialIcon";
 
 const defaultRoutes = [
 	{
 		label: "My Leads",
-		icon: FaUserFriends,
+		icon: "people",
 		href: "/",
 		active: false,
 	},
 	{
 		label: "All Leads",
-		icon: FaChartPie,
+		icon: "analytics",
 		href: "/admin",
 		active: false,
 	},
 	{
 		label: "Settings",
-		icon: FaCog,
+		icon: "settings",
 		href: "/admin/settings",
 		active: false,
 	},
@@ -61,7 +61,7 @@ const Sidebar = ({ className, isCollapsed, routes = defaultRoutes }) => {
 								!route.active && "text-gray-600 hover:text-gray-900"
 							)}
 						>
-							<route.icon size={20} />
+							<MaterialIcon icon={route.icon} size={20} />
 							<span className="hidden lg:block">{route.label}</span>
 						</Button>
 					</Link>

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { FaBars, FaBell, FaChevronDown } from "react-icons/fa";
+import MaterialIcon from "@/components/ui/MaterialIcon";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -21,7 +21,7 @@ const Navbar = ({ onMenuClick }) => {
         className="lg:hidden mr-2"
         onClick={onMenuClick}
       >
-        <FaBars className="h-5 w-5" />
+        <MaterialIcon icon="menu" size={20} />
       </Button>
       
       <div className="ml-auto flex items-center gap-4">
