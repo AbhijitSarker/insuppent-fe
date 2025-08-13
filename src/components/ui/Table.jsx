@@ -44,7 +44,7 @@ export function Table({
   data,
   loading = false,
   page = 1,
-  pageSize = 10,
+  pageSize = 15,
   total = 0,
   onPageChange,
   onSortChange,
