@@ -231,7 +231,7 @@ export function Table({
           <div className="relative w-[400px]">
             <MaterialIcon 
               icon="search" 
-              size={16} 
+              size={20} 
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" 
             />
             <Input
@@ -239,7 +239,7 @@ export function Table({
               placeholder="Search"
               value={internalSearch}
               onChange={handleSearch}
-              className="w-[400px] h-9 pl-10 pr-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400 font-['Inter'] font-normal text-[14px] leading-[20px] tracking-[0%]"
+              className="w-[400px] h-9 pl-10 pr-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-900 focus:ring-1 focus:ring-gray-300 focus:border-gray-300 placeholder:text-gray-400 font-['Inter'] font-normal text-[14px] leading-[20px] tracking-[0%]"
             />
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -279,14 +279,14 @@ export function Table({
             )}
           </div>
         </div>
-        <Button 
+        {/* <Button 
           variant="default" 
           size="lg"
           onClick={handleExport}
           className="bg-blue-600 hover:bg-blue-700 text-white px-6 h-10 min-w-[140px] rounded-md"
         >
           Export CSV
-        </Button>
+        </Button> */}
       </div>
       <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white">
         <table className="min-w-full bg-white text-sm">
@@ -305,9 +305,9 @@ export function Table({
               {columns.map((col) => (
                 <th
                   key={col.key}
-                                      className={cn(
-                      "px-3 py-3 text-left font-['Inter'] font-medium text-[12px] leading-[16px] tracking-[0%] select-none cursor-pointer whitespace-nowrap text-[rgb(var(--table-text))] border-b border-gray-200",
-                    col.sortable && "hover:bg-[rgb(var(--table-row-hover))] transition-colors",
+                  className={cn(
+                    "px-3 py-3 text-left font-['Inter'] font-semibold text-[12px] leading-[16px] tracking-[0%] select-none cursor-pointer whitespace-nowrap text-gray-500 border-b border-gray-200",
+                    col.sortable && "hover:bg-gray-50 transition-colors",
                     col.key === "createdAt" && "w-[140px]",
                     col.key === "name" && "w-[200px]",
                     col.key === "email" && "w-[220px]",
@@ -316,7 +316,7 @@ export function Table({
                     col.key === "address" && "w-[250px]",
                     col.key === "state" && "w-[100px]",
                     col.key === "status" && "w-[120px]",
-                    col.key === "actions" && "w-[80px]"
+                    col.key === "actions" && "w-[30px]"
                   )}
                   onClick={() => handleSort(col)}
                 >
@@ -324,15 +324,15 @@ export function Table({
                     {col.icon && <span className="text-gray-500 flex items-center justify-center">{col.icon}</span>}
                     <span>{col.header}</span>
                     {col.sortable && (
-                      <span className="text-gray-400">
+                      <span className="text-gray-400 flex items-center">
                         {sort?.key === col.key ? (
                           sort.direction === "asc" ? (
-                            <MaterialIcon icon="keyboard_arrow_up" size={12} />
+                            <MaterialIcon icon="keyboard_arrow_up" size={16} />
                           ) : (
-                              <MaterialIcon icon="keyboard_arrow_down" size={12} />
+                              <MaterialIcon icon="keyboard_arrow_down" size={16} />
                           )
                         ) : (
-                          <MaterialIcon icon="unfold_more" size={12} />
+                          <MaterialIcon icon="unfold_more" size={16} />
                         )}
                       </span>
                     )}
@@ -362,7 +362,7 @@ export function Table({
                         col.key === "type" && "w-[120px]",
                         col.key === "address" && "w-[250px]",
                         col.key === "state" && "w-[100px]",
-                        col.key === "status" && "w-[120px]",
+                        col.key === "status" && "w-[800px]",
                         col.key === "actions" && "w-[80px]"
                       )}
                     >
@@ -386,7 +386,7 @@ export function Table({
                     key={i} 
                     className={cn(
                       "border-b last:border-0 transition-colors h-[48px]",
-                      isSelected ? "bg-gray-100 border-blue-50" : nextRowSelected ? "border-blue-50 hover:bg-gray-50" : "border-gray-200 hover:bg-gray-50"
+                      isSelected ? "bg-gray-100 border-gray-100" : nextRowSelected ? "border-gray-100 hover:bg-gray-100" : "border-gray-200 hover:bg-gray-50"
                     )}
                   >
                     {rowSelection && (
@@ -406,13 +406,13 @@ export function Table({
                           "px-3 py-2 align-middle text-sm whitespace-nowrap",
                           col.key === "createdAt" && "w-[140px]",
                           col.key === "name" && "w-[200px]",
-                          col.key === "email" && "w-[220px]",
+                          col.key === "email" && "w-[260px]",
                           col.key === "phone" && "w-[150px]",
                           col.key === "type" && "w-[120px]",
-                          col.key === "address" && "w-[250px]",
+                          col.key === "address" && "w-[280px]",
                           col.key === "state" && "w-[100px]",
-                          col.key === "status" && "w-[120px]",
-                          col.key === "actions" && "w-[80px]"
+                          col.key === "status" && "w-[80px]",
+                          col.key === "actions" && "w-[50px]"
                         )}
                       >
                         <div className={cn(
@@ -430,10 +430,9 @@ export function Table({
             )}
           </tbody>
         </table>
-        <div className="flex items-center bg-[#F7F7F7] justify-between h-12 px-4 py-2 border-t border-gray-200] bg-white rounded-b-lg">
-          <div className="text-gray-900 text-[13px] leading-5 tracking-normal font-normal flex items-center justify-start">{footerContent}
-
-
+        <div className="flex items-center justify-between h-12 px-4 py-2 border-t border-gray-200] bg-white rounded-b-lg">
+          <div className="text-gray-900 text-[13px] leading-5 tracking-normal font-[450] flex items-center justify-start">
+            Showing {data?.length || 0} of {total || 0} results
           </div>
           <span className="text-sm text-muted-foreground">
           </span>

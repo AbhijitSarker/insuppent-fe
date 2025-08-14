@@ -146,7 +146,7 @@ const SelectItem = React.forwardRef(({ className, children, icon, isSelected, on
           />
         </div>
         {icon && <MaterialIcon icon={icon} size={16} className="text-gray-500 shrink-0" />}
-        <span className="truncate text-gray-700">{children}</span>
+        <span className="truncate text-gray-700 leading-5">{children}</span>
       </div>
     </div>
   );

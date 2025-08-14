@@ -203,32 +203,32 @@ const AdminLeads = () => {
 			key: 'createdAt',
 			header: 'Date Added',
 			sortable: true,
-			icon: <MaterialIcon icon="date_range" size={14} />,
+			icon: <MaterialIcon className={'text-gray-500'} icon="date_range" size={16} />,
 			render: (row) => (
 				<span>{new Date(row.createdAt).toLocaleDateString()}</span>
 			)
 		},
-		{ key: 'name', header: 'Name', sortable: true, icon: <MaterialIcon icon="group" size={14} /> },
-		{ key: 'email', header: 'Email', sortable: true, icon: <MaterialIcon icon="email" size={14} /> },
-		{ key: 'phone', header: 'Phone', sortable: true, icon: <MaterialIcon icon="phone" size={14} /> },
+		{ key: 'name', header: 'Name', sortable: true, icon: <MaterialIcon className={'text-gray-500'} icon="group" size={16} /> },
+		{ key: 'email', header: 'Email', sortable: true, icon: <MaterialIcon className={'text-gray-500'} icon="email" size={16} /> },
+		{ key: 'phone', header: 'Phone', sortable: true, icon: <MaterialIcon className={'text-gray-500'} icon="phone" size={16} /> },
 		{ 
 			key: 'type', 
 			header: 'Type', 
 			sortable: true, 
-			icon: <MaterialIcon icon="local_offer" size={14} />, 
+			icon: <MaterialIcon className={'text-gray-500'} icon="local_offer" size={16} />, 
 			render: (row) => (
 				<Badge variant={row.type} icon={row.type}>
 					{row.type.charAt(0).toUpperCase() + row.type.slice(1)}
 				</Badge>
 			)
 		},
-		{ key: 'address', header: 'Address', sortable: true, icon: <MaterialIcon icon="home_work" size={14} /> },
-		{ key: 'state', header: 'State', sortable: true, icon: <MaterialIcon icon="location_on" size={14} /> },
+		{ key: 'address', header: 'Address', sortable: true, icon: <MaterialIcon className={'text-gray-500'} icon="home_work" size={16} /> },
+		{ key: 'state', header: 'State', sortable: true, icon: <MaterialIcon className={'text-gray-500'} icon="location_on" size={16} /> },
 		{ 
 			key: 'status', 
 			header: 'Status', 
 			sortable: true, 
-			icon: <MaterialIcon icon="flag" size={14} />,
+			icon: <MaterialIcon className={'text-gray-500'} icon="flag" size={16} />,
 			render: (row) => (
 				<div className="flex items-center gap-2">
 					<div className={cn(
@@ -401,7 +401,7 @@ const AdminLeads = () => {
 			options: statusOptions,
 			value: tableState.statuses,
 			onChange: handleStatusChange,
-			icon: 'public',
+			icon: 'flag',
 			isMulti: true
 		}
 	];
@@ -437,7 +437,7 @@ const AdminLeads = () => {
 				onSelectAll={handleSelectAll}
 				filters={filters}
 				footerContent={
-					<span>
+					<span className=''>
 						Showing {paginatedData?.length || 0} of {totalCount || 0} results
 					</span>
 				}
