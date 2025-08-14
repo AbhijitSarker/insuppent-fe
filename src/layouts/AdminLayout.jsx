@@ -6,7 +6,7 @@ import Navbar from '@/components/layout/Navbar';
 const adminRoutes = [
   {
     label: "All Leads",
-    icon: "analytics",
+    icon: "people",
     href: "/admin",
   },
   {

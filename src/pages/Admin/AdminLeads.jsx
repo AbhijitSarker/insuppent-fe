@@ -25,7 +25,7 @@ const typeIcons = {
 const AdminLeads = () => {
 	const [tableState, setTableState] = useState({
 		page: 1,
-		pageSize: 15,
+		pageSize: 13,
 		sort: { key: 'createdAt', direction: 'desc' },
 		search: '',
 		types: [],

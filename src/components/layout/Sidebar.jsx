@@ -3,22 +3,7 @@ import { Button } from "../ui/button";
 import { useLocation, Link } from "react-router-dom";
 import MaterialIcon from "../ui/MaterialIcon";
 
-const defaultRoutes = [
-	{
-		label: "All leads",
-		icon: "people",
-		href: "/admin",
-		active: false,
-	},
-	{
-		label: "Settings",
-		icon: "settings",
-		href: "/admin/settings",
-		active: false,
-	},
-];
-
-const Sidebar = ({ className, routes = defaultRoutes }) => {
+const Sidebar = ({ className, routes }) => {
 	const location = useLocation();
 
 	const navigationRoutes = routes.map((route) => ({
