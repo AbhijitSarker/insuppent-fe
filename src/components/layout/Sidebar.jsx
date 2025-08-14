@@ -5,14 +5,8 @@ import MaterialIcon from "../ui/MaterialIcon";
 
 const defaultRoutes = [
 	{
-		label: "My Leads",
+		label: "All leads",
 		icon: "people",
-		href: "/",
-		active: false,
-	},
-	{
-		label: "All Leads",
-		icon: "analytics",
 		href: "/admin",
 		active: false,
 	},
@@ -24,7 +18,7 @@ const defaultRoutes = [
 	},
 ];
 
-const Sidebar = ({ className, isCollapsed, routes = defaultRoutes }) => {
+const Sidebar = ({ className, routes = defaultRoutes }) => {
 	const location = useLocation();
 
 	const navigationRoutes = routes.map((route) => ({
@@ -35,34 +29,35 @@ const Sidebar = ({ className, isCollapsed, routes = defaultRoutes }) => {
 	return (
 		<div
 			className={cn(
-				"flex h-full lg:w-56 w-14 flex-col bg-white shadow-sm",
+				"flex h-full w-56 flex-col bg-white border-r border-gray-200",
 				className
 			)}
 		>
-			<div className="flex h-14 items-center justify-center border-b px-2">
-				<Link to="/admin" className="flex items-center gap-x-2">
-					<img src="/logo.svg" alt="Logo" className="h-8 w-8" />
-					{!isCollapsed && (
-						<span className="font-bold text-xl hidden lg:block">
-							Insuppent
-						</span>
-					)}
-				</Link>
-			</div>
-			<div className="flex flex-col gap-2 p-2">
+			{/* Navigation items */}
+			<div className="flex flex-col gap-1 pl-0 p-4">
 				{navigationRoutes.map((route) => (
 					<Link key={route.href} to={route.href}>
 						<Button
-							variant={route.active ? "default" : "ghost"}
-							className={cn(
-								"w-full justify-start gap-2",
-								route.active &&
-									"bg-blue-600 text-white hover:bg-blue-700",
-								!route.active && "text-gray-600 hover:text-gray-900"
+							variant="ghost"
+							className="w-full justify-start gap-3 h-12 px-4 pr-0 rounded-lg transition-all duration-200 relative hover:bg-transparent">
+							{route.active && (
+								<div className="absolute left-0 h-[32px] w-2 bg-blue-600 rounded-r-lg"></div>
 							)}
-						>
-							<MaterialIcon icon={route.icon} size={20} />
-							<span className="hidden lg:block">{route.label}</span>
+							<div 
+								className={cn(
+									"text-black p-2 w-full h-10 rounded-lg flex items-center gap-3 text-sm font-medium leading-6",
+									route.active
+										? "bg-[#E7E5E4]"
+										: "hover:bg-[#E7E5E4]"
+								)}
+							>
+
+							<MaterialIcon 
+								icon={route.icon} 
+								size={20} 
+									className="people text-black"/>
+							<span className="font-medium text-black">{route.label}</span>
+								</div>
 						</Button>
 					</Link>
 				))}

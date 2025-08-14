@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from '@/components/layout/Sidebar';
 import Navbar from '@/components/layout/Navbar';
@@ -17,21 +17,25 @@ const adminRoutes = [
 ];
 
 const AdminLayout = () => {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-
   return (
-    <div className="min-h-screen flex">
-      <Sidebar 
-        className="fixed left-0 top-0 z-50 h-full transition-all duration-300"
-        isCollapsed={isSidebarCollapsed}
-        routes={adminRoutes}
-      />
-      <div className="flex-1 lg:pl-56 pl-14">
-        <Navbar onMenuClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} />
-        <main className="min-h-[calc(100vh-3.5rem)] bg-[#FAFAF9]">
-          <Outlet />
-        </main>
+    <div className="min-h-screen bg-[#FAFAF9]">
+      {/* Fixed Navbar */}
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <Navbar showNavigation={false} showAdminButton={true} />
       </div>
+
+      {/* Fixed Sidebar below navbar */}
+      <div className="fixed left-0 top-14 bottom-0 z-40 w-56">
+        <Sidebar 
+          className="h-[calc(100vh-3.5rem)] overflow-y-auto"
+          routes={adminRoutes}
+        />
+      </div>
+
+      {/* Main content with offsets for fixed header and sidebar */}
+      <main className="pt-14 pl-56">
+        <Outlet />
+      </main>
     </div>
   );
 };
