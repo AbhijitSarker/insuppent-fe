@@ -3,6 +3,7 @@ import UserLayout from "../layouts/UserLayout";
 import AdminLayout from "../layouts/AdminLayout";
 import AdminLeads from "../pages/Admin/AdminLeads";
 import Settings from "../pages/Admin/Settings";
+import Customers from "../pages/Admin/Customers";
 import Login from "../pages/Auth/Login";
 import Signup from "../pages/Auth/Signup";
 import { useAuth } from "@/contexts/AuthContext";
@@ -78,6 +79,10 @@ export const router = createBrowserRouter([
       {
         path: "settings",
         element: <Settings />,
+      },
+      {
+        path: "customers/:customerId",
+        element: <Customers />,
       },
     ],
   },
