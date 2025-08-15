@@ -328,7 +328,7 @@ const Settings = () => {
 	];
 
 	return (
-		<div className="p-6">
+		<div className="p-8">
 			{/* Header */}
 			<div className="flex items-center justify-between mb-6 mt-0">
 				<h1 className="w-full font-bold text-[32px] leading-[32px] tracking-[-0.025em]">
