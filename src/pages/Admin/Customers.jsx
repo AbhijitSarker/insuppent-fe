@@ -478,70 +478,82 @@ const Customers = () => {
 		<div className="p-6">
 			{/* Header with Back Navigation */}
 			<div className="mb-8">
-				<div className="flex items-center gap-2 mb-6">
+				<div className="flex items-center gap-2 p-3 w-[90px] h-9">
 					<Button 
 						variant="ghost" 
 						size="icon" 
-						className="h-8 w-8"
+						className="h-8 w-8 hover:bg-gray-200"
 						onClick={handleBackClick}
 					>
 						<MaterialIcon icon="arrow_back" size={20} />
 					</Button>
-					<span className="text-sm text-gray-600">Back</span>
+					<span className="text-sm text-gray-900 font-semibold">Back</span>
 				</div>
 
 				{/* User Profile Section */}
-				<div className="flex items-center gap-4 mb-6">
+				<div className="flex items-center gap-4 my-6">
 					<div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
 						<span className="text-2xl font-bold text-blue-600">{customer.avatar}</span>
 					</div>
 					<div>
-						<div className="flex items-center gap-3">
-							<h1 className="text-2xl font-bold text-gray-900">{customer.name}</h1>
+						<div className="flex items-center gap-4 justify-between">
+							<h1 className="text-3xl font-semibold text-gray-900 leading-9 tracking-[-0.025em]">{customer.name}</h1>
 							<Badge variant="secondary" className="bg-gray-100 text-gray-700">
 								{customer.subscription}
 							</Badge>
 						</div>
-						<p className="text-gray-600">{customer.email}</p>
+						<p className="text-gray-600 ">{customer.email}</p>
 					</div>
 				</div>
 
-				{/* Lead Categories/Tabs */}
-				<div className="flex space-x-8 border-b border-gray-200">
-					<button
-						onClick={() => setActiveTab('all')}
-						className={cn(
-							"pb-4 px-1 text-sm font-medium border-b-2 transition-colors",
-							activeTab === 'all'
-								? "border-blue-600 text-blue-600"
-								: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-						)}
-					>
-						All leads ({tabCounts.all})
-					</button>
-					<button
-						onClick={() => setActiveTab('active')}
-						className={cn(
-							"pb-4 px-1 text-sm font-medium border-b-2 transition-colors",
-							activeTab === 'active'
-								? "border-blue-600 text-blue-600"
-								: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-						)}
-					>
-						Active leads ({tabCounts.active})
-					</button>
-					<button
-						onClick={() => setActiveTab('refunded')}
-						className={cn(
-							"pb-4 px-1 text-sm font-medium border-b-2 transition-colors",
-							activeTab === 'refunded'
-								? "border-blue-600 text-blue-600"
-								: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-						)}
-					>
-						Refunded leads ({tabCounts.refunded})
-					</button>
-				</div>
+				   {/* Lead Categories/Tabs */}
+				   <div className="flex space-x-3 h-[46px] border-b border-gray-200 mb-0">
+					   <button
+						   onClick={() => setActiveTab('all')}
+						   className={cn(
+							   "relative flex items-center px-6 py-2 text-sm font-semibold leading-[20px] border-b-2 transition-colors",
+							   activeTab === 'all'
+								   ? "border-blue-600 text-blue-600"
+								   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+						   )}
+						   style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
+					   >
+						   All leads ({tabCounts.all})
+						   {activeTab === 'all' && (
+							   <span className="absolute left-0 -bottom-[2px] w-full h-[3px] bg-blue-600 rounded-t" />
+						   )}
+					   </button>
+					   <button
+						   onClick={() => setActiveTab('active')}
+						   className={cn(
+							   "relative flex items-center px-6 py-2 text-sm font-semibold leading-[20px] border-b-2 transition-colors",
+							   activeTab === 'active'
+								   ? "border-blue-600 text-blue-600"
+								   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+						   )}
+						   style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
+					   >
+						   Active leads ({tabCounts.active})
+						   {activeTab === 'active' && (
+							   <span className="absolute left-0 -bottom-[2px] w-full h-[3px] bg-blue-600 rounded-t" />
+						   )}
+					   </button>
+					   <button
+						   onClick={() => setActiveTab('refunded')}
+						   className={cn(
+							   "relative flex items-center px-6 py-2 text-sm font-semibold leading-[20px] border-b-2 transition-colors",
+							   activeTab === 'refunded'
+								   ? "border-blue-600 text-blue-600"
+								   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+						   )}
+						   style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
+					   >
+						   Refunded leads ({tabCounts.refunded})
+						   {activeTab === 'refunded' && (
+							   <span className="absolute left-0 -bottom-[2px] w-full h-[3px] bg-blue-600 rounded-t" />
+						   )}
+					   </button>
+				   </div>
 			</div>
 
 			{/* Main Content */}

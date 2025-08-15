@@ -233,13 +233,13 @@ const AdminLeads = () => {
 				<div className="flex items-center gap-2">
 					<div className={cn(
 						"flex items-center gap-2 font-medium",
-						row.status === 'public' ? 'text-[#15803D]' : 'text-[#B91C1C]'
+						row.status === 'public' ? "text-green-700" : "text-red-700"
 					)}>
-						{row.status === 'public' ? 'Public' : 'Private'}
 						<span className={cn(
 							"w-2 h-2 rounded-full",
-							row.status === 'public' ? 'bg-[#15803D]' : 'bg-[#B91C1C]'
+							row.status === 'public' ? "bg-green-700" : "bg-red-700"
 						)} />
+						{row.status === 'public' ? 'Public' : 'Private'}
 					</div>
 				</div>
 			)
@@ -407,9 +407,11 @@ const AdminLeads = () => {
 	];
 
 	return (
-		<div className="p-4 !bg-transparent">
+		<div className="p-8 !bg-transparent">
 			<div className="flex items-center justify-between mb-3 mt-0">
-				<h1 className="text-2xl font-bold">All Leads</h1>
+				<h1 className="w-full font-bold text-[32px] leading-[32px] tracking-[-0.025em]">
+					All Leads
+				</h1>
 			</div>
 			
 			<Table

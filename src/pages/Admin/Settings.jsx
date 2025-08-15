@@ -269,7 +269,7 @@ const Settings = () => {
 				<div className="flex items-center gap-2">
 					<div className={cn(
 						"w-2 h-2 rounded-full",
-						row.status === 'enabled' ? "bg-green-500" : "bg-red-500"
+						row.status === 'enabled' ? "bg-green-700" : "bg-red-700"
 					)} />
 					<span className={cn(
 						"text-sm font-medium",
@@ -330,41 +330,52 @@ const Settings = () => {
 	return (
 		<div className="p-6">
 			{/* Header */}
-			<div className="mb-8">
-				<h1 className="text-3xl font-bold text-gray-900 mb-6">Settings</h1>
-				
-				{/* Navigation Tabs */}
-				<div className="flex space-x-8 border-b border-gray-200">
-					<button
-						onClick={() => setActiveTab('customers')}
-						className={cn(
-							"pb-4 px-1 text-sm font-medium border-b-2 transition-colors",
-							activeTab === 'customers'
-								? "border-blue-600 text-blue-600"
-								: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-						)}
-					>
-						Customers
-					</button>
-					<button
-						onClick={() => setActiveTab('pricing')}
-						className={cn(
-							"pb-4 px-1 text-sm font-medium border-b-2 transition-colors",
-							activeTab === 'pricing'
-								? "border-blue-600 text-blue-600"
-								: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-						)}
-					>
-						Pricing plans
-					</button>
-				</div>
+			<div className="flex items-center justify-between mb-6 mt-0">
+				<h1 className="w-full font-bold text-[32px] leading-[32px] tracking-[-0.025em]">
+					Settings
+				</h1>
+			</div>
+			<div>				
+				   {/* Navigation Tabs */}
+				   <div className="flex space-x-3 h-[46px] border-b border-gray-200 mb-0">
+					   <button
+						   onClick={() => setActiveTab('customers')}
+						   className={cn(
+							   "relative flex items-center px-6 py-2 text-sm font-semibold leading-[20px] border-b-2 transition-colors",
+							   activeTab === 'customers'
+								   ? "border-blue-600 text-blue-600"
+								   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+						   )}
+						   style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
+					   >
+						   Customers
+						   {activeTab === 'customers' && (
+							   <span className="absolute left-0 -bottom-[2px] w-full h-[3px] bg-blue-600 rounded-t" />
+						   )}
+					   </button>
+					   <button
+						   onClick={() => setActiveTab('pricing')}
+						   className={cn(
+							   "relative flex items-center px-6 py-2 text-sm font-semibold leading-[20px] border-b-2 transition-colors",
+							   activeTab === 'pricing'
+								   ? "border-blue-600 text-blue-600"
+								   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+						   )}
+						   style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
+					   >
+						   Pricing plans
+						   {activeTab === 'pricing' && (
+							   <span className="absolute left-0 -bottom-[2px] w-full h-[3px] bg-blue-600 rounded-t" />
+						   )}
+					   </button>
+				   </div>
 			</div>
 
 			{/* Customers Tab Content */}
 			{activeTab === 'customers' && (
 				<div>
-					<div className="flex items-center justify-between mb-6">
-						<h2 className="text-xl font-semibold text-gray-900">Customers</h2>
+					<div className="flex items-center justify-between mt-[22px] mb-5">
+						<h2 className="text-2xl font-semibold text-gray-900">Customers</h2>
 					</div>
 
 					{/* Customer Table */}
