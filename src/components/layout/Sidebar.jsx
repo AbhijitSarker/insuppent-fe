@@ -26,7 +26,7 @@ const Sidebar = ({ className, routes }) => {
 							variant="ghost"
 							className="w-full justify-start gap-3 h-12 px-4 pr-0 rounded-lg transition-all duration-200 relative hover:bg-transparent">
 							{route.active && (
-								<div className="absolute left-0 h-[32px] w-2 bg-blue-600 rounded-r-lg"></div>
+								<div className="absolute left-0 h-[32px] w-[6px] bg-blue-600 rounded-r-lg"></div>
 							)}
 							<div 
 								className={cn(

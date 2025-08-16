@@ -79,9 +79,9 @@ const Navbar = ({ onMenuClick, showNavigation = false, showAdminButton = false }
             <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-medium">
               {user.name?.charAt(0)?.toUpperCase() || 'U'}
             </div>
-            <Button variant="ghost" size="sm" onClick={handleLogout}>
+            {/* <Button variant="ghost" size="sm" onClick={handleLogout}>
               Logout
-            </Button>
+            </Button> */}
           </div>
         )}
 
