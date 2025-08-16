@@ -47,7 +47,7 @@ const Signup = () => {
       <div className="max-w-md w-full space-y-8">
         <div>
           <img className="mx-auto h-12 w-auto" src="/logo.svg" alt="Logo" />
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-content-primary">
             Create your account
           </h2>
         </div>
@@ -106,7 +106,7 @@ const Signup = () => {
           </div>
 
           <div className="text-sm text-center">
-            <Link to="/auth/login" className="font-medium text-blue-600 hover:text-blue-500">
+            <Link to="/auth/login" className="font-medium text-content-brand hover:text-blue-500">
               Already have an account? Sign in
             </Link>
           </div>

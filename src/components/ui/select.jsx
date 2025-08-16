@@ -72,19 +72,19 @@ const Select = React.forwardRef(({ className, children, icon, label, value, isMu
         ref={ref}
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "flex h-9 min-h-[36px] w-full items-center justify-between gap-2 rounded-lg whitespace-nowrap px-3 py-2 text-[14px] leading-[20px] font-semibold text-gray-900 bg-[#0000000F] transition-colors hover:bg-[#0000001A] focus:outline-none focus:bg-[#0000001A]",
+          "flex h-9 min-h-[36px] w-full items-center justify-between gap-2 rounded-lg whitespace-nowrap px-3 py-2 text-[14px] leading-[20px] font-semibold text-content-primary bg-[#0000000F] transition-colors hover:bg-[#0000001A] focus:outline-none focus:bg-[#0000001A]",
           className
         )}
       >
         <div className="flex items-center gap-2 min-w-0">
-          {icon && <MaterialIcon icon={icon} size={16} className="text-gray-900 shrink-0" />}
+          {icon && <MaterialIcon icon={icon} size={16} className="text-content-primary shrink-0" />}
           <span className="truncate font-semibold text-[14px] leading-[20px]">{displayLabel}</span>
         </div>
-        <MaterialIcon icon="keyboard_arrow_down" size={16} className="text-gray-900" />
+        <MaterialIcon icon="keyboard_arrow_down" size={16} className="text-content-primary" />
       </button>
 
       {isOpen && (
-        <div className="absolute z-50 mt-2 min-w-[240px] overflow-hidden rounded-[8px] border border-gray-200 bg-white shadow-lg">
+        <div className="absolute z-50 mt-2 min-w-[240px] overflow-hidden rounded-[8px] border border-borderColor-secondary bg-white shadow-lg">
           {hasSearch && (
             <div className="p-2 border-b border-gray-100">
               <Input
@@ -92,7 +92,7 @@ const Select = React.forwardRef(({ className, children, icon, label, value, isMu
                 placeholder="Search states..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-8 w-full bg-transparent border-gray-200"
+                className="h-8 w-full bg-transparent border-borderColor-secondary"
                 onClick={(e) => e.stopPropagation()}
               />
             </div>
@@ -112,7 +112,7 @@ const Select = React.forwardRef(({ className, children, icon, label, value, isMu
               });
             })}
             {filteredChildren.length === 0 && (
-              <div className="px-3 py-2 text-sm text-gray-500">
+              <div className="px-3 py-2 text-sm text-content-secondary">
                 No results found
               </div>
             )}
@@ -145,7 +145,7 @@ const SelectItem = React.forwardRef(({ className, children, icon, isSelected, on
             className="rounded-[4px] border-gray-300"
           />
         </div>
-        {icon && <MaterialIcon icon={icon} size={16} className="text-gray-500 shrink-0" />}
+        {icon && <MaterialIcon icon={icon} size={16} className="text-content-secondary shrink-0" />}
         <span className="truncate text-gray-700 leading-5">{children}</span>
       </div>
     </div>

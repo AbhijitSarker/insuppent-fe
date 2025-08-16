@@ -14,7 +14,7 @@ const Sidebar = ({ className, routes }) => {
 	return (
 		<div
 			className={cn(
-				"flex h-full w-56 flex-col bg-white border-r border-gray-200",
+				"flex h-full w-56 flex-col bg-white border-r border-borderColor-secondary",
 				className
 			)}
 		>

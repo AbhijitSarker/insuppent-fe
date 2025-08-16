@@ -203,32 +203,32 @@ const AdminLeads = () => {
 			key: 'createdAt',
 			header: 'Date Added',
 			sortable: true,
-			icon: <MaterialIcon className={'text-gray-500'} icon="date_range" size={16} />,
+			icon: <MaterialIcon className={'text-content-secondary'} icon="date_range" size={16} />,
 			render: (row) => (
 				<span>{new Date(row.createdAt).toLocaleDateString()}</span>
 			)
 		},
-		{ key: 'name', header: 'Name', sortable: true, icon: <MaterialIcon className={'text-gray-500'} icon="group" size={16} /> },
-		{ key: 'email', header: 'Email', sortable: true, icon: <MaterialIcon className={'text-gray-500'} icon="email" size={16} /> },
-		{ key: 'phone', header: 'Phone', sortable: true, icon: <MaterialIcon className={'text-gray-500'} icon="phone" size={16} /> },
+		{ key: 'name', header: 'Name', sortable: true, icon: <MaterialIcon className={'text-content-secondary'} icon="group" size={16} /> },
+		{ key: 'email', header: 'Email', sortable: true, icon: <MaterialIcon className={'text-content-secondary'} icon="email" size={16} /> },
+		{ key: 'phone', header: 'Phone', sortable: true, icon: <MaterialIcon className={'text-content-secondary'} icon="phone" size={16} /> },
 		{ 
 			key: 'type', 
 			header: 'Type', 
 			sortable: true, 
-			icon: <MaterialIcon className={'text-gray-500'} icon="local_offer" size={16} />, 
+			icon: <MaterialIcon className={'text-content-secondary'} icon="local_offer" size={16} />, 
 			render: (row) => (
 				<Badge variant={row.type} icon={row.type}>
 					{row.type.charAt(0).toUpperCase() + row.type.slice(1)}
 				</Badge>
 			)
 		},
-		{ key: 'address', header: 'Address', sortable: true, icon: <MaterialIcon className={'text-gray-500'} icon="home_work" size={16} /> },
-		{ key: 'state', header: 'State', sortable: true, icon: <MaterialIcon className={'text-gray-500'} icon="location_on" size={16} /> },
+		{ key: 'address', header: 'Address', sortable: true, icon: <MaterialIcon className={'text-content-secondary'} icon="home_work" size={16} /> },
+		{ key: 'state', header: 'State', sortable: true, icon: <MaterialIcon className={'text-content-secondary'} icon="location_on" size={16} /> },
 		{ 
 			key: 'status', 
 			header: 'Status', 
 			sortable: true, 
-			icon: <MaterialIcon className={'text-gray-500'} icon="flag" size={16} />,
+			icon: <MaterialIcon className={'text-content-secondary'} icon="flag" size={16} />,
 			render: (row) => (
 				<div className="flex items-center gap-2">
 					<div className={cn(
@@ -260,13 +260,13 @@ const AdminLeads = () => {
 					</DropdownMenuTrigger>
 					<DropdownMenuContent 
 						align="end" 
-						className="w-[160px] rounded-lg border border-gray-200 bg-white p-1 shadow-lg"
+						className="w-[160px] rounded-lg border border-borderColor-secondary bg-white p-1 shadow-lg"
 					>
 						<DropdownMenuSub>
 							<DropdownMenuSubTrigger className="flex cursor-pointer items-center rounded-md px-3 py-2 text-sm outline-none transition-colors hover:bg-gray-100">
 								Update Status
 							</DropdownMenuSubTrigger>
-							<DropdownMenuSubContent className="w-[160px] rounded-lg border border-gray-200 bg-white p-1 shadow-lg">
+							<DropdownMenuSubContent className="w-[160px] rounded-lg border border-borderColor-secondary bg-white p-1 shadow-lg">
 								<DropdownMenuItem
 									onClick={(e) => {
 										e.stopPropagation();
@@ -408,7 +408,7 @@ const AdminLeads = () => {
 
 	return (
 		<div className="p-8 !bg-transparent">
-			<div className="flex items-center justify-between mb-3 mt-0">
+			<div className="flex items-center justify-between mb-7 mt-0">
 				<h1 className="w-full font-bold text-[32px] leading-[32px] tracking-[-0.025em]">
 					All Leads
 				</h1>

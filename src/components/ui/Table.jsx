@@ -226,20 +226,20 @@ export function Table({
 
   return (
     <div className={cn("", className)}>
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl pb-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
         <div className="flex flex-1 flex-wrap items-center gap-4">
           <div className="relative w-[400px]">
             <MaterialIcon 
               icon="search" 
               size={20} 
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" 
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-content-tertiary pointer-events-none" 
             />
             <Input
               type="text"
               placeholder="Search"
               value={internalSearch}
               onChange={handleSearch}
-              className="w-[400px] h-9 pl-10 pr-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-900 focus:ring-1 focus:ring-gray-300 focus:border-gray-300 placeholder:text-gray-400 font-['Inter'] font-normal text-[14px] leading-[20px] tracking-[0%]"
+              className="w-[400px] h-9 pl-10 pr-3 py-2 bg-white border border-borderColor-primary rounded-lg text-sm text-content-primary focus:ring-1 focus:ring-gray-300 focus:border-gray-300 placeholder:text-content-tertiary font-['Inter'] font-normal text-[14px] leading-[20px] tracking-[0%]"
             />
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -271,9 +271,9 @@ export function Table({
                 variant="outline"
                 size="sm"
                 onClick={handleClearFilters}
-                className="flex items-center gap-2 px-3 py-2 h-9 text-sm font-semibold border-none rounded-lg !hover:bg-blue-100 !bg-transparent text-blue-600 hover:text-blue-600 shadow-none"
+                className="flex items-center gap-2 px-3 py-2 h-9 text-sm font-semibold border-none rounded-lg !hover:bg-blue-100 !bg-transparent text-content-brand hover:text-content-brand shadow-none"
               >
-                <MaterialIcon icon="close" size={20} className="text-blue-600 p-0" />
+                <MaterialIcon icon="close" size={20} className="text-content-brand p-0" />
                 Clear filter
               </Button>
             )}
@@ -288,12 +288,12 @@ export function Table({
           Export CSV
         </Button> */}
       </div>
-      <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white">
+      <div className="overflow-x-auto rounded-lg border border-borderColor-primary bg-white">
         <table className="min-w-full bg-white text-sm">
           <thead className="bg-white">
-            <tr>
+            <tr className="border-b border-borderColor-secondary">
               {rowSelection && (
-                <th className="px-2 py-3 w-[48px] border-b border-gray-200">
+                <th className="px-2 py-3 w-[48px] border-b border-borderColor-secondary">
                   <div className="flex items-center justify-center">
                     <MaterialCheckbox 
                       checked={allSelected} 
@@ -306,7 +306,7 @@ export function Table({
                 <th
                   key={col.key}
                   className={cn(
-                    "px-3 py-3 text-left font-['Inter'] font-semibold text-[12px] leading-[16px] tracking-[0%] select-none cursor-pointer whitespace-nowrap text-gray-500 border-b border-gray-200",
+                    "px-3 py-3 text-left font-['Inter'] font-semibold text-[14px] leading-[16px] tracking-[0%] select-none cursor-pointer whitespace-nowrap text-content-secondary",
                     col.sortable && "hover:bg-gray-50 transition-colors",
                     col.key === "createdAt" && "w-[140px]",
                     col.key === "name" && "w-[200px]",
@@ -321,10 +321,10 @@ export function Table({
                   onClick={() => handleSort(col)}
                 >
                   <div className="flex items-center justify-start gap-[6px] h-5">
-                    {col.icon && <span className="text-gray-500 flex items-center justify-center">{col.icon}</span>}
+                    {col.icon && <span className="text-content-secondary flex items-center justify-center">{col.icon}</span>}
                     <span>{col.header}</span>
                     {col.sortable && (
-                      <span className="text-gray-400 flex items-center">
+                      <span className="text-content-secondary flex items-center">
                         {sort?.key === col.key ? (
                           sort.direction === "asc" ? (
                             <MaterialIcon icon="keyboard_arrow_up" size={16} />
@@ -366,7 +366,7 @@ export function Table({
                         col.key === "actions" && "w-[80px]"
                       )}
                     >
-                      <span className="block h-5 w-full bg-gray-200 rounded-md shimmer" />
+                      <span className="block h-5 w-full  bg-bg-tertiary rounded-md shimmer" />
                     </td>
                   ))}
                 </tr>
@@ -386,7 +386,7 @@ export function Table({
                     key={i} 
                     className={cn(
                       "border-b last:border-0 transition-colors h-[48px]",
-                      isSelected ? "bg-gray-100 border-gray-100" : nextRowSelected ? "border-gray-100 hover:bg-gray-100" : "border-gray-200 hover:bg-gray-50"
+                      isSelected ? "bg-gray-100 border-gray-100" : nextRowSelected ? "border-gray-100 hover:bg-gray-100" : "border-borderColor-secondary hover:bg-gray-50"
                     )}
                   >
                     {rowSelection && (
@@ -430,14 +430,9 @@ export function Table({
             )}
           </tbody>
         </table>
-        <div className="flex items-center justify-between h-12 px-4 py-2 border-t border-gray-200] bg-white rounded-b-lg">
-          <div className="text-gray-900 text-[13px] leading-5 tracking-normal font-[450] flex items-center justify-start">
-            Showing {data?.length || 0} of {total || 0} results
-          </div>
-          <span className="text-sm text-muted-foreground">
-          </span>
-          <div className="flex items-center gap-2">
-            <div className="text-gray-900 text-[13px] leading-5 tracking-normal font-[450] flex items-center justify-start">
+        <div className="flex items-center justify-between h-12 px-4 py-2 border-t border-borderColor-secondary] bg-white rounded-b-lg">
+          <div className="flex items-center gap-4">
+            <div className="text-content-primary text-[13px] leading-5 tracking-normal font-[450] flex items-center justify-start !antialiased">
               Page Size:
             </div>
             <div className="flex items-center gap-1 mr-4">
@@ -454,7 +449,13 @@ export function Table({
               />
               {/* <span className="text-sm text-gray-600">entries</span> */}
             </div>
-            <div className="w-px h-6 bg-gray-300"></div>
+            <div className="text-content-primary text-[13px] leading-5 tracking-normal font-[450] flex items-center justify-start">
+              Showing {data?.length || 0} of {total || 0} results
+            </div>
+          </div>
+          <span className="text-sm text-muted-foreground">
+          </span>
+          <div className="flex items-center gap-2">
             <Button
               variant="ghost"
               size="icon"
@@ -462,26 +463,26 @@ export function Table({
               disabled={page <= 1 || loading}
               className="rounded-full"
             >
-              <MaterialIcon icon="chevron_left" size={20} className="text-gray-500" />
+              <MaterialIcon icon="chevron_left" size={20} className="text-content-secondary" />
             </Button>
             {paginationRange.map((p, idx) =>
               p === '...'
                 ? <span key={idx} className="px-2">...</span>
                 : <Button
-                    key={p}
-                    variant={p === page ? "outline" : "ghost"}
-                    size="icon"
-                    onClick={() => handlePageChange(p)}
-                    className={cn(
-                      "rounded-[8px] w-8 h-8",
-                      p === page && "border border-gray-300 bg-red shadow text-gray-900"
-                    )}
-                    disabled={p === page}
-                  >
-                    {p}
-                  </Button>
+                  key={p}
+                  variant={p === page ? "outline" : "ghost"}
+                  size="icon"
+                  onClick={() => handlePageChange(p)}
+                  className={cn(
+                    "rounded-[8px] w-8 h-8",
+                    p === page && "border border-gray-300 bg-red shadow text-content-primary"
+                  )}
+                  disabled={p === page}
+                >
+                  {p}
+                </Button>
             )}
-           
+
             <Button
               variant="ghost"
               size="icon"
@@ -489,7 +490,7 @@ export function Table({
               disabled={page >= totalPages || loading}
               className="rounded-full"
             >
-              <MaterialIcon icon="chevron_right" size={20} className="text-gray-500" />
+              <MaterialIcon icon="chevron_right" size={20} className="text-content-secondary" />
             </Button>
 
           </div>

@@ -131,15 +131,15 @@ const Settings = () => {
 			   key: 'customer',
 			   header: 'Customer',
 			   sortable: true,
-			   icon: <MaterialIcon className={'text-gray-500'} icon="person" size={16} />, 
+			   icon: <MaterialIcon className={'text-content-secondary'} icon="person" size={16} />, 
 			   render: (row) => (
 				   <div className="flex items-center gap-3">
 					   <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-						   <span className="text-sm font-semibold text-blue-600">{row.avatar || (row.name ? row.name[0] : '')}</span>
+						   <span className="text-sm font-semibold text-content-brand">{row.avatar || (row.name ? row.name[0] : '')}</span>
 					   </div>
 					   <button
 						   onClick={() => handleCustomerClick(row.id)}
-						   className="font-medium text-gray-900 hover:text-blue-600 hover:underline transition-colors text-left"
+						   className="font-medium text-content-primary hover:text-content-brand hover:underline transition-colors text-left"
 					   >
 						   {row.name}
 					   </button>
@@ -150,7 +150,7 @@ const Settings = () => {
 			   key: 'email',
 			   header: 'Email',
 			   sortable: true,
-			   icon: <MaterialIcon className={'text-gray-500'} icon="email" size={16} />, 
+			   icon: <MaterialIcon className={'text-content-secondary'} icon="email" size={16} />, 
 			   render: (row) => (
 				   <span className="text-gray-600">{row.email}</span>
 			   )
@@ -159,7 +159,7 @@ const Settings = () => {
 			   key: 'subscription',
 			   header: 'Subscription',
 			   sortable: true,
-			   icon: <MaterialIcon className={'text-gray-500'} icon="subscriptions" size={16} />, 
+			   icon: <MaterialIcon className={'text-content-secondary'} icon="subscriptions" size={16} />, 
 			   render: (row) => (
 				   <Badge variant="secondary" className="bg-gray-100 text-gray-700">
 					   {row.subscription || 'Basic'}
@@ -170,25 +170,25 @@ const Settings = () => {
 			   key: 'purchased',
 			   header: 'Purchased',
 			   sortable: true,
-			   icon: <MaterialIcon className={'text-gray-500'} icon="shopping_cart" size={16} />, 
+			   icon: <MaterialIcon className={'text-content-secondary'} icon="shopping_cart" size={16} />, 
 			   render: (row) => (
-				   <span className="font-medium text-gray-900">{row.purchased ?? 0}</span>
+				   <span className="font-medium text-content-primary">{row.purchased ?? 0}</span>
 			   )
 		   },
 		   {
 			   key: 'refunded',
 			   header: 'Refunded',
 			   sortable: true,
-			   icon: <MaterialIcon className={'text-gray-500'} icon="money_off" size={16} />, 
+			   icon: <MaterialIcon className={'text-content-secondary'} icon="money_off" size={16} />, 
 			   render: (row) => (
-				   <span className="font-medium text-gray-900">{row.refunded ?? 0}</span>
+				   <span className="font-medium text-content-primary">{row.refunded ?? 0}</span>
 			   )
 		   },
 		   {
 			   key: 'status',
 			   header: 'Status',
 			   sortable: true,
-			   icon: <MaterialIcon className={'text-gray-500'} icon="flag" size={16} />, 
+			   icon: <MaterialIcon className={'text-content-secondary'} icon="flag" size={16} />, 
 			   render: (row) => (
 				   <div className="flex items-center gap-2">
 					   <div className={cn(
@@ -261,14 +261,14 @@ const Settings = () => {
 			</div>
 			<div>				
 				   {/* Navigation Tabs */}
-				   <div className="flex space-x-3 h-[46px] border-b border-gray-200 mb-0">
+				   <div className="flex space-x-3 h-[46px] border-b border-borderColor-secondary mb-0">
 					   <button
 						   onClick={() => setActiveTab('customers')}
 						   className={cn(
 							   "relative flex items-center px-6 py-2 text-sm font-semibold leading-[20px] border-b-2 transition-colors",
 							   activeTab === 'customers'
-								   ? "border-blue-600 text-blue-600"
-								   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+								   ? "border-blue-600 text-content-brand"
+								   : "border-transparent text-content-secondary hover:text-gray-700 hover:border-gray-300"
 						   )}
 						   style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
 					   >
@@ -282,8 +282,8 @@ const Settings = () => {
 						   className={cn(
 							   "relative flex items-center px-6 py-2 text-sm font-semibold leading-[20px] border-b-2 transition-colors",
 							   activeTab === 'pricing'
-								   ? "border-blue-600 text-blue-600"
-								   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+								   ? "border-blue-600 text-content-brand"
+								   : "border-transparent text-content-secondary hover:text-gray-700 hover:border-gray-300"
 						   )}
 						   style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
 					   >
@@ -299,7 +299,7 @@ const Settings = () => {
 			{activeTab === 'customers' && (
 				<div>
 					<div className="flex items-center justify-between mt-[22px] mb-5">
-						<h2 className="text-2xl font-semibold text-gray-900">Customers</h2>
+						<h2 className="text-2xl font-semibold text-content-primary">Customers</h2>
 					</div>
 
 					{/* Customer Table */}
@@ -334,8 +334,8 @@ const Settings = () => {
 			{activeTab === 'pricing' && (
 				<div className="text-center py-12">
 					<MaterialIcon icon="pricing" size={48} className="mx-auto text-gray-400 mb-4" />
-					<h3 className="text-lg font-medium text-gray-900 mb-2">Pricing Plans</h3>
-					<p className="text-gray-500">Pricing plans management coming soon...</p>
+					<h3 className="text-lg font-medium text-content-primary mb-2">Pricing Plans</h3>
+					<p className="text-content-secondary">Pricing plans management coming soon...</p>
 				</div>
 			)}
 		</div>

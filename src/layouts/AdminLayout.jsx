@@ -18,7 +18,7 @@ const adminRoutes = [
 
 const AdminLayout = () => {
   return (
-    <div className="min-h-screen bg-[#FAFAF9]">
+    <div className="min-h-screen bg-bg-secondary">
       {/* Fixed Navbar */}
       <div className="fixed top-0 left-0 right-0 z-50">
         <Navbar showNavigation={false} showAdminButton={true} />

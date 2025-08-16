@@ -50,16 +50,6 @@
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-bg-primary text-content-primary min-h-screen;
-  }
-}
-
 /* Material Icons Styles */
 .material-icons,
 .material-icons-outlined,

@@ -248,10 +248,10 @@ const Customers = () => {
 			key: 'name',
 			header: 'Full name',
 			sortable: true,
-			icon: <MaterialIcon className={'text-gray-500'} icon="person" size={16} />,
+			icon: <MaterialIcon className={'text-content-secondary'} icon="person" size={16} />,
 			render: (row) => (
 				<div className="flex items-center gap-2">
-					<span className="font-medium text-gray-900">{row.name}</span>
+					<span className="font-medium text-content-primary">{row.name}</span>
 					{row.status === 'refunded' && (
 						<Badge variant="secondary" className="bg-blue-100 text-blue-700 text-xs">
 							Refunded
@@ -264,7 +264,7 @@ const Customers = () => {
 			key: 'phone',
 			header: 'Phone',
 			sortable: true,
-			icon: <MaterialIcon className={'text-gray-500'} icon="phone" size={16} />,
+			icon: <MaterialIcon className={'text-content-secondary'} icon="phone" size={16} />,
 			render: (row) => (
 				<span className="text-gray-600">{row.phone}</span>
 			)
@@ -273,7 +273,7 @@ const Customers = () => {
 			key: 'email',
 			header: 'Email',
 			sortable: true,
-			icon: <MaterialIcon className={'text-gray-500'} icon="email" size={16} />,
+			icon: <MaterialIcon className={'text-content-secondary'} icon="email" size={16} />,
 			render: (row) => (
 				<span className="text-gray-600">{row.email}</span>
 			)
@@ -282,7 +282,7 @@ const Customers = () => {
 			key: 'type',
 			header: 'Type',
 			sortable: true,
-			icon: <MaterialIcon className={'text-gray-500'} icon="local_offer" size={16} />,
+			icon: <MaterialIcon className={'text-content-secondary'} icon="local_offer" size={16} />,
 			render: (row) => {
 				const typeColors = {
 					'Mortgage': 'bg-green-100 text-green-700',
@@ -310,7 +310,7 @@ const Customers = () => {
 			key: 'address',
 			header: 'Address',
 			sortable: true,
-			icon: <MaterialIcon className={'text-gray-500'} icon="business" size={16} />,
+			icon: <MaterialIcon className={'text-content-secondary'} icon="business" size={16} />,
 			render: (row) => (
 				<span className="text-gray-600">{row.address}</span>
 			)
@@ -319,7 +319,7 @@ const Customers = () => {
 			key: 'state',
 			header: 'State',
 			sortable: true,
-			icon: <MaterialIcon className={'text-gray-500'} icon="location_on" size={16} />,
+			icon: <MaterialIcon className={'text-content-secondary'} icon="location_on" size={16} />,
 			render: (row) => (
 				<span className="text-gray-600">{row.state}</span>
 			)
@@ -328,16 +328,16 @@ const Customers = () => {
 			key: 'price',
 			header: 'Price',
 			sortable: true,
-			icon: <MaterialIcon className={'text-gray-500'} icon="attach_money" size={16} />,
+			icon: <MaterialIcon className={'text-content-secondary'} icon="attach_money" size={16} />,
 			render: (row) => (
-				<span className="font-medium text-gray-900">{row.price}</span>
+				<span className="font-medium text-content-primary">{row.price}</span>
 			)
 		},
 		{
 			key: 'datePurchased',
 			header: 'Date purchased',
 			sortable: true,
-			icon: <MaterialIcon className={'text-gray-500'} icon="event" size={16} />,
+			icon: <MaterialIcon className={'text-content-secondary'} icon="event" size={16} />,
 			render: (row) => (
 				<span className="text-gray-600">{row.datePurchased}</span>
 			)
@@ -420,16 +420,16 @@ const Customers = () => {
 			<div className="p-6">
 				{/* Header with Back Navigation */}
 				<div className="mb-8">
-					<div className="flex items-center gap-2 p-3 w-[90px] h-9">
+					<div className="flex items-center gap-2 p-3 w-[90px] h-9 hover:bg-bg-tertiary" onClick={handleBackClick}>
 						<Button 
 							variant="ghost" 
 							size="icon" 
-							className="h-8 w-8 hover:bg-gray-200"
-							onClick={handleBackClick}
+							className="h-8 w-8"
+							
 						>
 							<MaterialIcon icon="arrow_back" size={20} />
 						</Button>
-						<span className="text-sm text-gray-900 font-semibold">Back</span>
+						<span className="text-sm text-content-primary font-semibold">Back</span>
 					</div>
 
 					{/* User Profile Section */}
@@ -437,8 +437,8 @@ const Customers = () => {
 						<div className="flex items-center gap-4 my-6">
 							<div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center animate-pulse" />
 							<div>
-								<div className="h-6 w-32 bg-gray-200 rounded mb-2 animate-pulse" />
-								<div className="h-4 w-48 bg-gray-100 rounded animate-pulse" />
+								<div className="h-6 w-32 bg-bg-tertiary rounded mb-2 animate-pulse" />
+								<div className="h-4 w-48 bg-bg-tertiary rounded animate-pulse" />
 							</div>
 						</div>
 					) : isUserError ? (
@@ -446,11 +446,11 @@ const Customers = () => {
 					) : customer ? (
 						<div className="flex items-center gap-4 my-6">
 							<div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
-								<span className="text-2xl font-bold text-blue-600">{customer.avatar || (customer.name ? customer.name[0] : '')}</span>
+								<span className="text-2xl font-bold text-content-brand">{customer.avatar || (customer.name ? customer.name[0] : '')}</span>
 							</div>
 							<div>
 								<div className="flex items-center gap-4 justify-between">
-									<h1 className="text-3xl font-semibold text-gray-900 leading-9 tracking-[-0.025em]">{customer.name}</h1>
+									<h1 className="text-3xl font-semibold text-content-primary leading-9 tracking-[-0.025em]">{customer.name}</h1>
 									<Badge variant="secondary" className="bg-gray-100 text-gray-700">
 										{customer.subscription || 'Basic'}
 									</Badge>
@@ -461,14 +461,14 @@ const Customers = () => {
 					) : null}
 
 					{/* Lead Categories/Tabs */}
-					<div className="flex space-x-3 h-[46px] border-b border-gray-200 mb-0">
+					<div className="flex space-x-3 h-[46px] border-b border-borderColor-secondary mb-0">
 						<button
 							onClick={() => setActiveTab('all')}
 							className={cn(
 								"relative flex items-center px-6 py-2 text-sm font-semibold leading-[20px] border-b-2 transition-colors",
 								activeTab === 'all'
-									? "border-blue-600 text-blue-600"
-									: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+									? "border-blue-600 text-content-brand"
+									: "border-transparent text-content-secondary hover:text-gray-700 hover:border-gray-300"
 							)}
 							style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
 						>
@@ -482,8 +482,8 @@ const Customers = () => {
 							className={cn(
 								"relative flex items-center px-6 py-2 text-sm font-semibold leading-[20px] border-b-2 transition-colors",
 								activeTab === 'active'
-									? "border-blue-600 text-blue-600"
-									: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+									? "border-blue-600 text-content-brand"
+									: "border-transparent text-content-secondary hover:text-gray-700 hover:border-gray-300"
 							)}
 							style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
 						>
@@ -497,8 +497,8 @@ const Customers = () => {
 							className={cn(
 								"relative flex items-center px-6 py-2 text-sm font-semibold leading-[20px] border-b-2 transition-colors",
 								activeTab === 'refunded'
-									? "border-blue-600 text-blue-600"
-									: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+									? "border-blue-600 text-content-brand"
+									: "border-transparent text-content-secondary hover:text-gray-700 hover:border-gray-300"
 							)}
 							style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
 						>
@@ -513,7 +513,7 @@ const Customers = () => {
 			{/* Main Content */}
 			<div>
 				<div className="flex items-center justify-between mb-6">
-					<h2 className="text-xl font-semibold text-gray-900">
+					<h2 className="text-xl font-semibold text-content-primary">
 						{activeTab === 'all' ? 'All leads' : 
 						 activeTab === 'active' ? 'Active leads' : 'Refunded leads'}
 					</h2>
