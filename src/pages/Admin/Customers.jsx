@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useUsers, useUser } from '@/api/hooks/useUsers';
 import { Table } from '@/components/ui/Table';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -13,65 +14,7 @@ import {
 	DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
-// Mock customers data
-const mockCustomers = [
-	{
-		id: 1,
-		name: 'Courtney Henry',
-		email: 'jessica.hanson@example.com',
-		subscription: 'Basic',
-		avatar: 'C'
-	},
-	{
-		id: 2,
-		name: 'Floyd Miles',
-		email: 'floyd.miles@example.com',
-		subscription: 'Basic',
-		avatar: 'F'
-	},
-	{
-		id: 3,
-		name: 'Kristin Watson',
-		email: 'kristin.watson@example.com',
-		subscription: 'Basic',
-		avatar: 'K'
-	},
-	{
-		id: 4,
-		name: 'Robert Fox',
-		email: 'robert.fox@example.com',
-		subscription: 'Basic',
-		avatar: 'R'
-	},
-	{
-		id: 5,
-		name: 'Jane Cooper',
-		email: 'jane.cooper@example.com',
-		subscription: 'Basic',
-		avatar: 'J'
-	},
-	{
-		id: 6,
-		name: 'Leslie Alexander',
-		email: 'leslie.alexander@example.com',
-		subscription: 'Basic',
-		avatar: 'L'
-	},
-	{
-		id: 7,
-		name: 'Dianne Russell',
-		email: 'dianne.russell@example.com',
-		subscription: 'Basic',
-		avatar: 'D'
-	},
-	{
-		id: 8,
-		name: 'Brooklyn Simmons',
-		email: 'brooklyn.simmons@example.com',
-		subscription: 'Basic',
-		avatar: 'B'
-	}
-];
+
 
 // Mock leads data based on the image
 const mockLeads = [
@@ -175,10 +118,9 @@ const Customers = () => {
 	});
 	const [selectedRows, setSelectedRows] = useState([]);
 
+
 	// Get customer data based on ID
-	const customer = useMemo(() => {
-		return mockCustomers.find(c => c.id === parseInt(customerId)) || mockCustomers[1]; // Default to Floyd Miles
-	}, [customerId]);
+	const { data: customer } = useUser(customerId);
 
 	// Filter and sort data based on active tab and filters
 	const filteredAndSortedData = useMemo(() => {
