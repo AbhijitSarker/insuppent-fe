@@ -437,6 +437,24 @@ export function Table({
           <span className="text-sm text-muted-foreground">
           </span>
           <div className="flex items-center gap-2">
+            <div className="text-gray-900 text-[13px] leading-5 tracking-normal font-[450] flex items-center justify-start">
+              Page Size:
+            </div>
+            <div className="flex items-center gap-1 mr-4">
+              {/* <span className="text-sm text-gray-600">Show</span> */}
+              <Input
+                type="number"
+                value={pageSizeInput}
+                onChange={handlePageSizeInputChange}
+                onKeyDown={handlePageSizeInputKeyDown}
+                onBlur={handlePageSizeInputBlur}
+                min={1}
+                max={100}
+                className="w-16 h-8 text-center text-sm border-gray-300 rounded-md"
+              />
+              {/* <span className="text-sm text-gray-600">entries</span> */}
+            </div>
+            <div className="w-px h-6 bg-gray-300"></div>
             <Button
               variant="ghost"
               size="icon"
@@ -473,20 +491,7 @@ export function Table({
             >
               <MaterialIcon icon="chevron_right" size={20} className="text-gray-500" />
             </Button>
-            <div className="flex items-center gap-1">
-              {/* <span className="text-sm text-gray-600">Show</span> */}
-              <Input
-                type="number"
-                value={pageSizeInput}
-                onChange={handlePageSizeInputChange}
-                onKeyDown={handlePageSizeInputKeyDown}
-                onBlur={handlePageSizeInputBlur}
-                min={1}
-                max={100}
-                className="w-16 h-8 text-center text-sm border-gray-300 rounded-md"
-              />
-              {/* <span className="text-sm text-gray-600">entries</span> */}
-            </div>
+
           </div>
         </div>
       </div>

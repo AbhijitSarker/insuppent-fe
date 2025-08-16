@@ -111,7 +111,7 @@ const Customers = () => {
 	const [activeTab, setActiveTab] = useState('all');
 	const [tableState, setTableState] = useState({
 		page: 1,
-		pageSize: 13,
+		pageSize: 10,
 		sort: { key: 'name', direction: 'asc' },
 		search: '',
 		types: [],
