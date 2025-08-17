@@ -6,6 +6,7 @@ import { Select, SelectItem } from "./select";
 import { Input } from "./input";
 import Papa from "papaparse";
 import { useDebounce } from "@/hooks/useDebounce";
+import { Tooltip } from "react-tooltip";
 
 /**
  * TableColumn: { key: string, header: string|ReactNode, render?: (row) => ReactNode, sortable?: boolean, filterable?: boolean }
@@ -35,11 +36,6 @@ import { useDebounce } from "@/hooks/useDebounce";
  *   columnFilterOptions?: Record<string, string[]>,
  * }
  */
-
-// Define the isTextTruncated function at the top of the file
-const isTextTruncated = (element) => {
-  return element.scrollWidth > element.clientWidth;
-};
 
 // Custom Material Icon Checkbox Component
 const MaterialCheckbox = ({ checked, onChange, className }) => {
@@ -422,25 +418,34 @@ export function Table({
                       >
                         <div
                           className={cn(
-                            "flex items-center gap-1.5 h-full min-h-[32px] truncate",
+                            "flex items-center gap-1.5 h-full min-h-[32px]",
                             col.key === "name" ? "font-['Inter'] font-medium text-[14px] leading-[20px]" : "font-['Inter'] font-normal text-[14px] leading-[20px]",
-                            col.key === "actions" && "justify-end"
+                            col.key === "actions" && "justify-end",
+                            "truncate max-w-[200px]"
                           )}
-                          ref={(el) => {
-                            if (el && isTextTruncated(el)) {
-                              el.setAttribute("title", col.render ? col.render(row) : row[col.key]);
-                            } else if (el) {
-                              el.removeAttribute("title");
-                            }
-                          }}
+                          data-tooltip-id={`${col.key}-${row.id}`}
+                          data-tooltip-content={col.render ? col.render(row) : row[col.key]}
                         >
-                          {col.render
-                            ? col.render(row).length > 30 // Adjusted the character limit to 10
-                              ? `${col.render(row).substring(0, 10)}...`
-                              : col.render(row)
-                            : row[col.key]?.length > 30 // Adjusted the character limit to 10
-                            ? `${row[col.key].substring(0, 10)}...`
-                            : row[col.key]}
+                          {(() => {
+                            const content = col.render ? col.render(row) : row[col.key];
+                            const isTruncated = typeof content === 'string' && content.length > 30;
+                            const displayText = isTruncated ? `${content.slice(0, 30)}...` : content;
+                            return displayText;
+                          })()}
+                          {typeof (col.render ? col.render(row) : row[col.key]) === 'string' &&
+                            (col.render ? col.render(row) : row[col.key]).length > 30 && (
+                              <Tooltip
+                                id={`${col.key}-${row.id}`}
+                                place="top"
+                                className="max-w-[300px] !bg-gray-800 !text-white !text-sm !p-2 !rounded-md !select-text"
+                                clickable={true}
+                                delayHide={0}
+                                afterHide={() => {
+                                  const tooltip = document.querySelector(`#${col.key}-${row.id}`);
+                                  if (tooltip) tooltip.style.display = 'none';
+                                }}
+                              />
+                            )}
                         </div>
                       </td>
                     ))}
