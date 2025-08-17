@@ -248,7 +248,7 @@ const Customers = () => {
 			key: 'name',
 			header: 'Full name',
 			sortable: true,
-			icon: <MaterialIcon className={'text-content-secondary'} icon="person" size={16} />,
+			icon: <MaterialIcon className={'text-content-secondary'} icon="group" size={16} />,
 			render: (row) => (
 				<div className="flex items-center gap-2">
 					<span className="font-medium text-content-primary">{row.name}</span>

@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useUsers } from '@/api/hooks/useUsers';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Table } from '@/components/ui/Table';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -131,19 +131,20 @@ const Settings = () => {
 			   key: 'customer',
 			   header: 'Customer',
 			   sortable: true,
-			   icon: <MaterialIcon className={'text-content-secondary'} icon="person" size={16} />, 
+			   icon: <MaterialIcon className={'text-content-secondary'} icon="group" size={16} />, 
 			   render: (row) => (
+				<Link to={`/admin/customers/${row.id}`}>
 				   <div className="flex items-center gap-3">
 					   <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
 						   <span className="text-sm font-semibold text-content-brand">{row.avatar || (row.name ? row.name[0] : '')}</span>
 					   </div>
 					   <button
-						   onClick={() => handleCustomerClick(row.id)}
 						   className="font-medium text-content-primary hover:text-content-brand hover:underline transition-colors text-left"
-					   >
+						   >
 						   {row.name}
 					   </button>
 				   </div>
+						   </Link>
 			   )
 		   },
 		   {
@@ -159,7 +160,7 @@ const Settings = () => {
 			   key: 'subscription',
 			   header: 'Subscription',
 			   sortable: true,
-			   icon: <MaterialIcon className={'text-content-secondary'} icon="subscriptions" size={16} />, 
+			   icon: <MaterialIcon className={'text-content-secondary'} icon="diamond" size={16} />, 
 			   render: (row) => (
 				   <Badge variant="secondary" className="bg-gray-100 text-gray-700">
 					   {row.subscription || 'Basic'}
@@ -179,7 +180,7 @@ const Settings = () => {
 			   key: 'refunded',
 			   header: 'Refunded',
 			   sortable: true,
-			   icon: <MaterialIcon className={'text-content-secondary'} icon="money_off" size={16} />, 
+			   icon: <MaterialIcon className={'text-content-secondary'} icon="currency_exchange" size={16} />, 
 			   render: (row) => (
 				   <span className="font-medium text-content-primary">{row.refunded ?? 0}</span>
 			   )
@@ -261,37 +262,45 @@ const Settings = () => {
 			</div>
 			<div>				
 				   {/* Navigation Tabs */}
-				   <div className="flex space-x-3 h-[46px] border-b border-borderColor-secondary mb-0">
+				   <div className="flex h-[46px] border-b border-borderColor-primary mb-0">
 					   <button
 						   onClick={() => setActiveTab('customers')}
 						   className={cn(
-							   "relative flex items-center px-6 py-2 text-sm font-semibold leading-[20px] border-b-2 transition-colors",
+							   "relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-5 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
 							   activeTab === 'customers'
-								   ? "border-blue-600 text-content-brand"
-								   : "border-transparent text-content-secondary hover:text-gray-700 hover:border-gray-300"
+								   ? "text-content-brand"
+								   : "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
 						   )}
 						   style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
 					   >
 						   Customers
 						   {activeTab === 'customers' && (
-							   <span className="absolute left-0 -bottom-[2px] w-full h-[3px] bg-blue-600 rounded-t" />
+							<span
+								className={cn(
+									"absolute left-0 rounded-full -bottom-[2px] w-full h-[2px] bg-bg-brand",
+								)}
+							/>
 						   )}
 					   </button>
 					   <button
 						   onClick={() => setActiveTab('pricing')}
 						   className={cn(
-							   "relative flex items-center px-6 py-2 text-sm font-semibold leading-[20px] border-b-2 transition-colors",
+							   "relative text-content-primary flex h-[46px] items-center px-6 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
 							   activeTab === 'pricing'
-								   ? "border-blue-600 text-content-brand"
-								   : "border-transparent text-content-secondary hover:text-gray-700 hover:border-gray-300"
-						   )}
-						   style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
-					   >
-						   Pricing plans
-						   {activeTab === 'pricing' && (
-							   <span className="absolute left-0 -bottom-[2px] w-full h-[3px] bg-blue-600 rounded-t" />
-						   )}
-					   </button>
+								   ? "text-content-brand"
+								   : "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
+						)}
+						style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
+					>
+						Pricing plans
+						{activeTab === 'pricing' && (
+							<span
+								className={cn(
+									"absolute left-0 rounded-full -bottom-[2px] w-full h-[2px] bg-bg-brand",
+								)}
+							/>
+						)}
+					</button>
 				   </div>
 			</div>
 

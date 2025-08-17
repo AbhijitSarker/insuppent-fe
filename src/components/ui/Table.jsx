@@ -36,6 +36,11 @@ import { useDebounce } from "@/hooks/useDebounce";
  * }
  */
 
+// Define the isTextTruncated function at the top of the file
+const isTextTruncated = (element) => {
+  return element.scrollWidth > element.clientWidth;
+};
+
 // Custom Material Icon Checkbox Component
 const MaterialCheckbox = ({ checked, onChange, className }) => {
   return (
@@ -386,7 +391,7 @@ export function Table({
                     key={i} 
                     className={cn(
                       "border-b last:border-0 transition-colors h-[48px]",
-                      isSelected ? "bg-gray-100 border-gray-100" : nextRowSelected ? "border-gray-100 hover:bg-gray-100" : "border-borderColor-secondary hover:bg-gray-50"
+                      isSelected ? "bg-bg-tertiary border-gray-100" : nextRowSelected ? "border-gray-100 hover:bg-gray-100" : "border-borderColor-secondary hover:bg-gray-50"
                     )}
                   >
                     {rowSelection && (
@@ -415,12 +420,27 @@ export function Table({
                           col.key === "actions" && "w-[50px]"
                         )}
                       >
-                        <div className={cn(
-                          "flex items-center gap-1.5 h-full min-h-[32px]",
-                          col.key === "name" ? "font-['Inter'] font-medium text-[14px] leading-[20px]" : "font-['Inter'] font-normal text-[14px] leading-[20px]",
-                          col.key === "actions" && "justify-end"
-                        )}>
-                          {col.render ? col.render(row) : row[col.key]}
+                        <div
+                          className={cn(
+                            "flex items-center gap-1.5 h-full min-h-[32px] truncate",
+                            col.key === "name" ? "font-['Inter'] font-medium text-[14px] leading-[20px]" : "font-['Inter'] font-normal text-[14px] leading-[20px]",
+                            col.key === "actions" && "justify-end"
+                          )}
+                          ref={(el) => {
+                            if (el && isTextTruncated(el)) {
+                              el.setAttribute("title", col.render ? col.render(row) : row[col.key]);
+                            } else if (el) {
+                              el.removeAttribute("title");
+                            }
+                          }}
+                        >
+                          {col.render
+                            ? col.render(row).length > 30 // Adjusted the character limit to 10
+                              ? `${col.render(row).substring(0, 10)}...`
+                              : col.render(row)
+                            : row[col.key]?.length > 30 // Adjusted the character limit to 10
+                            ? `${row[col.key].substring(0, 10)}...`
+                            : row[col.key]}
                         </div>
                       </td>
                     ))}
@@ -435,7 +455,7 @@ export function Table({
             <div className="text-content-primary text-[13px] leading-5 tracking-normal font-[450] flex items-center justify-start !antialiased">
               Page Size:
             </div>
-            <div className="flex items-center gap-1 mr-4">
+            <div className="flex items-center gap-1 mr-2">
               {/* <span className="text-sm text-gray-600">Show</span> */}
               <Input
                 type="number"
@@ -449,6 +469,8 @@ export function Table({
               />
               {/* <span className="text-sm text-gray-600">entries</span> */}
             </div>
+            {/* Separator */}
+            <div className="w-px h-6 bg-gray-300"></div>
             <div className="text-content-primary text-[13px] leading-5 tracking-normal font-[450] flex items-center justify-start">
               Showing {data?.length || 0} of {total || 0} results
             </div>

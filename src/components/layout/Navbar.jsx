@@ -24,7 +24,7 @@ const Navbar = ({ onMenuClick, showNavigation = false, showAdminButton = false }
       {/* Left side - Logo and menu button */}
       <div className="flex items-center gap-4">
         <Link to="/" className="flex items-center gap-x-2">
-        <div className="h-10"> 
+        <div className="h-12"> 
           <img src="/Insuplex360.svg" alt="Logo" className="h-full w-full" />
         </div>
         </Link>
