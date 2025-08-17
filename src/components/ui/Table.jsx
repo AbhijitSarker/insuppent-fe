@@ -309,7 +309,7 @@ export function Table({
                   key={col.key}
                   className={cn(
                     "px-3 py-3 text-left font-['Inter'] font-semibold text-[14px] leading-[16px] tracking-[0%] select-none cursor-pointer whitespace-nowrap text-content-secondary",
-                    col.sortable && "hover:bg-gray-50 transition-colors",
+                    col.sortable && "hover:bg-bg-tertiary transition-colors",
                     col.key === "createdAt" && "w-[140px]",
                     col.key === "name" && "w-[200px]",
                     col.key === "email" && "w-[220px]",
@@ -349,7 +349,7 @@ export function Table({
                 <tr key={rowIdx} className="border-b last:border-0">
                   {rowSelection && (
                     <td className="px-2 py-2.5">
-                      <span className="block h-5 w-4 bg-gray-800 rounded-md shimmer" />
+                      <span className="block h-5 w-4 bg-gray-200 rounded-md shimmer" />
                     </td>
                   )}
                   {columns.map((col, colIdx) => (
@@ -388,7 +388,7 @@ export function Table({
                     key={i} 
                     className={cn(
                       "border-b last:border-0 transition-colors h-[48px]",
-                      isSelected ? "bg-bg-tertiary border-borderColor-secondary" : nextRowSelected ? "border-borderColor-secondary hover:bg-borderColor-tertiary" : "border-borderColor-secondary hover:bg-gray-50"
+                      isSelected ? "bg-bg-tertiary border-borderColor-secondary" : nextRowSelected ? "border-borderColor-secondary hover:bg-borderColor-tertiary" : "border-borderColor-secondary hover:bg-bg-tertiary"
                     )}
                   >
                     {rowSelection && (

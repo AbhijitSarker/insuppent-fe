@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Table } from '@/components/ui/Table';
 import { useLeads } from '@/api/hooks/useLeads';
 import { Button } from '@/components/ui/button';
+import Modal from '@/components/ui/modal';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import MaterialIcon from '@/components/ui/MaterialIcon';
@@ -32,8 +33,12 @@ const AdminLeads = () => {
 		statuses: [],
 		states: []
 	});
-	const [selectedRows, setSelectedRows] = useState([]);
-	const [loadingStatuses, setLoadingStatuses] = useState({});
+		const [selectedRows, setSelectedRows] = useState([]);
+		const [loadingStatuses, setLoadingStatuses] = useState({});
+		// Modal state for status change
+		const [modalOpen, setModalOpen] = useState(false);
+		const [modalLead, setModalLead] = useState(null);
+		const [modalStatus, setModalStatus] = useState(null);
 
 	// Reset selected rows when filters change
 	useEffect(() => {
@@ -189,16 +194,28 @@ const AdminLeads = () => {
 		URL.revokeObjectURL(url);
 	};
 
-	const handleLeadStatusUpdate = async (leadId, newStatus) => {
-		try {
-			await updateStatus(leadId, newStatus);
-		} catch (error) {
-			console.error('Error updating lead status:', error);
-			// TODO: Add error notification
-		}
-	};
+	   // Open modal and set lead/status
+	   const openStatusModal = (lead, status) => {
+		   setModalLead(lead);
+		   setModalStatus(status);
+		   setModalOpen(true);
+	   };
 
-	const columns = [
+	   // Confirm status change
+	   const handleConfirmStatus = async () => {
+		   if (!modalLead || !modalStatus) return;
+		   try {
+			   await updateStatus(modalLead.id, modalStatus);
+			   setModalOpen(false);
+			   setModalLead(null);
+			   setModalStatus(null);
+		   } catch (error) {
+			   console.error('Error updating lead status:', error);
+			   // TODO: Add error notification
+		   }
+	   };
+
+		const columns = [
 		{
 			key: 'createdAt',
 			header: 'Date Added',
@@ -244,65 +261,65 @@ const AdminLeads = () => {
 				</div>
 			)
 		},
-		{
-			key: 'actions',
-			header: '',
-			render: (row) => (
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button
-							variant="ghost"
-							size="icon"
-							className="h-8 w-8 p-0"
-						>
-							<MaterialIcon icon="more_vert" size={20} />
-						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent 
-						align="end" 
-						className="w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg"
-					>
-						<DropdownMenuSub className="rounded-xl">
-							<DropdownMenuSubTrigger className="flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors !hover:bg-red-50">
-								Update Status
-							</DropdownMenuSubTrigger>
-							<DropdownMenuSubContent className="w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg mr-2">
-								<DropdownMenuItem
-									onClick={(e) => {
-										e.stopPropagation();
-										handleLeadStatusUpdate(row.id, 'public');
-									}}
-									className={cn(
-										"flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors",
-										row.status === 'public' ? 'bg-bg-secondary' : 'hover:bg-bg-tertiary'
-									)}
-								>
-									<div className="flex items-center justify-between w-full gap-2">
-										<span>Public</span>
-										{row.status === 'public' ? <MaterialIcon icon="check" size={20} className={'text-content-brand'} /> : <></>}
-									</div>
-								</DropdownMenuItem>
-								<DropdownMenuItem
-									onClick={(e) => {
-										e.stopPropagation();
-										handleLeadStatusUpdate(row.id, 'private');
-									}}
-									className={cn(
-										"flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors",
-										row.status === 'private' ? 'bg-bg-secondary' : 'hover:bg-bg-tertiary'
-									)}
-								>
-									<div className="flex items-center justify-between gap-2 w-full">
-										<span>Private</span>
-										{row.status === 'private' ? <MaterialIcon icon="check" size={20} className={'text-content-brand'} /> : <></>}
-									</div>
-								</DropdownMenuItem>
-							</DropdownMenuSubContent>
-						</DropdownMenuSub>
-					</DropdownMenuContent>
-				</DropdownMenu>
-			)
-		}
+		   {
+			   key: 'actions',
+			   header: '',
+			   render: (row) => (
+				   <DropdownMenu>
+					   <DropdownMenuTrigger asChild>
+						   <Button
+							   variant="ghost"
+							   size="icon"
+							   className="h-8 w-8 p-0"
+						   >
+							   <MaterialIcon icon="more_vert" size={20} />
+						   </Button>
+					   </DropdownMenuTrigger>
+					   <DropdownMenuContent 
+						   align="end" 
+						   className="w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg"
+					   >
+						   <DropdownMenuSub className="rounded-xl">
+							   <DropdownMenuSubTrigger className="flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors !hover:bg-red-50">
+								   Update Status
+							   </DropdownMenuSubTrigger>
+							   <DropdownMenuSubContent className="w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg mr-2">
+								   <DropdownMenuItem
+									   onClick={(e) => {
+										   e.stopPropagation();
+										   openStatusModal(row, 'public');
+									   }}
+									   className={cn(
+										   "flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors",
+										   row.status === 'public' ? 'bg-bg-secondary' : 'hover:bg-bg-tertiary'
+									   )}
+								   >
+									   <div className="flex items-center justify-between w-full gap-2">
+										   <span>Public</span>
+										   {row.status === 'public' ? <MaterialIcon icon="check" size={20} className={'text-content-brand'} /> : <></>}
+									   </div>
+								   </DropdownMenuItem>
+								   <DropdownMenuItem
+									   onClick={(e) => {
+										   e.stopPropagation();
+										   openStatusModal(row, 'private');
+									   }}
+									   className={cn(
+										   "flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors",
+										   row.status === 'private' ? 'bg-bg-secondary' : 'hover:bg-bg-tertiary'
+									   )}
+								   >
+									   <div className="flex items-center justify-between gap-2 w-full">
+										   <span>Private</span>
+										   {row.status === 'private' ? <MaterialIcon icon="check" size={20} className={'text-content-brand'} /> : <></>}
+									   </div>
+								   </DropdownMenuItem>
+							   </DropdownMenuSubContent>
+						   </DropdownMenuSub>
+					   </DropdownMenuContent>
+				   </DropdownMenu>
+			   )
+		   }
 	];
 
 	const statusOptions = [
@@ -400,47 +417,56 @@ const AdminLeads = () => {
 		}
 	];
 
-	return (
-		<div className="p-8 !bg-transparent">
-			<div className="flex items-center justify-between mb-7 mt-0">
-				<h1 className="w-full font-bold text-[32px] leading-[32px] tracking-[-0.025em]">
-					All Leads
-				</h1>
-			</div>
-			
-			<Table
-				columns={columns}
-				data={paginatedData}
-				loading={isLoading}
-				page={tableState.page}
-				pageSize={tableState.pageSize}
-				total={totalCount}
-				onPageChange={handlePageChange}
-				onPageSizeChange={(newPageSize) => {
-					setTableState(prev => ({
-						...prev,
-						pageSize: newPageSize,
-						page: 1 // Reset to first page when changing page size
-					}));
-				}}
-				onSortChange={handleSortChange}
-				sort={tableState.sort}
-				search={tableState.search}
-				onSearch={handleSearch}
-				rowSelection
-				selectedRows={selectedRows}
-				onRowSelect={handleRowSelect}
-				onSelectAll={handleSelectAll}
-				filters={filters}
-				footerContent={
-					<span className=''>
-						Showing {paginatedData?.length || 0} of {totalCount || 0} results
-					</span>
-				}
-				paginationDelta={2}
-			/>
-		</div>
-	);
+	   return (
+		   <div className="p-8 !bg-transparent">
+			   <div className="flex items-center justify-between mb-7 mt-0">
+				   <h1 className="w-full font-bold text-[32px] leading-[32px] tracking-[-0.025em]">
+					   All Leads
+				   </h1>
+			   </div>
+			   <Table
+				   columns={columns}
+				   data={paginatedData}
+				   loading={isLoading}
+				   page={tableState.page}
+				   pageSize={tableState.pageSize}
+				   total={totalCount}
+				   onPageChange={handlePageChange}
+				   onPageSizeChange={(newPageSize) => {
+					   setTableState(prev => ({
+						   ...prev,
+						   pageSize: newPageSize,
+						   page: 1 // Reset to first page when changing page size
+					   }));
+				   }}
+				   onSortChange={handleSortChange}
+				   sort={tableState.sort}
+				   search={tableState.search}
+				   onSearch={handleSearch}
+				   rowSelection
+				   selectedRows={selectedRows}
+				   onRowSelect={handleRowSelect}
+				   onSelectAll={handleSelectAll}
+				   filters={filters}
+				   footerContent={
+					   <span className=''>
+						   Showing {paginatedData?.length || 0} of {totalCount || 0} results
+					   </span>
+				   }
+				   paginationDelta={2}
+			   />
+			   {/* Confirm Modal for status change */}
+			   <Modal
+				   open={modalOpen}
+				   onOpenChange={setModalOpen}
+				   type={'confirm'}
+				   title={`Change Status for ${modalLead?.name || 'Lead'}`}
+				   content={`Are you sure you want to change status to "${modalStatus}" for this lead?`}
+				   buttonText={modalStatus === 'private' ? 'Set Private' : 'Set Public'}
+				   onConfirm={handleConfirmStatus}
+			   />
+		   </div>
+	   );
 };
 
 export default AdminLeads;

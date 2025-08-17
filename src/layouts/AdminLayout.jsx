@@ -34,7 +34,9 @@ const AdminLayout = () => {
 
       {/* Main content with offsets for fixed header and sidebar */}
       <main className="pt-14 pl-56">
-        <Outlet />
+        <div className="h-[calc(100vh-3.5rem)] overflow-y-auto">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

@@ -19,18 +19,18 @@ const Sidebar = ({ className, routes }) => {
 			)}
 		>
 			{/* Navigation items */}
-			<div className="flex flex-col gap-1 pl-0 p-4">
+			<div className="flex flex-col mt-4 pl-0 gap-[2px]">
 				{navigationRoutes.map((route) => (
 					<Link key={route.href} to={route.href}>
 						<Button
 							variant="ghost"
-							className="w-full justify-start gap-3 h-12 px-4 pr-0 rounded-lg transition-all duration-200 relative hover:bg-transparent">
+							className="w-full justify-start gap-3 h-10 rounded-lg transition-all duration-200 relative hover:bg-transparent">
 							{route.active && (
 								<div className="absolute left-0 h-[32px] w-[6px] bg-blue-600 rounded-r-lg"></div>
 							)}
 							<div 
 								className={cn(
-									"text-black p-2 w-full h-10 rounded-lg flex items-center gap-3 text-sm font-medium leading-6",
+									"text-black p-2 my-0 w-full h-10 rounded-lg flex items-center gap-3 text-sm font-medium leading-6",
 									route.active
 										? "bg-[#E7E5E4]"
 										: "hover:bg-[#E7E5E4]"
