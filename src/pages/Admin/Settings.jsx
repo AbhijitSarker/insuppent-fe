@@ -1,3 +1,21 @@
+// Use a fixed palette of distinct pastel colors for avatars
+const pastelPalette = [
+	'#FFD6E0', '#FFECB3', '#B2EBF2', '#C8E6C9', '#D1C4E9', '#FFF9C4', '#F8BBD0', '#B3E5FC', '#DCEDC8', '#FFE0B2',
+	'#E1BEE7', '#FFCCBC', '#C5CAE9', '#F0F4C3', '#B2DFDB', '#F5E1FD', '#E0F7FA', '#FFF3E0', '#E6EE9C', '#FCE4EC',
+	'#E3F2FD', '#F9FBE7', '#FFDEEA', '#E0F2F1', '#F3E5F5', '#FFF8E1', '#E8F5E9', '#FBE9E7', '#EDE7F6', '#FFF0F6',
+	'#F1F8E9', '#F0F4C3', '#E0F7FA', '#FFF3E0', '#E6EE9C', '#FCE4EC', '#F3E5F5', '#E1F5FE', '#FFF9C4', '#F8BBD0',
+	'#B3E5FC', '#DCEDC8', '#FFE0B2', '#E1BEE7', '#FFCCBC', '#C5CAE9', '#F0F4C3', '#B2DFDB', '#F5E1FD', '#E0F7FA',
+	'#FFF3E0', '#E6EE9C', '#FCE4EC', '#E3F2FD', '#F9FBE7', '#FFDEEA', '#E0F2F1', '#F3E5F5', '#FFF8E1', '#E8F5E9',
+	'#FBE9E7', '#EDE7F6', '#FFF0F6', '#F1F8E9', '#F0F4C3', '#E0F7FA', '#FFF3E0', '#E6EE9C', '#FCE4EC'
+];
+function getRandomLightColor(str) {
+	let hash = 0;
+	for (let i = 0; i < str.length; i++) {
+		hash = str.charCodeAt(i) + ((hash << 5) - hash);
+	}
+	const idx = Math.abs(hash) % pastelPalette.length;
+	return pastelPalette[idx];
+}
 import React, { useState, useMemo } from 'react';
 import { useUsers } from '@/api/hooks/useUsers';
 import { Link, useNavigate } from 'react-router-dom';
@@ -135,9 +153,12 @@ const Settings = () => {
 			   render: (row) => (
 				<Link to={`/admin/customers/${row.id}`}>
 				   <div className="flex items-center gap-3">
-					   <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-						   <span className="text-sm font-semibold text-content-brand">{row.avatar || (row.name ? row.name[0] : '')}</span>
-					   </div>
+										 <div
+											 className="w-8 h-8 rounded-full flex items-center justify-center"
+											 style={{ backgroundColor: getRandomLightColor(row.name || row.id || "avatar") }}
+										 >
+												 <span className="text-sm font-semibold text-content-brand">{row.avatar || (row.name ? row.name[0] : '')}</span>
+										 </div>
 					   <button
 						   className="font-medium text-content-primary hover:text-content-brand hover:underline transition-colors text-left"
 						   >
