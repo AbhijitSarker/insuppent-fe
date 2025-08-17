@@ -30,6 +30,8 @@ export default {
           inversePrimary: '#FFFFFF', // White
           inverseSecondary: '#9CA3AF', // Gray/400
           inverseTertiary: '#6B7280', // Gray/500
+          green: '#15803D', // Green/700
+          red: '#B91C1C' // Red/700
         },
         
         // Background colors

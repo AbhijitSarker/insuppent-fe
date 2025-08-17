@@ -260,29 +260,26 @@ const AdminLeads = () => {
 					</DropdownMenuTrigger>
 					<DropdownMenuContent 
 						align="end" 
-						className="w-[160px] rounded-lg border border-borderColor-secondary bg-white p-1 shadow-lg"
+						className="w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg"
 					>
-						<DropdownMenuSub>
-							<DropdownMenuSubTrigger className="flex cursor-pointer items-center rounded-md px-3 py-2 text-sm outline-none transition-colors hover:bg-gray-100">
+						<DropdownMenuSub className="rounded-xl">
+							<DropdownMenuSubTrigger className="flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors !hover:bg-red-50">
 								Update Status
 							</DropdownMenuSubTrigger>
-							<DropdownMenuSubContent className="w-[160px] rounded-lg border border-borderColor-secondary bg-white p-1 shadow-lg">
+							<DropdownMenuSubContent className="w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg mr-2">
 								<DropdownMenuItem
 									onClick={(e) => {
 										e.stopPropagation();
 										handleLeadStatusUpdate(row.id, 'public');
 									}}
 									className={cn(
-										"flex cursor-pointer items-center rounded-md px-3 py-2 text-sm outline-none transition-colors",
-										row.status === 'public' ? 'bg-gray-100' : 'hover:bg-gray-100'
+										"flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors",
+										row.status === 'public' ? 'bg-bg-secondary' : 'hover:bg-bg-tertiary'
 									)}
 								>
-									<div className="flex items-center gap-2">
-										<span className={cn(
-											"h-2 w-2 rounded-full",
-											"bg-[#15803D]"
-										)} />
+									<div className="flex items-center justify-between w-full gap-2">
 										<span>Public</span>
+										{row.status === 'public' ? <MaterialIcon icon="check" size={20} className={'text-content-brand'} /> : <></>}
 									</div>
 								</DropdownMenuItem>
 								<DropdownMenuItem
@@ -291,16 +288,13 @@ const AdminLeads = () => {
 										handleLeadStatusUpdate(row.id, 'private');
 									}}
 									className={cn(
-										"flex cursor-pointer items-center rounded-md px-3 py-2 text-sm outline-none transition-colors",
-										row.status === 'private' ? 'bg-gray-100' : 'hover:bg-gray-100'
+										"flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors",
+										row.status === 'private' ? 'bg-bg-secondary' : 'hover:bg-bg-tertiary'
 									)}
 								>
-									<div className="flex items-center gap-2">
-										<span className={cn(
-											"h-2 w-2 rounded-full",
-											"bg-[#B91C1C]"
-										)} />
+									<div className="flex items-center justify-between gap-2 w-full">
 										<span>Private</span>
+										{row.status === 'private' ? <MaterialIcon icon="check" size={20} className={'text-content-brand'} /> : <></>}
 									</div>
 								</DropdownMenuItem>
 							</DropdownMenuSubContent>

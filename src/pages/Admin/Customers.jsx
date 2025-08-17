@@ -23,7 +23,7 @@ const mockLeads = [
 		name: 'Kristin Watson',
 		phone: '(217) 555-0113',
 		email: 'debbie.baker@example.com',
-		type: 'Mortgage',
+		type: 'mortgage',
 		address: '1901 Thornridge Cir. Shiloh',
 		state: 'Arizona',
 		price: '$12.99',
@@ -35,7 +35,7 @@ const mockLeads = [
 		name: 'Dianne Russell',
 		phone: '(217) 555-0113',
 		email: 'debbie.baker@example.com',
-		type: 'Auto',
+		type: 'auto',
 		address: '1901 Thornridge Cir. Shiloh',
 		state: 'Alabama',
 		price: '$12.99',
@@ -47,7 +47,7 @@ const mockLeads = [
 		name: 'Brooklyn Simmons',
 		phone: '(217) 555-0113',
 		email: 'debbie.baker@example.com',
-		type: 'Business',
+		type: 'home',
 		address: '1901 Thornridge Cir. Shiloh',
 		state: 'Connecticut',
 		price: '$12.99',
@@ -59,7 +59,7 @@ const mockLeads = [
 		name: 'Floyd Miles',
 		phone: '(217) 555-0113',
 		email: 'debbie.baker@example.com',
-		type: 'Life Insurance',
+		type: 'home',
 		address: '1901 Thornridge Cir. Shiloh',
 		state: 'Arkansas',
 		price: '$12.99',
@@ -71,7 +71,7 @@ const mockLeads = [
 		name: 'Jacob Jones',
 		phone: '(217) 555-0113',
 		email: 'debbie.baker@example.com',
-		type: 'Home',
+		type: 'mortgage',
 		address: '1901 Thornridge Cir. Shiloh',
 		state: 'Colorado',
 		price: '$12.99',
@@ -83,7 +83,7 @@ const mockLeads = [
 		name: 'Kathryn Murphy',
 		phone: '(217) 555-0113',
 		email: 'debbie.baker@example.com',
-		type: 'Mortgage',
+		type: 'auto',
 		address: '1901 Thornridge Cir. Shiloh',
 		state: 'Alaska',
 		price: '$12.99',
@@ -95,7 +95,7 @@ const mockLeads = [
 		name: 'Ronald Richards',
 		phone: '(217) 555-0113',
 		email: 'debbie.baker@example.com',
-		type: 'Auto',
+		type: 'auto',
 		address: '1901 Thornridge Cir. Shiloh',
 		state: 'Arizona',
 		price: '$12.99',
@@ -273,38 +273,19 @@ const Customers = () => {
 			key: 'email',
 			header: 'Email',
 			sortable: true,
+			value: row => row.email,
 			icon: <MaterialIcon className={'text-content-secondary'} icon="email" size={16} />,
-			render: (row) => (
-				<span className="text-gray-600">{row.email}</span>
-			)
 		},
 		{
 			key: 'type',
 			header: 'Type',
 			sortable: true,
 			icon: <MaterialIcon className={'text-content-secondary'} icon="local_offer" size={16} />,
-			render: (row) => {
-				const typeColors = {
-					'Mortgage': 'bg-green-100 text-green-700',
-					'Auto': 'bg-purple-100 text-purple-700',
-					'Business': 'bg-orange-100 text-orange-700',
-					'Life Insurance': 'bg-pink-100 text-pink-700',
-					'Home': 'bg-green-100 text-green-700'
-				};
-				const iconMap = {
-					'Life Insurance': 'person',
-					'Home': 'home'
-				};
-				
-				return (
-					<Badge variant="secondary" className={typeColors[row.type]}>
-						{iconMap[row.type] && (
-							<MaterialIcon icon={iconMap[row.type]} size={12} className="mr-1" />
-						)}
-						{row.type}
-					</Badge>
-				);
-			}
+			render: (row) => (
+				<Badge variant={row.type} icon={row.type}>
+					{row.type.charAt(0).toUpperCase() + row.type.slice(1)}
+				</Badge>
+			)
 		},
 		{
 			key: 'address',
@@ -419,7 +400,7 @@ const Customers = () => {
 		return (
 			<div className="p-6">
 				{/* Header with Back Navigation */}
-				<div className="mb-8">
+				<div className="bg-bg-primary">
 					<div className="flex items-center gap-2 p-3 w-[90px] h-9 hover:bg-bg-tertiary" onClick={handleBackClick}>
 						<Button 
 							variant="ghost" 
@@ -461,58 +442,67 @@ const Customers = () => {
 					) : null}
 
 					{/* Lead Categories/Tabs */}
-					<div className="flex space-x-3 h-[46px] border-b border-borderColor-secondary mb-0">
+					<div className="flex h-[46px] border-b border-borderColor-primary mb-0">
 						<button
 							onClick={() => setActiveTab('all')}
 							className={cn(
-								"relative flex items-center px-6 py-2 text-sm font-semibold leading-[20px] border-b-2 transition-colors",
+								"relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-5 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
 								activeTab === 'all'
-									? "border-blue-600 text-content-brand"
-									: "border-transparent text-content-secondary hover:text-gray-700 hover:border-gray-300"
-							)}
+									? "text-content-brand"
+									: "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
+						   )}
 							style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
 						>
 							All leads ({tabCounts.all})
 							{activeTab === 'all' && (
-								<span className="absolute left-0 -bottom-[2px] w-full h-[3px] bg-blue-600 rounded-t" />
-							)}
+<span
+								className={cn(
+									"absolute left-0 rounded-full -bottom-[2px] w-full h-[2px] bg-bg-brand",
+								)}
+							/>							)}
 						</button>
 						<button
 							onClick={() => setActiveTab('active')}
 							className={cn(
-								"relative flex items-center px-6 py-2 text-sm font-semibold leading-[20px] border-b-2 transition-colors",
+								"relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
 								activeTab === 'active'
-									? "border-blue-600 text-content-brand"
-									: "border-transparent text-content-secondary hover:text-gray-700 hover:border-gray-300"
-							)}
+									? "text-content-brand"
+									: "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
+						   )}
 							style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
 						>
 							Active leads ({tabCounts.active})
 							{activeTab === 'active' && (
-								<span className="absolute left-0 -bottom-[2px] w-full h-[3px] bg-blue-600 rounded-t" />
-							)}
+<span
+								className={cn(
+									"absolute left-0 rounded-full -bottom-[2px] w-full h-[2px] bg-bg-brand",
+								)}
+							/>							)}
 						</button>
 						<button
 							onClick={() => setActiveTab('refunded')}
 							className={cn(
-								"relative flex items-center px-6 py-2 text-sm font-semibold leading-[20px] border-b-2 transition-colors",
+								"relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
 								activeTab === 'refunded'
-									? "border-blue-600 text-content-brand"
-									: "border-transparent text-content-secondary hover:text-gray-700 hover:border-gray-300"
-							)}
+									? "text-content-brand"
+									: "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
+						)}
 							style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
 						>
 							Refunded leads ({tabCounts.refunded})
 							{activeTab === 'refunded' && (
-								<span className="absolute left-0 -bottom-[2px] w-full h-[3px] bg-blue-600 rounded-t" />
-							)}
+<span
+								className={cn(
+									"absolute left-0 rounded-full -bottom-[2px] w-full h-[2px] bg-bg-brand",
+								)}
+							/>							)}
 						</button>
 					</div>
 				</div>
 
 			{/* Main Content */}
 			<div>
-				<div className="flex items-center justify-between mb-6">
+				<div className="flex items-center justify-between mt-[18px] mb-5">
 					<h2 className="text-xl font-semibold text-content-primary">
 						{activeTab === 'all' ? 'All leads' : 
 						 activeTab === 'active' ? 'Active leads' : 'Refunded leads'}

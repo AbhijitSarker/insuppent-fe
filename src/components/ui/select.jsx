@@ -86,7 +86,7 @@ const Select = React.forwardRef(({ className, children, icon, label, value, isMu
       {isOpen && (
         <div className="absolute z-50 mt-2 min-w-[240px] overflow-hidden rounded-[8px] border border-borderColor-secondary bg-white shadow-lg">
           {hasSearch && (
-            <div className="p-2 border-b border-gray-100">
+            <div className="p-2 border-b border-borderColor-secondary">
               <Input
                 type="text"
                 placeholder="Search states..."

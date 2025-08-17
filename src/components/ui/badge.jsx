@@ -9,9 +9,11 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        auto: "bg-purple-50 text-purple-700",
-        home: "bg-lime-50 text-lime-700",
-        mortgage: "bg-green-50 text-green-700",
+        auto: "bg-[#FAF5FF] text-[#7E22CE]",
+        // home: "bg-lime-50 text-lime-700",
+        // mortgage: "bg-green-50 text-green-700",
+        home: "bg-[#FEFCE8] text-[#A16207]",
+        mortgage: "bg-[#FDF2F8] text-[#BE185D]",
       },
     },
     defaultVariants: {

@@ -161,11 +161,7 @@ const Settings = () => {
 			   header: 'Subscription',
 			   sortable: true,
 			   icon: <MaterialIcon className={'text-content-secondary'} icon="diamond" size={16} />, 
-			   render: (row) => (
-				   <Badge variant="secondary" className="bg-gray-100 text-gray-700">
-					   {row.subscription || 'Basic'}
-				   </Badge>
-			   )
+			   render: (row) => ( row.subscription || 'Basic')
 		   },
 		   {
 			   key: 'purchased',
@@ -285,7 +281,7 @@ const Settings = () => {
 					   <button
 						   onClick={() => setActiveTab('pricing')}
 						   className={cn(
-							   "relative text-content-primary flex h-[46px] items-center px-6 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
+							   "relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
 							   activeTab === 'pricing'
 								   ? "text-content-brand"
 								   : "text-content-primary hover:border-b-2 hover:border-borderColor-primary"

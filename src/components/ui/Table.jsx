@@ -6,7 +6,8 @@ import { Select, SelectItem } from "./select";
 import { Input } from "./input";
 import Papa from "papaparse";
 import { useDebounce } from "@/hooks/useDebounce";
-import { Tooltip } from "react-tooltip";
+import TableCell from "./TableCell";
+// import TableCell from "@/components/ui/TableCell";
 
 /**
  * TableColumn: { key: string, header: string|ReactNode, render?: (row) => ReactNode, sortable?: boolean, filterable?: boolean }
@@ -387,7 +388,7 @@ export function Table({
                     key={i} 
                     className={cn(
                       "border-b last:border-0 transition-colors h-[48px]",
-                      isSelected ? "bg-bg-tertiary border-gray-100" : nextRowSelected ? "border-gray-100 hover:bg-gray-100" : "border-borderColor-secondary hover:bg-gray-50"
+                      isSelected ? "bg-bg-tertiary border-borderColor-secondary" : nextRowSelected ? "border-borderColor-secondary hover:bg-borderColor-tertiary" : "border-borderColor-secondary hover:bg-gray-50"
                     )}
                   >
                     {rowSelection && (
@@ -402,7 +403,7 @@ export function Table({
                     )}
                     {columns.map((col) => (
                       <td 
-                        key={col.key} 
+                        key={col.key}
                         className={cn(
                           "px-3 py-2 align-middle text-sm whitespace-nowrap",
                           col.key === "createdAt" && "w-[140px]",
@@ -416,37 +417,7 @@ export function Table({
                           col.key === "actions" && "w-[50px]"
                         )}
                       >
-                        <div
-                          className={cn(
-                            "flex items-center gap-1.5 h-full min-h-[32px]",
-                            col.key === "name" ? "font-['Inter'] font-medium text-[14px] leading-[20px]" : "font-['Inter'] font-normal text-[14px] leading-[20px]",
-                            col.key === "actions" && "justify-end",
-                            "truncate max-w-[200px]"
-                          )}
-                          data-tooltip-id={`${col.key}-${row.id}`}
-                          data-tooltip-content={col.render ? col.render(row) : row[col.key]}
-                        >
-                          {(() => {
-                            const content = col.render ? col.render(row) : row[col.key];
-                            const isTruncated = typeof content === 'string' && content.length > 30;
-                            const displayText = isTruncated ? `${content.slice(0, 30)}...` : content;
-                            return displayText;
-                          })()}
-                          {typeof (col.render ? col.render(row) : row[col.key]) === 'string' &&
-                            (col.render ? col.render(row) : row[col.key]).length > 30 && (
-                              <Tooltip
-                                id={`${col.key}-${row.id}`}
-                                place="top"
-                                className="max-w-[300px] !bg-gray-800 !text-white !text-sm !p-2 !rounded-md !select-text"
-                                clickable={true}
-                                delayHide={0}
-                                afterHide={() => {
-                                  const tooltip = document.querySelector(`#${col.key}-${row.id}`);
-                                  if (tooltip) tooltip.style.display = 'none';
-                                }}
-                              />
-                            )}
-                        </div>
+                        <TableCell col={col} row={row} forceString={['email','address','phone','state','createdAt','datePurchased','subscription','purchased','refunded','price'].includes(col.key)} />
                       </td>
                     ))}
                   </tr>
