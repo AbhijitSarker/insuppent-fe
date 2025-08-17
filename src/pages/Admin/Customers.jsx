@@ -398,9 +398,9 @@ const Customers = () => {
 	};
 
 		return (
-			<div className="p-6">
+			<div className="">
 				{/* Header with Back Navigation */}
-				<div className="bg-bg-primary">
+				<div className="bg-bg-primary px-6 pt-6">
 					<div className="flex items-center gap-2 p-3 w-[90px] h-9 hover:bg-bg-tertiary" onClick={handleBackClick}>
 						<Button 
 							variant="ghost" 
@@ -501,7 +501,7 @@ const Customers = () => {
 				</div>
 
 			{/* Main Content */}
-			<div>
+			<div className='p-6'>
 				<div className="flex items-center justify-between mt-[18px] mb-5">
 					<h2 className="text-xl font-semibold text-content-primary">
 						{activeTab === 'all' ? 'All leads' : 
