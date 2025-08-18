@@ -266,7 +266,7 @@ const Customers = () => {
 			sortable: true,
 			icon: <MaterialIcon className={'text-content-secondary'} icon="phone" size={16} />,
 			render: (row) => (
-				<span className="text-gray-600">{row.phone}</span>
+				<span className="text-content-primary">{row.phone}</span>
 			)
 		},
 		{
@@ -293,7 +293,7 @@ const Customers = () => {
 			sortable: true,
 			icon: <MaterialIcon className={'text-content-secondary'} icon="business" size={16} />,
 			render: (row) => (
-				<span className="text-gray-600">{row.address}</span>
+				<span className="text-content-primary">{row.address}</span>
 			)
 		},
 		{
@@ -302,7 +302,7 @@ const Customers = () => {
 			sortable: true,
 			icon: <MaterialIcon className={'text-content-secondary'} icon="location_on" size={16} />,
 			render: (row) => (
-				<span className="text-gray-600">{row.state}</span>
+				<span className="text-content-primary">{row.state}</span>
 			)
 		},
 		// {
@@ -320,7 +320,7 @@ const Customers = () => {
 			sortable: true,
 			icon: <MaterialIcon className={'text-content-secondary'} icon="event" size={16} />,
 			render: (row) => (
-				<span className="text-gray-600">{row.datePurchased}</span>
+				<span className="text-content-primary">{row.datePurchased}</span>
 			)
 		},
 		{
