@@ -12,7 +12,7 @@ import Button from "./button";
  * @param {string} props.buttonText - Button text
  * @param {function} props.onConfirm - Confirm callback
  */
-export default function Modal({ open, onOpenChange, type = "confirm", title, content, buttonText = "Confirm", onConfirm }) {
+export default function Modal({ open, onOpenChange, type = "confirm", title, content, buttonText = "Confirm", onConfirm, loading }) {
     if (!open) return null;
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 ">
@@ -28,7 +28,10 @@ export default function Modal({ open, onOpenChange, type = "confirm", title, con
                     <button onClick={() => onOpenChange(false)} className="text-content-primary text-sm font-semibold leading-5 px-3 py-2 hover:text-gray-700">
                         Cancel
                     </button>
-                    <button className="bg-bg-brand px-3 py-2  rounded-lg text-white text-sm font-semibold leading-5 border-t-2 border-blue-500 ">
+                    <button
+                        className={`${type === 'confirm' ? 'bg-bg-brand border-blue-500 ' : 'bg-content-red'} px-3 py-2  rounded-lg text-white text-sm font-semibold leading-5 border-t-2 flex items-center justify-center min-w-[90px]`}
+                    onClick={onConfirm}
+                    >
                         {buttonText}
                     </button>
                 </div>
@@ -43,3 +46,7 @@ export default function Modal({ open, onOpenChange, type = "confirm", title, con
         </div>
     );
 }
+
+// Add loader CSS if not present globally
+// .loader { border-width: 2px; border-style: solid; border-radius: 9999px; border-top-color: transparent; animation: spin 1s linear infinite; }
+// @keyframes spin { to { transform: rotate(360deg); } }

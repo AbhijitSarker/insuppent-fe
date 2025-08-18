@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "./checkbox";
+import { MaterialCheckbox } from "./Table";
 import { Input } from "./input";
 import MaterialIcon from "./MaterialIcon";
 
@@ -140,8 +141,9 @@ const SelectItem = React.forwardRef(({ className, children, icon, isSelected, on
     >
       <div className="flex items-center gap-3 min-w-0">
         <div className="shrink-0">
-          <Checkbox 
+          <MaterialCheckbox
             checked={isSelected}
+            onChange={onSelect}
             className="rounded-[4px] border-gray-300"
           />
         </div>

@@ -305,15 +305,15 @@ const Customers = () => {
 				<span className="text-gray-600">{row.state}</span>
 			)
 		},
-		{
-			key: 'price',
-			header: 'Price',
-			sortable: true,
-			icon: <MaterialIcon className={'text-content-secondary'} icon="attach_money" size={16} />,
-			render: (row) => (
-				<span className="font-medium text-content-primary">{row.price}</span>
-			)
-		},
+		// {
+		// 	key: 'price',
+		// 	header: 'Price',
+		// 	sortable: true,
+		// 	icon: <MaterialIcon className={'text-content-secondary'} icon="attach_money" size={16} />,
+		// 	render: (row) => (
+		// 		<span className="font-medium text-content-primary">{row.price}</span>
+		// 	)
+		// },
 		{
 			key: 'datePurchased',
 			header: 'Date purchased',
@@ -400,8 +400,8 @@ const Customers = () => {
 		return (
 			<div className="">
 				{/* Header with Back Navigation */}
-				<div className="bg-bg-primary px-6 pt-6">
-					<div className="flex items-center gap-2 p-3 w-[90px] h-9 hover:bg-bg-tertiary" onClick={handleBackClick}>
+				<div className="bg-bg-primary px-6 pt-6 border-b border-borderColor-primary">
+					<div className="flex items-center gap-2 p-3 w-[90px] h-9 rounded-lg hover:bg-bg-tertiary" onClick={handleBackClick}>
 						<Button 
 							variant="ghost" 
 							size="icon" 
@@ -442,7 +442,7 @@ const Customers = () => {
 					) : null}
 
 					{/* Lead Categories/Tabs */}
-					<div className="flex h-[46px] border-b border-borderColor-primary mb-0">
+					<div className="flex h-[46px] border-borderColor-primary mb-0">
 						<button
 							onClick={() => setActiveTab('all')}
 							className={cn(
@@ -501,7 +501,7 @@ const Customers = () => {
 				</div>
 
 			{/* Main Content */}
-			<div className='p-6'>
+			<div className='p-6 pt-0'>
 				<div className="flex items-center justify-between mt-[18px] mb-5">
 					<h2 className="text-xl font-semibold text-content-primary">
 						{activeTab === 'all' ? 'All leads' : 

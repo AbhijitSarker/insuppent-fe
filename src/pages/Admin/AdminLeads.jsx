@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import Alert from '@/components/ui/alert';
 import { Table } from '@/components/ui/Table';
 import { useLeads } from '@/api/hooks/useLeads';
 import { Button } from '@/components/ui/button';
@@ -33,12 +34,14 @@ const AdminLeads = () => {
 		statuses: [],
 		states: []
 	});
-		const [selectedRows, setSelectedRows] = useState([]);
-		const [loadingStatuses, setLoadingStatuses] = useState({});
-		// Modal state for status change
-		const [modalOpen, setModalOpen] = useState(false);
-		const [modalLead, setModalLead] = useState(null);
-		const [modalStatus, setModalStatus] = useState(null);
+			const [selectedRows, setSelectedRows] = useState([]);
+			const [loadingStatuses, setLoadingStatuses] = useState({});
+			// Modal state for status change
+			const [modalOpen, setModalOpen] = useState(false);
+			const [modalLead, setModalLead] = useState(null);
+			const [modalStatus, setModalStatus] = useState(null);
+			// Alert state
+			const [alert, setAlert] = useState({ type: '', message: '' });
 
 	// Reset selected rows when filters change
 	useEffect(() => {
@@ -201,19 +204,20 @@ const AdminLeads = () => {
 		   setModalOpen(true);
 	   };
 
-	   // Confirm status change
-	   const handleConfirmStatus = async () => {
-		   if (!modalLead || !modalStatus) return;
-		   try {
-			   await updateStatus(modalLead.id, modalStatus);
-			   setModalOpen(false);
-			   setModalLead(null);
-			   setModalStatus(null);
-		   } catch (error) {
-			   console.error('Error updating lead status:', error);
-			   // TODO: Add error notification
-		   }
-	   };
+		// Confirm status change
+		const handleConfirmStatus = async () => {
+			if (!modalLead || !modalStatus) return;
+			try {
+				await updateStatus(modalLead.id, modalStatus);
+				setModalOpen(false);
+				setModalLead(null);
+				setModalStatus(null);
+				setAlert({ type: 'success', message: 'Lead status updated successfully!' });
+			} catch (error) {
+				console.error('Error updating lead status:', error);
+				setAlert({ type: 'error', message: 'Failed to update lead status.' });
+			}
+		};
 
 		const columns = [
 		{
@@ -417,8 +421,17 @@ const AdminLeads = () => {
 		}
 	];
 
-	   return (
-		   <div className="p-8 !bg-transparent">
+		// Auto-hide alert after 3 seconds
+		useEffect(() => {
+			if (alert.message) {
+				const timer = setTimeout(() => setAlert({ type: '', message: '' }), 3000);
+				return () => clearTimeout(timer);
+			}
+		}, [alert]);
+
+		return (
+			<div className="p-8 !bg-transparent">
+				<Alert type={alert.type} message={alert.message} onClose={() => setAlert({ type: '', message: '' })} />
 			   <div className="flex items-center justify-between mb-7 mt-0">
 				   <h1 className="w-full font-bold text-[32px] leading-[32px] tracking-[-0.025em]">
 					   All Leads
@@ -464,6 +477,7 @@ const AdminLeads = () => {
 				   content={`Are you sure you want to change status to "${modalStatus}" for this lead?`}
 				   buttonText={modalStatus === 'private' ? 'Set Private' : 'Set Public'}
 				   onConfirm={handleConfirmStatus}
+				   loading={isUpdating}
 			   />
 		   </div>
 	   );

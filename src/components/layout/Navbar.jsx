@@ -1,6 +1,16 @@
+
+
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import MaterialIcon from "@/components/ui/MaterialIcon";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 
@@ -20,7 +30,7 @@ const Navbar = ({ onMenuClick, showNavigation = false, showAdminButton = false }
   ];
 
   return (
-    <div className="w-full h-14 flex items-center justify-between border-b bg-white px-4 lg:px-6">
+    <div className="w-full h-14 flex items-center justify-between border-b border-borderColor-primary bg-white px-4 lg:px-6">
       {/* Left side - Logo and menu button */}
       <div className="flex items-center gap-4">
         <Link to="/" className="flex items-center gap-x-2">
@@ -62,28 +72,35 @@ const Navbar = ({ onMenuClick, showNavigation = false, showAdminButton = false }
       {/* Right side - Help link, user profile, and Admin button */}
       <div className="flex items-center gap-4">
         {/* Need help link */}
-        <Link 
+        {/* <Link 
           to="/help" 
           className="flex items-center gap-2 text-sm text-gray-600 hover:text-content-primary underline"
         >
           <MaterialIcon icon="help" size={16} />
           <span className="hidden sm:block">Need help?</span>
-        </Link>
+        </Link> */}
         
         {/* Separator */}
-        <div className="w-px h-6 bg-gray-300"></div>
+        {/* <div className="w-px h-6 bg-gray-300"></div> */}
         
         {/* User profile */}
         {user && (
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-medium">
-              {user.name?.charAt(0)?.toUpperCase() || 'U'}
-            </div>
-            {/* <Button variant="ghost" size="sm" onClick={handleLogout}>
-              Logout
-            </Button> */}
+            {/* Dropdown for user profile */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-medium focus:outline-none">
+                  {user.name?.charAt(0)?.toUpperCase() || 'U'}
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel className="font-semibold">{user.name || 'User'}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} className="text-content-red cursor-pointer">Logout</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-        )}
+  )}
 
        
       </div>

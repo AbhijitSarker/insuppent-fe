@@ -16,7 +16,10 @@ function getRandomLightColor(str) {
 	const idx = Math.abs(hash) % pastelPalette.length;
 	return pastelPalette[idx];
 }
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import Modal from '@/components/ui/modal';
+import Alert from '@/components/ui/alert';
+import { useUpdateUserStatus } from '@/api/hooks/useUpdateUserStatus';
 import { useUsers } from '@/api/hooks/useUsers';
 import { Link, useNavigate } from 'react-router-dom';
 import { Table } from '@/components/ui/Table';
@@ -30,6 +33,9 @@ import {
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuSeparator,
+	DropdownMenuSub,
+	DropdownMenuSubTrigger,
+	DropdownMenuSubContent,
 } from "@/components/ui/dropdown-menu";
 
 
@@ -45,7 +51,14 @@ const Settings = () => {
 	   search: '',
 	   statuses: []
    });
-   const [selectedRows, setSelectedRows] = useState([]);
+	const [selectedRows, setSelectedRows] = useState([]);
+	// Modal state for status change
+	const [modalOpen, setModalOpen] = useState(false);
+	const [modalUser, setModalUser] = useState(null);
+	const [modalStatus, setModalStatus] = useState(null);
+	// Alert state
+	const [alert, setAlert] = useState({ type: '', message: '' });
+	const updateUserStatus = useUpdateUserStatus();
    const { data: users = [], isLoading } = useUsers();
 
 
@@ -144,7 +157,33 @@ const Settings = () => {
 	};
 
 	   // Table columns configuration
-	   const columns = [
+		 const openStatusModal = (user, status) => {
+			 setModalUser(user);
+			 setModalStatus(status);
+			 setModalOpen(true);
+		 };
+
+		 const handleConfirmStatus = async () => {
+			 if (!modalUser || !modalStatus) return;
+			 try {
+				 await updateUserStatus.mutateAsync({ id: modalUser.id, status: modalStatus });
+				 setModalOpen(false);
+				 setModalUser(null);
+				 setModalStatus(null);
+				 setAlert({ type: 'success', message: 'User status updated successfully!' });
+			 } catch (error) {
+				 setAlert({ type: 'error', message: 'Failed to update user status.' });
+			 }
+		 };
+
+		 useEffect(() => {
+			 if (alert.message) {
+				 const timer = setTimeout(() => setAlert({ type: '', message: '' }), 3000);
+				 return () => clearTimeout(timer);
+			 }
+		 }, [alert]);
+
+		 const columns = [
 		   {
 			   key: 'customer',
 			   header: 'Customer',
@@ -225,27 +264,51 @@ const Settings = () => {
 		   {
 			   key: 'actions',
 			   header: '',
-			   render: () => (
+			   render: (row) => (
 				   <DropdownMenu>
 					   <DropdownMenuTrigger asChild>
 						   <Button variant="ghost" size="icon" className="h-8 w-8">
 							   <MaterialIcon icon="more_vert" size={16} />
 						   </Button>
 					   </DropdownMenuTrigger>
-					   <DropdownMenuContent align="end" className="w-48">
-						   <DropdownMenuItem>
-							   <MaterialIcon icon="edit" size={16} className="mr-2" />
-							   Edit Customer
-						   </DropdownMenuItem>
-						   <DropdownMenuItem>
-							   <MaterialIcon icon="visibility" size={16} className="mr-2" />
-							   View Details
-						   </DropdownMenuItem>
-						   <DropdownMenuSeparator />
-						   <DropdownMenuItem className="text-red-600">
-							   <MaterialIcon icon="delete" size={16} className="mr-2" />
-							   Delete Customer
-						   </DropdownMenuItem>
+					   <DropdownMenuContent align="end" className="w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg">
+						   <DropdownMenuSub className="rounded-xl">
+							   <DropdownMenuSubTrigger className="flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors !hover:bg-red-50">
+								   Update Status
+							   </DropdownMenuSubTrigger>
+							   <DropdownMenuSubContent className="w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg mr-2">
+								   <DropdownMenuItem
+									   onClick={(e) => {
+										   e.stopPropagation();
+										   openStatusModal(row, 'active');
+									   }}
+									   className={cn(
+										   "flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors",
+										   row.status === 'active' ? 'bg-bg-secondary' : 'hover:bg-bg-tertiary'
+									   )}
+								   >
+									   <div className="flex items-center justify-between w-full gap-2">
+										   <span>Enabled</span>
+										   {row.status === 'active' ? <MaterialIcon icon="check" size={20} className={'text-content-brand'} /> : <></>}
+									   </div>
+								   </DropdownMenuItem>
+								   <DropdownMenuItem
+									   onClick={(e) => {
+										   e.stopPropagation();
+										   openStatusModal(row, 'inactive');
+									   }}
+									   className={cn(
+										   "flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors",
+										   row.status === 'inactive' ? 'bg-bg-secondary' : 'hover:bg-bg-tertiary'
+									   )}
+								   >
+									   <div className="flex items-center justify-between gap-2 w-full">
+										   <span>Disabled</span>
+										   {row.status === 'inactive' ? <MaterialIcon icon="check" size={20} className={'text-content-brand'} /> : <></>}
+									   </div>
+								   </DropdownMenuItem>
+							   </DropdownMenuSubContent>
+						   </DropdownMenuSub>
 					   </DropdownMenuContent>
 				   </DropdownMenu>
 			   )
@@ -269,103 +332,115 @@ const Settings = () => {
 		}
 	];
 
-	return (
-		<div className="p-8">
-			{/* Header */}
-			<div className="flex items-center justify-between mb-6 mt-0">
-				<h1 className="w-full font-bold text-[32px] leading-[32px] tracking-[-0.025em]">
-					Settings
-				</h1>
-			</div>
-			<div>				
-				   {/* Navigation Tabs */}
-				   <div className="flex h-[46px] border-b border-borderColor-primary mb-0">
-					   <button
-						   onClick={() => setActiveTab('customers')}
-						   className={cn(
-							   "relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-5 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
-							   activeTab === 'customers'
-								   ? "text-content-brand"
-								   : "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
+	   return (
+		   <div className="p-8">
+			   <Alert type={alert.type} message={alert.message} onClose={() => setAlert({ type: '', message: '' })} />
+			   {/* Header */}
+			   <div className="flex items-center justify-between mb-6 mt-0">
+				   <h1 className="w-full font-bold text-[32px] leading-[32px] tracking-[-0.025em]">
+					   Settings
+				   </h1>
+			   </div>
+			   <div>               
+					  {/* Navigation Tabs */}
+					  <div className="flex h-[46px] border-b border-borderColor-primary mb-0">
+						  <button
+							  onClick={() => setActiveTab('customers')}
+							  className={cn(
+								  "relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-5 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
+								  activeTab === 'customers'
+									  ? "text-content-brand"
+									  : "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
+							  )}
+							  style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
+						  >
+							  Customers
+							  {activeTab === 'customers' && (
+							   <span
+								   className={cn(
+									   "absolute left-0 rounded-full -bottom-[2px] w-full h-[2px] bg-bg-brand",
+								   )}
+							   />
+							  )}
+						  </button>
+						  <button
+							  onClick={() => setActiveTab('pricing')}
+							  className={cn(
+								  "relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
+								  activeTab === 'pricing'
+									  ? "text-content-brand"
+									  : "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
 						   )}
 						   style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
 					   >
-						   Customers
-						   {activeTab === 'customers' && (
-							<span
-								className={cn(
-									"absolute left-0 rounded-full -bottom-[2px] w-full h-[2px] bg-bg-brand",
-								)}
-							/>
+						   Pricing plans
+						   {activeTab === 'pricing' && (
+							   <span
+								   className={cn(
+									   "absolute left-0 rounded-full -bottom-[2px] w-full h-[2px] bg-bg-brand",
+								   )}
+							   />
 						   )}
 					   </button>
-					   <button
-						   onClick={() => setActiveTab('pricing')}
-						   className={cn(
-							   "relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
-							   activeTab === 'pricing'
-								   ? "text-content-brand"
-								   : "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
-						)}
-						style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
-					>
-						Pricing plans
-						{activeTab === 'pricing' && (
-							<span
-								className={cn(
-									"absolute left-0 rounded-full -bottom-[2px] w-full h-[2px] bg-bg-brand",
-								)}
-							/>
-						)}
-					</button>
+					  </div>
+			   </div>
+
+			   {/* Customers Tab Content */}
+			   {activeTab === 'customers' && (
+				   <div>
+					   <div className="flex items-center justify-between mt-[22px] mb-5">
+						   <h2 className="text-2xl font-semibold text-content-primary">Customers</h2>
+					   </div>
+
+					   {/* Customer Table */}
+					   <Table
+						   columns={columns}
+						   data={paginatedData}
+						   page={tableState.page}
+						   pageSize={tableState.pageSize}
+						   total={totalCount}
+						   onPageChange={handlePageChange}
+						   onPageSizeChange={(newPageSize) => {
+							   setTableState(prev => ({
+								   ...prev,
+								   pageSize: newPageSize,
+								   page: 1
+							   }));
+						   }}
+						   onSortChange={handleSortChange}
+						   sort={tableState.sort}
+						   search={tableState.search}
+						   onSearch={handleSearch}
+						   rowSelection={true}
+						   selectedRows={selectedRows}
+						   onRowSelect={handleRowSelect}
+						   onSelectAll={handleSelectAll}
+						   filters={filters}
+					   />
+					   {/* Confirm Modal for status change */}
+					   <Modal
+						   open={modalOpen}
+						   onOpenChange={setModalOpen}
+						   type={'delete'}
+						   title={`Disable purchase ability?`}
+						   content={`Are you sure you want to ${modalStatus === 'inactive' ? 'Disable' : 'Enable'} purchase ability for ${modalUser?.name}?`}
+						   buttonText={modalStatus === 'inactive' ? 'Set Disabled' : 'Set Enabled'}
+						   onConfirm={handleConfirmStatus}
+						   loading={updateUserStatus.isLoading}
+					   />
 				   </div>
-			</div>
+			   )}
 
-			{/* Customers Tab Content */}
-			{activeTab === 'customers' && (
-				<div>
-					<div className="flex items-center justify-between mt-[22px] mb-5">
-						<h2 className="text-2xl font-semibold text-content-primary">Customers</h2>
-					</div>
-
-					{/* Customer Table */}
-					<Table
-						columns={columns}
-						data={paginatedData}
-						page={tableState.page}
-						pageSize={tableState.pageSize}
-						total={totalCount}
-						onPageChange={handlePageChange}
-						onPageSizeChange={(newPageSize) => {
-							setTableState(prev => ({
-								...prev,
-								pageSize: newPageSize,
-								page: 1
-							}));
-						}}
-						onSortChange={handleSortChange}
-						sort={tableState.sort}
-						search={tableState.search}
-						onSearch={handleSearch}
-						rowSelection={true}
-						selectedRows={selectedRows}
-						onRowSelect={handleRowSelect}
-						onSelectAll={handleSelectAll}
-						filters={filters}
-					/>
-				</div>
-			)}
-
-			{/* Pricing Plans Tab Content */}
-			{activeTab === 'pricing' && (
-				<div className="text-center py-12">
-					<MaterialIcon icon="pricing" size={48} className="mx-auto text-gray-400 mb-4" />
-					<h3 className="text-lg font-medium text-content-primary mb-2">Pricing Plans</h3>
-					<p className="text-content-secondary">Pricing plans management coming soon...</p>
-				</div>
-			)}
-		</div>
-	);
+			   {/* Pricing Plans Tab Content */}
+			   {activeTab === 'pricing' && (
+				   <div className="text-center py-12">
+					   <MaterialIcon icon="pricing" size={48} className="mx-auto text-gray-400 mb-4" />
+					   <h3 className="text-lg font-medium text-content-primary mb-2">Pricing Plans</h3>
+					   <p className="text-content-secondary">Pricing plans management coming soon...</p>
+				   </div>
+			   )}
+		   </div>
+	   );
 };
 
 export default Settings;

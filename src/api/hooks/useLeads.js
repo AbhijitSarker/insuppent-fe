@@ -42,7 +42,7 @@ export const useLeads = () => {
 
   return {
     ...query,
-    updateStatus: (leadId, status) => statusMutation.mutate({ leadId, status }),
+    updateStatus: (leadId, status) => statusMutation.mutateAsync({ leadId, status }),
     isUpdating: statusMutation.isLoading,
   };
 };
