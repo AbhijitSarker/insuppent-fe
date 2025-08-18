@@ -39,7 +39,7 @@ import TableCell from "./TableCell";
  */
 
 // Custom Material Icon Checkbox Component
-const MaterialCheckbox = ({ checked, onChange, className }) => {
+export const MaterialCheckbox = ({ checked, onChange, className }) => {
   return (
     <button
       type="button"
