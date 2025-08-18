@@ -213,7 +213,7 @@ const Settings = () => {
 			   sortable: true,
 			   icon: <MaterialIcon className={'text-content-secondary'} icon="email" size={16} />, 
 			   render: (row) => (
-				   <span className="text-gray-600">{row.email}</span>
+				   <span className="font-normal text-content-primary">{row.email}</span>
 			   )
 		   },
 		   {
@@ -221,7 +221,9 @@ const Settings = () => {
 			   header: 'Subscription',
 			   sortable: true,
 			   icon: <MaterialIcon className={'text-content-secondary'} icon="diamond" size={16} />, 
-			   render: (row) => ( row.subscription || 'Basic')
+			   render: (row) => (
+				   <span className="font-normal text-content-primary">{row.subscription || 'Basic'}</span>
+			   )
 		   },
 		   {
 			   key: 'purchased',
@@ -229,7 +231,7 @@ const Settings = () => {
 			   sortable: true,
 			   icon: <MaterialIcon className={'text-content-secondary'} icon="shopping_cart" size={16} />, 
 			   render: (row) => (
-				   <span className="font-medium text-content-primary">{row.purchased ?? 0}</span>
+				   <span className="font-normal text-content-primary">{row.purchased ?? 0}</span>
 			   )
 		   },
 		   {
@@ -238,7 +240,7 @@ const Settings = () => {
 			   sortable: true,
 			   icon: <MaterialIcon className={'text-content-secondary'} icon="currency_exchange" size={16} />, 
 			   render: (row) => (
-				   <span className="font-medium text-content-primary">{row.refunded ?? 0}</span>
+				   <span className="font-normal text-content-primary">{row.refunded ?? 0}</span>
 			   )
 		   },
 		   {
