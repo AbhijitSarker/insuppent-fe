@@ -423,9 +423,9 @@ const Settings = () => {
 					   <Modal
 						   open={modalOpen}
 						   onOpenChange={setModalOpen}
-						   type={'delete'}
-						   title={`Disable purchase ability?`}
-						   content={`Are you sure you want to ${modalStatus === 'inactive' ? 'Disable' : 'Enable'} purchase ability for ${modalUser?.name}?`}
+						   type={`${modalStatus === 'inactive' ? 'delete' : 'confirm'}`}
+						   title={`${modalStatus === 'inactive' ? 'Disable' : 'Enable'} purchase ability?`}
+						   content={`Are you sure you want to ${modalStatus === 'inactive' ? 'disable' : 'enable'} purchase ability for ${modalUser?.name}?`}
 						   buttonText={modalStatus === 'inactive' ? 'Set Disabled' : 'Set Enabled'}
 						   onConfirm={handleConfirmStatus}
 						   loading={updateUserStatus.isLoading}

@@ -25,15 +25,29 @@ const typeIcons = {
 };
 
 const AdminLeads = () => {
-	const [tableState, setTableState] = useState({
-		page: 1,
-		pageSize: 13,
-		sort: { key: 'createdAt', direction: 'desc' },
-		search: '',
-		types: [],
-		statuses: [],
-		states: []
-	});
+const [tableState, setTableState] = useState({
+ page: 1,
+ pageSize: 13,
+ sort: { key: 'createdAt', direction: 'desc' },
+ search: '',
+ types: [],
+ statuses: [],
+ states: []
+});
+
+// Helper: Map state abbreviation to full name
+const stateAbbrToName = {
+	'AL': 'Alabama', 'AK': 'Alaska', 'AZ': 'Arizona', 'AR': 'Arkansas', 'CA': 'California',
+	'CO': 'Colorado', 'CT': 'Connecticut', 'DE': 'Delaware', 'FL': 'Florida', 'GA': 'Georgia',
+	'HI': 'Hawaii', 'ID': 'Idaho', 'IL': 'Illinois', 'IN': 'Indiana', 'IA': 'Iowa',
+	'KS': 'Kansas', 'KY': 'Kentucky', 'LA': 'Louisiana', 'ME': 'Maine', 'MD': 'Maryland',
+	'MA': 'Massachusetts', 'MI': 'Michigan', 'MN': 'Minnesota', 'MS': 'Mississippi', 'MO': 'Missouri',
+	'MT': 'Montana', 'NE': 'Nebraska', 'NV': 'Nevada', 'NH': 'New Hampshire', 'NJ': 'New Jersey',
+	'NM': 'New Mexico', 'NY': 'New York', 'NC': 'North Carolina', 'ND': 'North Dakota', 'OH': 'Ohio',
+	'OK': 'Oklahoma', 'OR': 'Oregon', 'PA': 'Pennsylvania', 'RI': 'Rhode Island', 'SC': 'South Carolina',
+	'SD': 'South Dakota', 'TN': 'Tennessee', 'TX': 'Texas', 'UT': 'Utah', 'VT': 'Vermont',
+	'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming'
+};
 			const [selectedRows, setSelectedRows] = useState([]);
 			const [loadingStatuses, setLoadingStatuses] = useState({});
 			// Modal state for status change
@@ -220,111 +234,119 @@ const AdminLeads = () => {
 		};
 
 		const columns = [
-		{
-			key: 'createdAt',
-			header: 'Date Added',
-			sortable: true,
-			icon: <MaterialIcon className={'text-content-secondary'} icon="date_range" size={16} />,
-			render: (row) => (
-				<span>{new Date(row.createdAt).toLocaleDateString()}</span>
-			)
-		},
-		{ key: 'name', header: 'Name', sortable: true, icon: <MaterialIcon className={'text-content-secondary'} icon="group" size={16} /> },
-		{ key: 'email', header: 'Email', sortable: true, icon: <MaterialIcon className={'text-content-secondary'} icon="email" size={16} /> },
-		{ key: 'phone', header: 'Phone', sortable: true, icon: <MaterialIcon className={'text-content-secondary'} icon="phone" size={16} /> },
-		{ 
-			key: 'type', 
-			header: 'Type', 
-			sortable: true, 
-			icon: <MaterialIcon className={'text-content-secondary'} icon="local_offer" size={16} />, 
-			render: (row) => (
-				<Badge variant={row.type} icon={row.type}>
-					{row.type.charAt(0).toUpperCase() + row.type.slice(1)}
-				</Badge>
-			)
-		},
-		{ key: 'address', header: 'Address', sortable: true, icon: <MaterialIcon className={'text-content-secondary'} icon="home_work" size={16} /> },
-		{ key: 'state', header: 'State', sortable: true, icon: <MaterialIcon className={'text-content-secondary'} icon="location_on" size={16} /> },
-		{ 
-			key: 'status', 
-			header: 'Status', 
-			sortable: true, 
-			icon: <MaterialIcon className={'text-content-secondary'} icon="flag" size={16} />,
-			render: (row) => (
-				<div className="flex items-center gap-2">
-					<div className={cn(
-						"flex items-center gap-2 font-medium",
-						row.status === 'public' ? "text-green-700" : "text-red-700"
-					)}>
-						<span className={cn(
-							"w-2 h-2 rounded-full",
-							row.status === 'public' ? "bg-green-700" : "bg-red-700"
-						)} />
-						{row.status === 'public' ? 'Public' : 'Private'}
+			{
+				key: 'createdAt',
+				header: 'Date Added',
+				sortable: true,
+				icon: <MaterialIcon className={'text-content-secondary'} icon="date_range" size={16} />,
+				render: (row) => (
+					<span>{new Date(row.createdAt).toLocaleDateString()}</span>
+				)
+			},
+			{ key: 'name', header: 'Name', sortable: true, icon: <MaterialIcon className={'text-content-secondary'} icon="group" size={16} /> },
+			{ key: 'email', header: 'Email', sortable: true, icon: <MaterialIcon className={'text-content-secondary'} icon="email" size={16} /> },
+			{ key: 'phone', header: 'Phone', sortable: true, icon: <MaterialIcon className={'text-content-secondary'} icon="phone" size={16} /> },
+			{ 
+				key: 'type', 
+				header: 'Type', 
+				sortable: true, 
+				icon: <MaterialIcon className={'text-content-secondary'} icon="local_offer" size={16} />, 
+				render: (row) => (
+					<Badge variant={row.type} icon={row.type}>
+						{row.type.charAt(0).toUpperCase() + row.type.slice(1)}
+					</Badge>
+				)
+			},
+			{ key: 'address', header: 'Address', sortable: true, icon: <MaterialIcon className={'text-content-secondary'} icon="home_work" size={16} /> },
+			{
+				key: 'state',
+				header: 'State',
+				sortable: true,
+				icon: <MaterialIcon className={'text-content-secondary'} icon="location_on" size={16} />,
+				render: (row) => (
+					<span>{stateAbbrToName[row.state] || row.state}</span>
+				)
+			},
+			{ 
+				key: 'status', 
+				header: 'Status', 
+				sortable: true, 
+				icon: <MaterialIcon className={'text-content-secondary'} icon="flag" size={16} />,
+				render: (row) => (
+					<div className="flex items-center gap-2">
+						<div className={cn(
+							"flex items-center gap-2 font-medium",
+							row.status === 'public' ? "text-green-700" : "text-red-700"
+						)}>
+							<span className={cn(
+								"w-2 h-2 rounded-full",
+								row.status === 'public' ? "bg-green-700" : "bg-red-700"
+							)} />
+							{row.status === 'public' ? 'Public' : 'Private'}
+						</div>
 					</div>
-				</div>
-			)
-		},
-		   {
-			   key: 'actions',
-			   header: '',
-			   render: (row) => (
-				   <DropdownMenu>
-					   <DropdownMenuTrigger asChild>
-						   <Button
-							   variant="ghost"
-							   size="icon"
-							   className="h-8 w-8 p-0"
-						   >
-							   <MaterialIcon icon="more_vert" size={20} />
-						   </Button>
-					   </DropdownMenuTrigger>
-					   <DropdownMenuContent 
-						   align="end" 
-						   className="w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg"
-					   >
-						   <DropdownMenuSub className="rounded-xl">
-							   <DropdownMenuSubTrigger className="flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors !hover:bg-red-50">
-								   Update Status
-							   </DropdownMenuSubTrigger>
-							   <DropdownMenuSubContent className="w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg mr-2">
-								   <DropdownMenuItem
-									   onClick={(e) => {
-										   e.stopPropagation();
-										   openStatusModal(row, 'public');
-									   }}
-									   className={cn(
-										   "flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors",
-										   row.status === 'public' ? 'bg-bg-secondary' : 'hover:bg-bg-tertiary'
-									   )}
-								   >
-									   <div className="flex items-center justify-between w-full gap-2">
-										   <span>Public</span>
-										   {row.status === 'public' ? <MaterialIcon icon="check" size={20} className={'text-content-brand'} /> : <></>}
-									   </div>
-								   </DropdownMenuItem>
-								   <DropdownMenuItem
-									   onClick={(e) => {
-										   e.stopPropagation();
-										   openStatusModal(row, 'private');
-									   }}
-									   className={cn(
-										   "flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors",
-										   row.status === 'private' ? 'bg-bg-secondary' : 'hover:bg-bg-tertiary'
-									   )}
-								   >
-									   <div className="flex items-center justify-between gap-2 w-full">
-										   <span>Private</span>
-										   {row.status === 'private' ? <MaterialIcon icon="check" size={20} className={'text-content-brand'} /> : <></>}
-									   </div>
-								   </DropdownMenuItem>
-							   </DropdownMenuSubContent>
-						   </DropdownMenuSub>
-					   </DropdownMenuContent>
-				   </DropdownMenu>
-			   )
-		   }
-	];
+				)
+			},
+			{
+				key: 'actions',
+				header: '',
+				render: (row) => (
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button
+								variant="ghost"
+								size="icon"
+								className="h-8 w-8 p-0"
+							>
+								<MaterialIcon icon="more_vert" size={20} />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent 
+							align="end" 
+							className="w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg"
+						>
+							<DropdownMenuSub className="rounded-xl">
+								<DropdownMenuSubTrigger className="flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors !hover:bg-red-50">
+									Update Status
+								</DropdownMenuSubTrigger>
+								<DropdownMenuSubContent className="w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg mr-2">
+									<DropdownMenuItem
+										onClick={(e) => {
+											e.stopPropagation();
+											openStatusModal(row, 'public');
+										}}
+										className={cn(
+											"flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors",
+											row.status === 'public' ? 'bg-bg-secondary' : 'hover:bg-bg-tertiary'
+										)}
+									>
+										<div className="flex items-center justify-between w-full gap-2">
+											<span>Public</span>
+											{row.status === 'public' ? <MaterialIcon icon="check" size={20} className={'text-content-brand'} /> : <></>}
+										</div>
+									</DropdownMenuItem>
+									<DropdownMenuItem
+										onClick={(e) => {
+											e.stopPropagation();
+											openStatusModal(row, 'private');
+										}}
+										className={cn(
+											"flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors",
+											row.status === 'private' ? 'bg-bg-secondary' : 'hover:bg-bg-tertiary'
+										)}
+									>
+										<div className="flex items-center justify-between gap-2 w-full">
+											<span>Private</span>
+											{row.status === 'private' ? <MaterialIcon icon="check" size={20} className={'text-content-brand'} /> : <></>}
+										</div>
+									</DropdownMenuItem>
+								</DropdownMenuSubContent>
+							</DropdownMenuSub>
+						</DropdownMenuContent>
+					</DropdownMenu>
+				)
+			}
+		];
 
 	const statusOptions = [
 		{ value: 'public', label: 'Public' },
