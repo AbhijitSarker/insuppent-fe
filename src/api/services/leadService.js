@@ -1,7 +1,13 @@
+
 import { axiosSecure } from '../axios/config';
 
 export const getLeads = async () => {
   const response = await axiosSecure.get('/leads');
+  return response.data;
+};
+
+export const getPublicLeads = async () => {
+  const response = await axiosSecure.get('/leads/find');
   return response.data;
 };
 

@@ -1,3 +1,4 @@
+import FindLeads from '@/pages/User/FindLeads';
 import { Navigate, createBrowserRouter } from "react-router-dom";
 import UserLayout from "../layouts/UserLayout";
 import AdminLayout from "../layouts/AdminLayout";
@@ -40,6 +41,7 @@ const AuthRoute = ({ children }) => {
   if (user) {
     return <Navigate to="/admin" />;
   }
+      
 
   return children;
 };
@@ -92,26 +94,25 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  // {
-  //   path: "/",
-  //   element: (
-  //     <UserLayout />
-  //   ),
-  //   children: [
-  //     {
-  //       index: true,
-  //       element: (
+  {
+    path: "/",
+    element: (
+      <UserLayout />
+    ),
+    children: [
+      {
+        index: true,
+        element: (
 
-  //         <AllLeads />
-
-  //       ),
-  //     },
-  //     {
-  //       path: "my-leads",
-  //       element: (
-  //         <Home />
-  //       ),
-  //     },
-  //   ],
-  // },
+          <FindLeads />
+        ),
+      },
+      {
+        path: "my-leads",
+        element: (
+          <Home />
+        ),
+      },
+    ],
+  },
 ]);

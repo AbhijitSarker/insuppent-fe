@@ -16,6 +16,7 @@ import {
 	DropdownMenuSubTrigger,
 	DropdownMenuSubContent,
 } from "@/components/ui/dropdown-menu";
+import { Link } from 'react-router-dom';
 
 const typeIcons = {
 	auto: 'directions_car',
@@ -458,7 +459,21 @@ const stateAbbrToName = {
 				   <h1 className="w-full font-bold text-[32px] leading-[32px] tracking-[-0.025em]">
 					   All Leads
 				   </h1>
+					<Link to="/">User</Link>
 			   </div>
+				<div className={` flex gap-2 items-center ${selectedRows.length > 0 ? '' : 'hidden'}`}>
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={handleExportSelected}
+						disabled={selectedRows.length === 0}
+					>
+						Export Selected
+					</Button>
+					<span className="text-xs text-muted-foreground">
+						{selectedRows.length} row(s) selected
+					</span>
+				</div>
 			   <Table
 				   columns={columns}
 				   data={paginatedData}
@@ -488,7 +503,8 @@ const stateAbbrToName = {
 						   Showing {paginatedData?.length || 0} of {totalCount || 0} results
 					   </span>
 				   }
-				   paginationDelta={2}
+				    paginationDelta={2}
+					searchFilterVisibility={selectedRows.length > 0 ? false : true}
 			   />
 			   {/* Confirm Modal for status change */}
 			   <Modal

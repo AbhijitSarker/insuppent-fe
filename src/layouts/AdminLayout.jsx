@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from '@/components/layout/Sidebar';
-import Navbar from '@/components/layout/Navbar';
+import AdminNavbar from '@/components/layout/AdminNavbar';
 
 const adminRoutes = [
   {
@@ -21,7 +21,7 @@ const AdminLayout = () => {
     <div className="min-h-screen bg-bg-secondary">
       {/* Fixed Navbar */}
       <div className="fixed top-0 left-0 right-0 z-50">
-        <Navbar showNavigation={false} showAdminButton={true} />
+        <AdminNavbar />
       </div>
 
       {/* Fixed Sidebar below navbar */}
