@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import CheckoutPage from '@/components/pages/CheckoutPage.jsx';
 import Alert from '@/components/ui/alert';
 import { Table } from '@/components/ui/Table';
 import { usePublicLeads } from '@/api/hooks/useLeads';
@@ -38,6 +39,7 @@ const FindLeads = () => {
     });
     const [selectedRows, setSelectedRows] = useState([]);
     const [alert, setAlert] = useState({ type: '', message: '' });
+    const [checkoutLeads, setCheckoutLeads] = useState(null); // null or array of leads
 
     useEffect(() => {
         setSelectedRows([]);
@@ -198,6 +200,7 @@ const FindLeads = () => {
                 render: (row) => (
                     <button
                         className="text-content-brand px-3 rounded-lg py-1 font-medium hover:bg-[#DBEAFE] leading-[18px]"
+                        onClick={() => setCheckoutLeads([row])}
                     >
                         Buy ${row.price?.toFixed(2) ?? '--'}
                     </button>
@@ -247,15 +250,23 @@ const FindLeads = () => {
                 <Button
                     variant="outline"
                     size="sm"
-                    onClick={handleExportSelected}
+                    onClick={() => setCheckoutLeads(selectedRows)}
                     disabled={selectedRows.length === 0}
                 >
-                    Export Selected
+                    Purchase Selected
                 </Button>
                 <span className="text-xs text-muted-foreground">
-                    {selectedRows.length} row(s) selected
+                    {selectedRows.length} lead(s) selected
                 </span>
             </div>
+            {checkoutLeads && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+                    <CheckoutPage
+                        leads={checkoutLeads}
+                        onCancel={() => setCheckoutLeads(null)}
+                    />
+                </div>
+            )}
             <Table
                 columns={columns}
                 data={paginatedData}

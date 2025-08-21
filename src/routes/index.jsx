@@ -113,6 +113,14 @@ export const router = createBrowserRouter([
           <Home />
         ),
       },
+      // {
+      //   path: "purchase-history",
+      //   element: (
+      //     <ProtectedRoute>
+      //       {React.createElement(require('@/pages/User/PurchaseHistory.jsx').default)}
+      //     </ProtectedRoute>
+      //   ),
+      // },
     ],
   },
 ]);
