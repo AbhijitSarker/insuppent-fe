@@ -42,7 +42,6 @@ export default function Home() {
 
   useEffect(() => {
     setLoading(true);
-    setTimeout(() => {
       let filtered = mockData;
       if (search) {
         filtered = filtered.filter(
@@ -68,7 +67,6 @@ export default function Home() {
       setTotal(filtered.length);
       setData(filtered.slice((page - 1) * pageSize, page * pageSize));
       setLoading(false);
-    }, 400);
   }, [page, pageSize, sort, search, role, status]);
 
   // Row selection logic

@@ -3,7 +3,6 @@ import Alert from '@/components/ui/alert';
 import { Table } from '@/components/ui/Table';
 import { usePublicLeads } from '@/api/hooks/useLeads';
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
 import MaterialIcon from '@/components/ui/MaterialIcon';
 import Button from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -197,13 +196,11 @@ const FindLeads = () => {
                 key: 'price',
                 header: 'Action',
                 render: (row) => (
-                    <Button
-                        variant="purchase"
-                        // className="bg-blue-100 text-blue-600 font-bold text-2xl rounded-2xl px-8 py-3 min-w-[91px] min-h-[28px] flex items-center justify-center shadow-sm border border-blue-200 hover:bg-blue-200 transition-colors duration-150"
-                        style={{ lineHeight: 1.1 }}
+                    <button
+                        className="text-content-brand px-3 rounded-lg py-1 font-medium hover:bg-[#DBEAFE] leading-[18px]"
                     >
                         Buy ${row.price?.toFixed(2) ?? '--'}
-                    </Button>
+                    </button>
                 )
             }
     ];
