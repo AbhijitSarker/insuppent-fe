@@ -1,6 +1,6 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getLeads, getPublicLeads, updateStatus } from '../services/leadService';
+import { getLeads, getPublicLeads, updateStatus, getMyLeads } from '../services/leadService';
 
 
 export const useLeads = () => {
@@ -44,6 +44,15 @@ export const usePublicLeads = () => {
   return useQuery({
     queryKey: ['public-leads'],
     queryFn: () => getPublicLeads(),
+    keepPreviousData: true,
+  });
+};
+
+// Fetch only the current user's leads
+export const useMyLeads = () => {
+  return useQuery({
+    queryKey: ['my-leads'],
+    queryFn: () => getMyLeads(),
     keepPreviousData: true,
   });
 };

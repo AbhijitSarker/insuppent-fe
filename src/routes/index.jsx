@@ -8,8 +8,8 @@ import Customers from "../pages/Admin/Customers";
 import Login from "../pages/Auth/Login";
 import Signup from "../pages/Auth/Signup";
 import { useAuth } from "@/contexts/AuthContext";
-import Home from "@/components/pages/Home";
 import RootRedirect from "./RootRedirect";
+import MyLeads from '@/pages/User/MyLeads';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -110,7 +110,7 @@ export const router = createBrowserRouter([
       {
         path: "my-leads",
         element: (
-          <Home />
+          <MyLeads />
         ),
       },
       // {
