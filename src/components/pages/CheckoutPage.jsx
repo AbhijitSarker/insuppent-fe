@@ -1,25 +1,24 @@
 import React, { useMemo, useState } from 'react';
-import { useCreateCheckoutSession } from '@/api/hooks/usePurchase';
+import { createCheckoutSession } from '@/api/services/purchaseService';
 import Button from '@/components/ui/button';
+
 
 const CheckoutPage = ({ leads, onCancel }) => {
   const [error, setError] = useState('');
-  const { mutate: createSession, isLoading } = useCreateCheckoutSession();
+  const [isLoading, setIsLoading] = useState(false);
   const total = useMemo(() => leads.reduce((sum, l) => sum + (l.price || 0), 0), [leads]);
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     setError('');
-    createSession(
-      leads.map(l => l.id),
-      {
-        onSuccess: (data) => {
-          window.location.href = data.url;
-        },
-        onError: (err) => {
-          setError(err?.response?.data?.message || 'Failed to start checkout');
-        },
-      }
-    );
+    setIsLoading(true);
+    try {
+      const data = await createCheckoutSession(leads.map(l => l.id));
+      window.location.href = data.url;
+    } catch (err) {
+      setError(err?.response?.data?.message || 'Failed to start checkout');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
