@@ -1,15 +1,17 @@
+
 import { RouterProvider } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
-
-//  ---------- ROUTES & CONTEXTS  ----------
 import { router } from "./routes";
+import SSOAuthWrapper from "./components/SSOAuthWrapper";
+
 
 function App() {
-
   return (
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
+    <SSOAuthWrapper>
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+    </SSOAuthWrapper>
   );
 }
 
