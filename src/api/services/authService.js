@@ -9,7 +9,9 @@ export const authService = {
   // Check authentication status from session
   checkAuth: async () => {
     try {
-      const response = await axiosSecure.get('/auth/check');
+      const response = await axiosOpen.get('/auth/check', {
+        withCredentials: true // Important for session cookies
+      });
       console.log('Auth check response:', response);
       return response.data;
     } catch (error) {
