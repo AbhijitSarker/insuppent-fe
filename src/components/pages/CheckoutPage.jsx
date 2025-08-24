@@ -4,6 +4,7 @@ import Button from '@/components/ui/button';
 
 
 const CheckoutPage = ({ leads, onCancel }) => {
+  console.log('CheckoutPage leads:', leads);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const total = useMemo(() => leads.reduce((sum, l) => sum + (l.price || 0), 0), [leads]);

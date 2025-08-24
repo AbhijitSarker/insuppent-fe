@@ -433,7 +433,7 @@ const Customers = () => {
 								<div className="flex items-center gap-4 justify-between">
 									<h1 className="text-3xl font-semibold text-content-primary leading-9 tracking-[-0.025em]">{customer.name}</h1>
 									<Badge variant="secondary" className="bg-gray-100 text-gray-700">
-										{customer.subscription || 'Basic'}
+										{customer.subscription || 'Subscriber'}
 									</Badge>
 								</div>
 								<p className="text-gray-600 ">{customer.email}</p>

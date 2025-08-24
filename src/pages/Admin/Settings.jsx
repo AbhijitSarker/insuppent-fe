@@ -222,7 +222,7 @@ const Settings = () => {
 			   sortable: true,
 			   icon: <MaterialIcon className={'text-content-secondary'} icon="diamond" size={16} />, 
 			   render: (row) => (
-				   <span className="font-normal text-content-primary">{row.subscription || 'Basic'}</span>
+				   <span className="font-normal text-content-primary">{row.subscription || 'Subscriber'}</span>
 			   )
 		   },
 		   {

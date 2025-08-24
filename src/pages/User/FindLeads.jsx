@@ -244,7 +244,7 @@ const FindLeads = () => {
                 <h1 className="w-full font-bold text-[32px] leading-[32px] tracking-[-0.025em]">
                     Find Leads
                 </h1>
-            <Link to="/admin">Admin</Link>
+            {/* <Link to="/admin">Admin</Link> */}
             </div>
             <div className={` flex gap-2 items-center ${selectedRows.length > 0 ? '' : 'hidden'}`}>
                 <Button
