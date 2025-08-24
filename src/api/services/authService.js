@@ -6,16 +6,50 @@ export const authService = {
     window.location.href = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/auth/login`;
   },
 
-  // Check authentication status from session
   checkAuth: async () => {
     try {
+      console.log('🔍 Checking authentication status...');
+      console.log('API URL:', import.meta.env.VITE_API_URL);
+      console.log('Current cookies:', document.cookie);
+
       const response = await axiosOpen.get('/auth/check', {
-        withCredentials: true // Important for session cookies
+        withCredentials: true,
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
       });
+
+      console.log('✅ Auth check response:', response.data);
+      console.log('Response headers:', response.headers);
+
+      if (response.data.debug) {
+        console.log('🐛 Debug info:', response.data.debug);
+      }
+
       return response.data;
+
     } catch (error) {
-      console.error('Auth check error:', error);
-      return { isAuthenticated: false, user: null };
+      console.error('❌ Auth check error:', {
+        message: error.message,
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        headers: error.response?.headers,
+        config: {
+          url: error.config?.url,
+          method: error.config?.method,
+          baseURL: error.config?.baseURL,
+          withCredentials: error.config?.withCredentials
+        }
+      });
+
+      return {
+        success: false,
+        isAuthenticated: false,
+        user: null,
+        error: error.message
+      };
     }
   },
 
