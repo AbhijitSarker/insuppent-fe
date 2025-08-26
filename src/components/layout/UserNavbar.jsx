@@ -27,7 +27,7 @@ const UserNavbar = ({ onMenuClick }) => {
     ];
 
     return (
-        <div className="w-full h-16 flex  items-center justify-between border-b border-borderColor-primary bg-white px-4 lg:px-6">
+        <div className="w-full h-16 flex  items-center justify-between border-b border-borderColor-primary bg-white px-4 lg:px-6 shadow-sm">
 
             <div className="w-full h-16 flex  items-center justify-between border-b border-borderColor-primary bg-white px-4 lg:px-6 container mx-auto">
                 {/* Left: Logo and nav links */}
@@ -38,8 +38,8 @@ const UserNavbar = ({ onMenuClick }) => {
                         </div>
                     </Link>
                     {/* Separator */}
-                    <div className="w-px h-6 bg-gray-300"></div>
-                    <div className="flex h-[46px] gap-2 mb-0">
+                    <div className="w-px h-6 bg-gray-300 sm:hidden lg:flex"></div>
+                    <div className="h-[46px] gap-2 mb-0 lg:flex hidden">
                         {navigationLinks.map((link) => (
                             <Link
                                 key={link.href}

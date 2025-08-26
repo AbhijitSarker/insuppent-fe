@@ -84,6 +84,8 @@ export function Table({
   footerContent = null,
   paginationDelta = 2,
   searchFilterVisibility = true,
+  cardComponent: CardComponent,
+  isMobile = false,
 }) {
   const [internalSearch, setInternalSearch] = React.useState(search);
   const [pageSizeInput, setPageSizeInput] = React.useState(pageSize.toString());
@@ -227,13 +229,111 @@ export function Table({
 
   const paginationRange = getPaginationRange(page, totalPages, paginationDelta);
 
+  // Render cards for mobile if cardComponent is provided
+  if (isMobile && CardComponent) {
+    return (
+      <div className={cn("", className)}>
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+          {searchFilterVisibility && (
+            <div className="flex flex-1 flex-wrap items-center gap-4">
+              <div className="relative w-[400px]">
+                <MaterialIcon 
+                  icon="search" 
+                  size={20} 
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-content-tertiary pointer-events-none" 
+                />
+                <Input
+                  type="text"
+                  placeholder="Search"
+                  value={internalSearch}
+                  onChange={handleSearch}
+                  className="w-[400px] h-9 pl-10 pr-3 py-2 bg-white border border-borderColor-primary rounded-lg text-sm text-content-primary focus:ring-1 focus:ring-gray-300 focus:border-gray-300 placeholder:text-content-tertiary font-['Inter'] font-normal text-[14px] leading-[20px] tracking-[0%]"
+                />
+              </div>
+              <div className="flex flex-wrap items-center gap-3">
+                {filters.map((filter) => (
+                  <Select
+                    key={filter.key}
+                    value={filter.value || (filter.isMulti ? [] : "__ALL__")}
+                    onValueChange={(value) => handleFilterChange(filter, value)}
+                    className="h-[36px]"
+                    icon={filter.icon}
+                    label={filter.label}
+                    isMulti={filter.isMulti}
+                    hasSearch={filter.hasSearch}
+                  >
+                    {filter.options.filter(opt => opt.value !== "__ALL__").map((opt) => (
+                      <SelectItem 
+                        key={opt.value} 
+                        value={opt.value}
+                        isMulti={filter.isMulti}
+                        data-state={filter.value}
+                      >
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                ))}
+                {(filters.some(f => (f.isMulti ? (f.value && f.value.length > 0) : (f.value && f.value !== "__ALL__")))) && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleClearFilters}
+                    className="flex items-center gap-2 px-3 py-2 h-9 text-sm font-semibold border-none rounded-lg !hover:bg-blue-100 !bg-transparent text-content-brand hover:text-content-brand shadow-none"
+                  >
+                    <MaterialIcon icon="close" size={20} className="text-content-brand p-0" />
+                    Clear filter
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="flex flex-col gap-4">
+          {loading ? (
+            Array.from({ length: pageSize }).map((_, idx) => (
+              <div key={idx} className="rounded-xl border border-borderColor-secondary bg-white p-4 shadow-sm mb-4 animate-pulse h-[180px]" />
+            ))
+          ) : data.length === 0 ? (
+            <div className="text-center py-8">No data found.</div>
+          ) : (
+            data.map((row) => <CardComponent key={row.id} lead={row} />)
+          )}
+        </div>
+        {/* Pagination for mobile */}
+        <div className="flex justify-center items-center gap-2 mt-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => handlePageChange(page - 1)}
+            disabled={page <= 1 || loading}
+            className="rounded-full"
+          >
+            <MaterialIcon icon="chevron_left" size={20} className="text-content-secondary" />
+          </Button>
+          <span className="text-sm">Page {page} of {Math.ceil(total / pageSize)}</span>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => handlePageChange(page + 1)}
+            disabled={page >= Math.ceil(total / pageSize) || loading}
+            className="rounded-full"
+          >
+            <MaterialIcon icon="chevron_right" size={20} className="text-content-secondary" />
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop/table view
   return (
     <div className={cn("", className)}>
       <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
             {
                         searchFilterVisibility && (
-        <div className="flex flex-1 flex-wrap items-center gap-4">
-          <div className="relative w-[400px]">
+        <div className="flex flex-1 flex-wrap items-center gap-4 sm:w-full">
+          <div className="relative w-[200px]">
             <MaterialIcon 
               icon="search" 
               size={20} 
@@ -244,7 +344,7 @@ export function Table({
               placeholder="Search"
               value={internalSearch}
               onChange={handleSearch}
-              className="w-[400px] h-9 pl-10 pr-3 py-2 bg-white border border-borderColor-primary rounded-lg text-sm text-content-primary focus:ring-1 focus:ring-gray-300 focus:border-gray-300 placeholder:text-content-tertiary font-['Inter'] font-normal text-[14px] leading-[20px] tracking-[0%]"
+              className="w-[200px] h-9 pl-10 pr-3 py-2 bg-white border border-borderColor-primary rounded-lg text-sm text-content-primary focus:ring-1 focus:ring-gray-300 focus:border-gray-300 placeholder:text-content-tertiary font-['Inter'] font-normal text-[14px] leading-[20px] tracking-[0%]"
             />
           </div>
               <div className="flex flex-wrap items-center gap-3">
@@ -253,7 +353,7 @@ export function Table({
               key={filter.key}
               value={filter.value || (filter.isMulti ? [] : "__ALL__")}
                 onValueChange={(value) => handleFilterChange(filter, value)}
-                className="h-[36px]"
+                className="h-[36px] sm:w-auto"
                 icon={filter.icon}
                 label={filter.label}
                 isMulti={filter.isMulti}
@@ -284,16 +384,7 @@ export function Table({
             )}
           </div>
     </div>
-      )
-    }
-        {/* <Button 
-          variant="default" 
-          size="lg"
-          onClick={handleExport}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 h-10 min-w-[140px] rounded-md"
-        >
-          Export CSV
-        </Button> */}
+)}
       </div>
       <div className="overflow-x-auto rounded-lg border border-borderColor-primary bg-white">
         <table className="min-w-full bg-white text-sm">
@@ -431,13 +522,12 @@ export function Table({
             )}
           </tbody>
         </table>
-        <div className="flex items-center justify-between h-12 px-4 py-2 border-t border-borderColor-secondary] bg-white rounded-b-lg">
+        <div className="flex items-center justify-between h-12 px-4 py-2 border-t border-borderColor-secondary bg-white rounded-b-lg">
           <div className="flex items-center gap-4">
             <div className="text-content-primary text-[13px] leading-5 tracking-normal font-[450] flex items-center justify-start !antialiased">
               Page Size:
             </div>
             <div className="flex items-center gap-1 mr-2">
-              {/* <span className="text-sm text-gray-600">Show</span> */}
               <Input
                 type="number"
                 value={pageSizeInput}
@@ -448,9 +538,7 @@ export function Table({
                 max={100}
                 className="w-16 h-8 text-center text-sm border-gray-300 rounded-md"
               />
-              {/* <span className="text-sm text-gray-600">entries</span> */}
             </div>
-            {/* Separator */}
             <div className="w-px h-6 bg-gray-300"></div>
             <div className="text-content-primary text-[13px] leading-5 tracking-normal font-[450] flex items-center justify-start">
               Showing {data?.length || 0} of {total || 0} results

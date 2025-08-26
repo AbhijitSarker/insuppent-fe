@@ -1,7 +1,9 @@
+
 import React, { useState, useEffect, useMemo } from 'react';
 import CheckoutPage from '@/components/pages/CheckoutPage.jsx';
 import Alert from '@/components/ui/alert';
 import { Table } from '@/components/ui/Table';
+import LeadCard from '@/components/ui/LeadCard';
 import { usePublicLeads } from '@/api/hooks/useLeads';
 import { Badge } from '@/components/ui/badge';
 import MaterialIcon from '@/components/ui/MaterialIcon';
@@ -237,16 +239,26 @@ const FindLeads = () => {
         }
     ];
 
+
+    // Responsive: detect mobile
+    const [isMobile, setIsMobile] = useState(false);
+    React.useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
     return (
-        <div className="p-8 !bg-transparent">
+        <div className="p-4 sm:p-8 !bg-transparent">
             <Alert type={alert.type} message={alert.message} onClose={() => setAlert({ type: '', message: '' })} />
             <div className="flex items-center justify-between mb-7 mt-0">
-                <h1 className="w-full font-bold text-[32px] leading-[32px] tracking-[-0.025em]">
+                <h1 className="w-full font-bold text-[2rem] sm:text-[32px] leading-[32px] tracking-[-0.025em]">
                     Find Leads
                 </h1>
             {/* <Link to="/admin">Admin</Link> */}
             </div>
-            <div className={` flex gap-2 items-center ${selectedRows.length > 0 ? '' : 'hidden'}`}>
+            <div className={`flex gap-2 items-center ${selectedRows.length > 0 ? '' : 'hidden'}`}> 
                 <Button
                     variant="outline"
                     size="sm"
@@ -259,6 +271,7 @@ const FindLeads = () => {
                     {selectedRows.length} lead(s) selected
                 </span>
             </div>
+
             {checkoutLeads && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
                     <CheckoutPage
@@ -267,38 +280,41 @@ const FindLeads = () => {
                     />
                 </div>
             )}
-            <Table
-                columns={columns}
-                data={paginatedData}
-                loading={isLoading}
-                page={tableState.page}
-                pageSize={tableState.pageSize}
-                total={totalCount}
-                onPageChange={handlePageChange}
-                onPageSizeChange={(newPageSize) => {
-                    setTableState(prev => ({
-                        ...prev,
-                        pageSize: newPageSize,
-                        page: 1
-                    }));
-                }}
-                onSortChange={handleSortChange}
-                sort={tableState.sort}
-                search={tableState.search}
-                onSearch={handleSearch}
-                rowSelection
-                selectedRows={selectedRows}
-                onRowSelect={handleRowSelect}
-                onSelectAll={handleSelectAll}
-                filters={filters}
-                footerContent={
-                    <span>
-                        Showing {paginatedData?.length || 0} of {totalCount || 0} results
-                    </span>
-                }
-                paginationDelta={2}
-                searchFilterVisibility={selectedRows.length > 0 ? false : true}
-            />
+                {/* Table handles both desktop and mobile rendering */}
+                <Table
+                    columns={columns}
+                    data={paginatedData}
+                    loading={isLoading}
+                    page={tableState.page}
+                    pageSize={tableState.pageSize}
+                    total={totalCount}
+                    onPageChange={handlePageChange}
+                    onPageSizeChange={(newPageSize) => {
+                        setTableState(prev => ({
+                            ...prev,
+                            pageSize: newPageSize,
+                            page: 1
+                        }));
+                    }}
+                    onSortChange={handleSortChange}
+                    sort={tableState.sort}
+                    search={tableState.search}
+                    onSearch={handleSearch}
+                    rowSelection
+                    selectedRows={selectedRows}
+                    onRowSelect={handleRowSelect}
+                    onSelectAll={handleSelectAll}
+                    filters={filters}
+                    footerContent={
+                        <span>
+                            Showing {paginatedData?.length || 0} of {totalCount || 0} results
+                        </span>
+                    }
+                    paginationDelta={2}
+                    searchFilterVisibility={selectedRows.length > 0 ? false : true}
+                    cardComponent={LeadCard}
+                    isMobile={isMobile}
+                />
         </div>
     );
 };
