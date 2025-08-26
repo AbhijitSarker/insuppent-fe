@@ -236,7 +236,7 @@ export function Table({
         <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
           {searchFilterVisibility && (
             <div className="flex flex-1 flex-wrap items-center gap-4">
-              <div className="relative w-[400px]">
+              <div className="relative w-full lg:w-[400px]">
                 <MaterialIcon
                   icon="search"
                   size={20}
@@ -247,7 +247,7 @@ export function Table({
                   placeholder="Search"
                   value={internalSearch}
                   onChange={handleSearch}
-                  className="w-[400px] h-9 pl-10 pr-3 py-2 bg-white border border-borderColor-primary rounded-lg text-sm text-content-primary focus:ring-1 focus:ring-gray-300 focus:border-gray-300 placeholder:text-content-tertiary font-['Inter'] font-normal text-[14px] leading-[20px] tracking-[0%]"
+                  className="w-full md:w-[400px] h-9 pl-10 pr-3 py-2 bg-white border border-borderColor-primary rounded-lg text-sm text-content-primary focus:ring-1 focus:ring-gray-300 focus:border-gray-300 placeholder:text-content-tertiary font-['Inter'] font-normal text-[14px] leading-[20px] tracking-[0%]"
                 />
               </div>
               <div className="flex flex-wrap items-center gap-3">
