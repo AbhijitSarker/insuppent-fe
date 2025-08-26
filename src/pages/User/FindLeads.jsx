@@ -312,7 +312,7 @@ const FindLeads = () => {
                 }
                 paginationDelta={2}
                 searchFilterVisibility={selectedRows.length > 0 ? false : true}
-                cardComponent={LeadCard}
+                cardComponent={(props) => <LeadCard {...props} onBuy={(lead) => setCheckoutLeads([lead])} />}
                 isMobile={isMobile}
             />
         </div>

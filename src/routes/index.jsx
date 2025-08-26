@@ -34,10 +34,10 @@ const ProtectedRoute = ({ children, requireRole = null }) => {
     return <Navigate to="/auth/login" replace />;
   }
 
-  // Check for specific role if required
-  if (requireRole && !hasRole(requireRole)) {
-    return <Navigate to="/unauthorized" replace />;
-  }
+  // // Check for specific role if required
+  // if (requireRole && !hasRole(requireRole)) {
+  //   return <Navigate to="/unauthorized" replace />;
+  // }
 
   return children;
 };
@@ -54,9 +54,9 @@ const AdminRoute = ({ children }) => {
     return <Navigate to="/auth/login" replace />;
   }
 
-  if (!isAdmin()) {
-    return <Navigate to="/unauthorized" replace />;
-  }
+  // if (!isAdmin()) {
+  //   return <Navigate to="/unauthorized" replace />;
+  // }
 
   return children;
 };

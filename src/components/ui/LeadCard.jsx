@@ -15,10 +15,9 @@ function formatDate(dateStr) {
     return date.toLocaleDateString();
 }
 
-const LeadCard = ({ lead }) => {
+const LeadCard = ({ lead, onBuy }) => {
     return (
         <div className="rounded-xl border border-borderColor-primary bg-white mb-4 DIdivide-y divide-borderColor-secondary ">
-
             <div className="px-4 py-3 pb-2 border-b border-borderColor-secondary">
                 <span className="font-bold text-lg text-content-primary  px-1 inline-block rounded">
                     {lead.name}
@@ -56,7 +55,10 @@ const LeadCard = ({ lead }) => {
             {/* Buy button */}
             <div className="px-4 py-3 flex justify-center  border-t border-borderColor-secondary">
                 {lead.price && (
-                    <button className="text-blue-600 font-semibold text-[18px] hover:underline focus:outline-none">
+                    <button
+                        className="text-content-brand px-3 rounded-lg py-1 font-medium leading-[17px] text-[14px]"
+                        onClick={() => onBuy && onBuy(lead)}
+                    >
                         Buy ${lead.price?.toFixed(2)}
                     </button>
                 )}
