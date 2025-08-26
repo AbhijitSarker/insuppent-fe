@@ -196,18 +196,18 @@ const FindLeads = () => {
                 <span>{stateAbbrToName[row.state] || row.state}</span>
             )
         },
-            {
-                key: 'price',
-                header: 'Action',
-                render: (row) => (
-                    <button
-                        className="text-content-brand px-3 rounded-lg py-1 font-medium hover:bg-[#DBEAFE] leading-[18px]"
-                        onClick={() => setCheckoutLeads([row])}
-                    >
-                        Buy ${row.price?.toFixed(2) ?? '--'}
-                    </button>
-                )
-            }
+        {
+            key: 'price',
+            header: 'Action',
+            render: (row) => (
+                <button
+                    className="text-content-brand px-3 rounded-lg py-1 font-medium hover:bg-[#DBEAFE] leading-[18px]"
+                    onClick={() => setCheckoutLeads([row])}
+                >
+                    Buy ${row.price?.toFixed(2) ?? '--'}
+                </button>
+            )
+        }
     ];
 
     const typeOptions = [
@@ -256,9 +256,9 @@ const FindLeads = () => {
                 <h1 className="w-full font-bold text-[2rem] sm:text-[32px] leading-[32px] tracking-[-0.025em]">
                     Find Leads
                 </h1>
-            {/* <Link to="/admin">Admin</Link> */}
+                {/* <Link to="/admin">Admin</Link> */}
             </div>
-            <div className={`flex gap-2 items-center ${selectedRows.length > 0 ? '' : 'hidden'}`}> 
+            <div className={`flex gap-2 items-center ${selectedRows.length > 0 ? '' : 'hidden'}`}>
                 <Button
                     variant="outline"
                     size="sm"
@@ -280,41 +280,41 @@ const FindLeads = () => {
                     />
                 </div>
             )}
-                {/* Table handles both desktop and mobile rendering */}
-                <Table
-                    columns={columns}
-                    data={paginatedData}
-                    loading={isLoading}
-                    page={tableState.page}
-                    pageSize={tableState.pageSize}
-                    total={totalCount}
-                    onPageChange={handlePageChange}
-                    onPageSizeChange={(newPageSize) => {
-                        setTableState(prev => ({
-                            ...prev,
-                            pageSize: newPageSize,
-                            page: 1
-                        }));
-                    }}
-                    onSortChange={handleSortChange}
-                    sort={tableState.sort}
-                    search={tableState.search}
-                    onSearch={handleSearch}
-                    rowSelection
-                    selectedRows={selectedRows}
-                    onRowSelect={handleRowSelect}
-                    onSelectAll={handleSelectAll}
-                    filters={filters}
-                    footerContent={
-                        <span>
-                            Showing {paginatedData?.length || 0} of {totalCount || 0} results
-                        </span>
-                    }
-                    paginationDelta={2}
-                    searchFilterVisibility={selectedRows.length > 0 ? false : true}
-                    cardComponent={LeadCard}
-                    isMobile={isMobile}
-                />
+            {/* Table handles both desktop and mobile rendering */}
+            <Table
+                columns={columns}
+                data={paginatedData}
+                loading={isLoading}
+                page={tableState.page}
+                pageSize={tableState.pageSize}
+                total={totalCount}
+                onPageChange={handlePageChange}
+                onPageSizeChange={(newPageSize) => {
+                    setTableState(prev => ({
+                        ...prev,
+                        pageSize: newPageSize,
+                        page: 1
+                    }));
+                }}
+                onSortChange={handleSortChange}
+                sort={tableState.sort}
+                search={tableState.search}
+                onSearch={handleSearch}
+                rowSelection
+                selectedRows={selectedRows}
+                onRowSelect={handleRowSelect}
+                onSelectAll={handleSelectAll}
+                filters={filters}
+                footerContent={
+                    <span>
+                        Showing {paginatedData?.length || 0} of {totalCount || 0} results
+                    </span>
+                }
+                paginationDelta={2}
+                searchFilterVisibility={selectedRows.length > 0 ? false : true}
+                cardComponent={LeadCard}
+                isMobile={isMobile}
+            />
         </div>
     );
 };

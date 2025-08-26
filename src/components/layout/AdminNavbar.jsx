@@ -28,7 +28,7 @@ const AdminNavbar = ({ onMenuClick }) => {
           <img src="/Insuplex360.svg" alt="Logo" className="h-full w-full" />
         </div>
         <div className="w-px h-6 bg-bg-tertiary border"></div>
-              <Button className="text-sm text-content-primary font-semibold bg-bg-tertiary h-[26px] shadow-none hover:bg-bg-tertiary">
+        <Button className="text-sm text-content-primary font-semibold bg-bg-tertiary h-[26px] shadow-none hover:bg-bg-tertiary">
           Admin
         </Button>
       </div>

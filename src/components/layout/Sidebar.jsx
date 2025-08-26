@@ -28,7 +28,7 @@ const Sidebar = ({ className, routes }) => {
 							{route.active && (
 								<div className="absolute left-0 h-[32px] w-[6px] bg-blue-600 rounded-r-lg"></div>
 							)}
-							<div 
+							<div
 								className={cn(
 									"text-black p-2 my-0 w-full h-10 rounded-lg flex items-center gap-3 text-sm font-medium leading-6",
 									route.active
@@ -37,12 +37,12 @@ const Sidebar = ({ className, routes }) => {
 								)}
 							>
 
-							<MaterialIcon 
-								icon={route.icon} 
-								size={20} 
-									className="people text-black"/>
-							<span className="font-medium text-black">{route.label}</span>
-								</div>
+								<MaterialIcon
+									icon={route.icon}
+									size={20}
+									className="people text-black" />
+								<span className="font-medium text-black">{route.label}</span>
+							</div>
 						</Button>
 					</Link>
 				))}

@@ -259,40 +259,40 @@ const MyLeads = () => {
                     {selectedRows.length} lead(s) selected
                 </span>
             </div>
-                <Table
-                    columns={columns}
-                    data={paginatedData}
-                    loading={isLoading}
-                    page={tableState.page}
-                    pageSize={tableState.pageSize}
-                    total={totalCount}
-                    onPageChange={handlePageChange}
-                    onPageSizeChange={(newPageSize) => {
-                        setTableState(prev => ({
-                            ...prev,
-                            pageSize: newPageSize,
-                            page: 1
-                        }));
-                    }}
-                    onSortChange={handleSortChange}
-                    sort={tableState.sort}
-                    search={tableState.search}
-                    onSearch={handleSearch}
-                    rowSelection
-                    selectedRows={selectedRows}
-                    onRowSelect={handleRowSelect}
-                    onSelectAll={handleSelectAll}
-                    filters={filters}
-                    footerContent={
-                        <span>
-                            Showing {paginatedData?.length || 0} of {totalCount || 0} results
-                        </span>
-                    }
-                    paginationDelta={2}
-                    searchFilterVisibility={selectedRows.length > 0 ? false : true}
-                    cardComponent={LeadCard}
-                    isMobile={isMobile}
-                />
+            <Table
+                columns={columns}
+                data={paginatedData}
+                loading={isLoading}
+                page={tableState.page}
+                pageSize={tableState.pageSize}
+                total={totalCount}
+                onPageChange={handlePageChange}
+                onPageSizeChange={(newPageSize) => {
+                    setTableState(prev => ({
+                        ...prev,
+                        pageSize: newPageSize,
+                        page: 1
+                    }));
+                }}
+                onSortChange={handleSortChange}
+                sort={tableState.sort}
+                search={tableState.search}
+                onSearch={handleSearch}
+                rowSelection
+                selectedRows={selectedRows}
+                onRowSelect={handleRowSelect}
+                onSelectAll={handleSelectAll}
+                filters={filters}
+                footerContent={
+                    <span>
+                        Showing {paginatedData?.length || 0} of {totalCount || 0} results
+                    </span>
+                }
+                paginationDelta={2}
+                searchFilterVisibility={selectedRows.length > 0 ? false : true}
+                cardComponent={LeadCard}
+                isMobile={isMobile}
+            />
         </div>
     );
 };
