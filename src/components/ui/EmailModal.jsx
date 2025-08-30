@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Button from '@/components/ui/button';
 import MaterialIcon from '@/components/ui/MaterialIcon';
+import { Badge } from '@/components/ui/badge';
 
 const sampleLead = {
     name: 'Darlene Robertson',
@@ -56,7 +57,20 @@ const EmailModal = ({ open, onClose }) => {
                             <span className="flex items-center gap-[6px] bg-muted py-1 rounded"><MaterialIcon className={'text-content-secondary'} icon="email" size={16} /> {sampleLead.email}</span>
                             <span className="flex items-center gap-[6px] bg-muted py-1 rounded"><MaterialIcon className={'text-content-secondary'} icon="home_work" size={16} /> {sampleLead.address}</span>
                             <span className="flex items-center gap-[6px] bg-muted py-1 rounded"><MaterialIcon className={'text-content-secondary'} icon="location_on" size={16} /> {sampleLead.state}</span>
-                            <span className="flex items-center gap-[6px] bg-muted py-1 rounded"><MaterialIcon className={'text-content-secondary'} icon="home" size={16} /> {sampleLead.type}</span>
+                            <span className="flex items-center gap-[6px] bg-muted py-1 rounded">
+                                <Badge
+                                    variant={
+                                        sampleLead.type.toLowerCase() === 'auto' ? 'auto'
+                                        : sampleLead.type.toLowerCase() === 'mortgage' ? 'mortgage'
+                                        : sampleLead.type.toLowerCase() === 'home' ? 'home'
+                                        : 'default'
+                                    }
+                                    icon={sampleLead.type.toLowerCase()}
+                                    className="capitalize"
+                                >
+                                    {sampleLead.type}
+                                </Badge>
+                            </span>
                         </div>
                     </div>
                 </div>
