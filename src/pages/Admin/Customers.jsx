@@ -34,7 +34,7 @@ const Customers = () => {
 	// Get customer data from API
 	const { data: customer, isLoading: isUserLoading, isError: isUserError } = useUser(customerId);
 	// Get purchased leads for this customer
-	const { data: purchasedLeadsData, isLoading: isLeadsLoading, isError: isLeadsError } = useUserPurchasedLeads(customerId);
+	const { data: purchasedLeadsData, isLoading: isLeadsLoading, isError: isLeadsError, refetch } = useUserPurchasedLeads(customerId);
 	const purchasedLeads = purchasedLeadsData?.data || [];
 
 	// Filter and sort data based on active tab and filters
@@ -158,8 +158,8 @@ const Customers = () => {
 		setIsRefunding(true);
 		try {
 			await markLeadUserRefunded(leadId, true);
-			// Optionally, refetch leads or update UI
-			purchasedLeadsData.refetch && purchasedLeadsData.refetch();
+			// Refetch leads to update datatable
+			refetch && refetch();
 		} catch (err) {
 			// Optionally show error
 			console.error('Failed to mark as refunded', err);
@@ -262,7 +262,7 @@ const Customers = () => {
 					<DropdownMenuContent align="end" className="w-48">
 						{!row.isRefunded ? (
 							<DropdownMenuItem
-								onClick={() => handleMarkAsRefunded(row.id, true)}
+								onClick={() => handleMarkAsRefunded(row.id)}
 								disabled={isRefunding}
 								className="text-blue-600"
 							>
@@ -271,7 +271,7 @@ const Customers = () => {
 							</DropdownMenuItem>
 						) : (
 							<DropdownMenuItem
-								onClick={() => handleMarkAsRefunded(row.id, false)}
+								onClick={() => handleMarkAsRefunded(row.id)}
 								disabled={isRefunding}
 								className="text-red-600"
 							>
@@ -286,20 +286,62 @@ const Customers = () => {
 	];
 
 	const typeOptions = [
-		{ value: 'Mortgage', label: 'Mortgage' },
-		{ value: 'Auto', label: 'Auto' },
-		{ value: 'Business', label: 'Business' },
-		{ value: 'Life Insurance', label: 'Life Insurance' },
-		{ value: 'Home', label: 'Home' },
+		{ value: 'mortgage', label: 'Mortgage' },
+		{ value: 'auto', label: 'Auto' },
+		{ value: 'home', label: 'Home' },
 	];
 
 	const stateOptions = [
-		{ value: 'Arizona', label: 'Arizona' },
-		{ value: 'Alabama', label: 'Alabama' },
-		{ value: 'Connecticut', label: 'Connecticut' },
-		{ value: 'Arkansas', label: 'Arkansas' },
-		{ value: 'Colorado', label: 'Colorado' },
-		{ value: 'Alaska', label: 'Alaska' },
+		{ value: 'AL', label: 'Alabama' },
+		{ value: 'AK', label: 'Alaska' },
+		{ value: 'AZ', label: 'Arizona' },
+		{ value: 'AR', label: 'Arkansas' },
+		{ value: 'CA', label: 'California' },
+		{ value: 'CO', label: 'Colorado' },
+		{ value: 'CT', label: 'Connecticut' },
+		{ value: 'DE', label: 'Delaware' },
+		{ value: 'FL', label: 'Florida' },
+		{ value: 'GA', label: 'Georgia' },
+		{ value: 'HI', label: 'Hawaii' },
+		{ value: 'ID', label: 'Idaho' },
+		{ value: 'IL', label: 'Illinois' },
+		{ value: 'IN', label: 'Indiana' },
+		{ value: 'IA', label: 'Iowa' },
+		{ value: 'KS', label: 'Kansas' },
+		{ value: 'KY', label: 'Kentucky' },
+		{ value: 'LA', label: 'Louisiana' },
+		{ value: 'ME', label: 'Maine' },
+		{ value: 'MD', label: 'Maryland' },
+		{ value: 'MA', label: 'Massachusetts' },
+		{ value: 'MI', label: 'Michigan' },
+		{ value: 'MN', label: 'Minnesota' },
+		{ value: 'MS', label: 'Mississippi' },
+		{ value: 'MO', label: 'Missouri' },
+		{ value: 'MT', label: 'Montana' },
+		{ value: 'NE', label: 'Nebraska' },
+		{ value: 'NV', label: 'Nevada' },
+		{ value: 'NH', label: 'New Hampshire' },
+		{ value: 'NJ', label: 'New Jersey' },
+		{ value: 'NM', label: 'New Mexico' },
+		{ value: 'NY', label: 'New York' },
+		{ value: 'NC', label: 'North Carolina' },
+		{ value: 'ND', label: 'North Dakota' },
+		{ value: 'OH', label: 'Ohio' },
+		{ value: 'OK', label: 'Oklahoma' },
+		{ value: 'OR', label: 'Oregon' },
+		{ value: 'PA', label: 'Pennsylvania' },
+		{ value: 'RI', label: 'Rhode Island' },
+		{ value: 'SC', label: 'South Carolina' },
+		{ value: 'SD', label: 'South Dakota' },
+		{ value: 'TN', label: 'Tennessee' },
+		{ value: 'TX', label: 'Texas' },
+		{ value: 'UT', label: 'Utah' },
+		{ value: 'VT', label: 'Vermont' },
+		{ value: 'VA', label: 'Virginia' },
+		{ value: 'WA', label: 'Washington' },
+		{ value: 'WV', label: 'West Virginia' },
+		{ value: 'WI', label: 'Wisconsin' },
+		{ value: 'WY', label: 'Wyoming' }
 	];
 
 	const filters = [

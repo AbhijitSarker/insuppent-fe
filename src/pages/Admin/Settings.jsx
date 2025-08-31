@@ -42,6 +42,51 @@ import {
 
 
 const Settings = () => {
+	// Pricing table columns
+	const pricingColumns = [
+		{
+			key: 'name',
+			header: 'Name',
+			sortable: false,
+			render: (row) => (<span className="font-medium text-content-primary">{row.name}</span>),
+		},
+		{
+			key: 'price',
+			header: 'Price',
+			sortable: false,
+			render: (row) => (<span className="text-content-primary">${row.price}</span>),
+		},
+		{
+			key: 'leadCount',
+			header: 'Lead sale count',
+			sortable: false,
+			render: (row) => (<span className="text-content-primary">{row.leadCount}</span>),
+		},
+	];
+	// Pricing plans state and handlers
+		const initialPlans = [
+			{ name: 'Basic', price: '24.99', leadCount: 50 },
+			{ name: 'Startup', price: '80.50', leadCount: 80 },
+			{ name: 'Agency', price: '120.99', leadCount: 200 }
+		];
+
+		const [pricingPlans, setPricingPlans] = useState(initialPlans);
+		const [editingIdx, setEditingIdx] = useState(null);
+		const [editPrice, setEditPrice] = useState('');
+
+		const handleEditPrice = (idx) => {
+			setEditingIdx(idx);
+			setEditPrice(pricingPlans[idx].price);
+		};
+
+		const handleSavePrice = (idx) => {
+			const updatedPlans = pricingPlans.map((plan, i) => {
+				return i === idx ? { ...plan, price: editPrice } : plan;
+			});
+			setPricingPlans(updatedPlans);
+			setEditingIdx(null);
+			setAlert({ type: 'success', message: `[${pricingPlans[idx].name}] package price has been changed.` });
+		};
    const navigate = useNavigate();
    const [activeTab, setActiveTab] = useState('customers');
    const [tableState, setTableState] = useState({
@@ -196,7 +241,7 @@ const Settings = () => {
 											 className="w-8 h-8 rounded-full flex items-center justify-center"
 											 style={{ backgroundColor: getRandomLightColor(row.name || row.id || "avatar") }}
 										 >
-												 <span className="text-sm font-semibold text-content-brand">{row.avatar || (row.name ? row.name[0] : '')}</span>
+												 <span className="text-sm font-semibold text-content-primary">{row.avatar || (row.name ? row.name[0] : '')}</span>
 										 </div>
 					   <button
 						   className="font-medium text-content-primary hover:text-content-brand hover:underline transition-colors text-left"
@@ -318,8 +363,8 @@ const Settings = () => {
 	   ];
 
 	const statusOptions = [
-		{ value: 'enabled', label: 'Enabled' },
-		{ value: 'disabled', label: 'Disabled' },
+		{ value: 'active', label: 'Enabled' },
+		{ value: 'inactive', label: 'Disabled' },
 	];
 
 	const filters = [
@@ -395,30 +440,30 @@ const Settings = () => {
 					   </div>
 
 					   {/* Customer Table */}
-					   <Table
-						   columns={columns}
-						   data={paginatedData}
-						   page={tableState.page}
-						   pageSize={tableState.pageSize}
-						   total={totalCount}
-						   onPageChange={handlePageChange}
-						   onPageSizeChange={(newPageSize) => {
-							   setTableState(prev => ({
-								   ...prev,
-								   pageSize: newPageSize,
-								   page: 1
-							   }));
-						   }}
-						   onSortChange={handleSortChange}
-						   sort={tableState.sort}
-						   search={tableState.search}
-						   onSearch={handleSearch}
-						   rowSelection={true}
-						   selectedRows={selectedRows}
-						   onRowSelect={handleRowSelect}
-						   onSelectAll={handleSelectAll}
-						   filters={filters}
-					   />
+						<Table
+						columns={columns}
+						data={paginatedData}
+						page={tableState.page}
+						pageSize={tableState.pageSize}
+						total={totalCount}
+						onPageChange={handlePageChange}
+						onPageSizeChange={(newPageSize) => {
+							setTableState(prev => ({
+								...prev,
+								pageSize: newPageSize,
+								page: 1
+							}));
+						}}
+						onSortChange={handleSortChange}
+						sort={tableState.sort}
+						search={tableState.search}
+						onSearch={handleSearch}
+						rowSelection={false}
+						selectedRows={selectedRows}
+						onRowSelect={handleRowSelect}
+						onSelectAll={handleSelectAll}
+						filters={filters}
+					/>
 					   {/* Confirm Modal for status change */}
 					   <Modal
 						   open={modalOpen}
@@ -433,14 +478,32 @@ const Settings = () => {
 				   </div>
 			   )}
 
-			   {/* Pricing Plans Tab Content */}
-			   {activeTab === 'pricing' && (
-				   <div className="text-center py-12">
-					   <MaterialIcon icon="pricing" size={48} className="mx-auto text-gray-400 mb-4" />
-					   <h3 className="text-lg font-medium text-content-primary mb-2">Pricing Plans</h3>
-					   <p className="text-content-secondary">Pricing plans management coming soon...</p>
-				   </div>
-			   )}
+			{/* Pricing Plans Tab Content */}
+			{activeTab === 'pricing' && (
+				<div >
+					   <div className="flex items-center justify-between mt-[22px] mb-5">
+						   <h2 className="text-2xl font-semibold text-content-primary">Customers</h2>
+					   </div>
+					<Table
+						columns={pricingColumns}
+						data={pricingPlans}
+						page={1}
+						pageSize={10}
+						total={pricingPlans.length}
+						onPageChange={() => {}}
+						onPageSizeChange={() => {}}
+						onSortChange={() => {}}
+						sort={{ key: '', direction: 'asc' }}
+						search={''}
+						onSearch={() => {}}
+						rowSelection={false}
+						selectedRows={[]}
+						onRowSelect={() => {}}
+						onSelectAll={() => {}}
+						filters={[]}
+					/>
+				</div>
+			)}
 		   </div>
 	   );
 };
