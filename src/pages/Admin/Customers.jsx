@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useUsers, useUser } from '@/api/hooks/useUsers';
 import { Table } from '@/components/ui/Table';
 import { Button } from '@/components/ui/button';
+import { useUserPurchasedLeads } from '@/api/hooks/useLeads';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import MaterialIcon from '@/components/ui/MaterialIcon';
@@ -13,97 +14,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-
-
-
-// Mock leads data based on the image
-const mockLeads = [
-	{
-		id: 1,
-		name: 'Kristin Watson',
-		phone: '(217) 555-0113',
-		email: 'debbie.baker@example.com',
-		type: 'mortgage',
-		address: '1901 Thornridge Cir. Shiloh',
-		state: 'Arizona',
-		price: '$12.99',
-		datePurchased: '13 June, 2025 4:30 pm',
-		status: 'active'
-	},
-	{
-		id: 2,
-		name: 'Dianne Russell',
-		phone: '(217) 555-0113',
-		email: 'debbie.baker@example.com',
-		type: 'auto',
-		address: '1901 Thornridge Cir. Shiloh',
-		state: 'Alabama',
-		price: '$12.99',
-		datePurchased: '13 June, 2025 4:30 pm',
-		status: 'refunded'
-	},
-	{
-		id: 3,
-		name: 'Brooklyn Simmons',
-		phone: '(217) 555-0113',
-		email: 'debbie.baker@example.com',
-		type: 'home',
-		address: '1901 Thornridge Cir. Shiloh',
-		state: 'Connecticut',
-		price: '$12.99',
-		datePurchased: '13 June, 2025 4:30 pm',
-		status: 'active'
-	},
-	{
-		id: 4,
-		name: 'Floyd Miles',
-		phone: '(217) 555-0113',
-		email: 'debbie.baker@example.com',
-		type: 'home',
-		address: '1901 Thornridge Cir. Shiloh',
-		state: 'Arkansas',
-		price: '$12.99',
-		datePurchased: '13 June, 2025 4:30 pm',
-		status: 'active'
-	},
-	{
-		id: 5,
-		name: 'Jacob Jones',
-		phone: '(217) 555-0113',
-		email: 'debbie.baker@example.com',
-		type: 'mortgage',
-		address: '1901 Thornridge Cir. Shiloh',
-		state: 'Colorado',
-		price: '$12.99',
-		datePurchased: '13 June, 2025 4:30 pm',
-		status: 'refunded'
-	},
-	{
-		id: 6,
-		name: 'Kathryn Murphy',
-		phone: '(217) 555-0113',
-		email: 'debbie.baker@example.com',
-		type: 'auto',
-		address: '1901 Thornridge Cir. Shiloh',
-		state: 'Alaska',
-		price: '$12.99',
-		datePurchased: '13 June, 2025 4:30 pm',
-		status: 'active'
-	},
-	{
-		id: 7,
-		name: 'Ronald Richards',
-		phone: '(217) 555-0113',
-		email: 'debbie.baker@example.com',
-		type: 'auto',
-		address: '1901 Thornridge Cir. Shiloh',
-		state: 'Arizona',
-		price: '$12.99',
-		datePurchased: '13 June, 2025 4:30 pm',
-		status: 'active'
-	}
-];
-
+import { markLeadUserRefunded } from '@/api/services/purchaseService.js';
 
 const Customers = () => {
 	const navigate = useNavigate();
@@ -118,22 +29,26 @@ const Customers = () => {
 		states: []
 	});
 	const [selectedRows, setSelectedRows] = useState([]);
+	const [isRefunding, setIsRefunding] = useState(false);
 
 	// Get customer data from API
 	const { data: customer, isLoading: isUserLoading, isError: isUserError } = useUser(customerId);
+	// Get purchased leads for this customer
+	const { data: purchasedLeadsData, isLoading: isLeadsLoading, isError: isLeadsError } = useUserPurchasedLeads(customerId);
+	const purchasedLeads = purchasedLeadsData?.data || [];
 
 	// Filter and sort data based on active tab and filters
 	const filteredAndSortedData = useMemo(() => {
-		let filteredData = [...mockLeads];
+		let filteredData = [...purchasedLeads];
 
-		// Apply tab filter
+		// Tab filter
 		if (activeTab === 'active') {
-			filteredData = filteredData.filter(lead => lead.status === 'active');
+			filteredData = filteredData.filter(lead => !lead.isRefunded);
 		} else if (activeTab === 'refunded') {
-			filteredData = filteredData.filter(lead => lead.status === 'refunded');
+			filteredData = filteredData.filter(lead => lead.isRefunded);
 		}
 
-		// Apply search filter
+		// Search filter
 		if (tableState.search) {
 			const searchTerm = tableState.search.toLowerCase();
 			filteredData = filteredData.filter(lead =>
@@ -145,32 +60,29 @@ const Customers = () => {
 			);
 		}
 
-		// Apply type filter
+		// Type filter
 		if (tableState.types.length > 0) {
 			filteredData = filteredData.filter(lead =>
 				tableState.types.includes(lead.type)
 			);
 		}
 
-		// Apply state filter
+		// State filter
 		if (tableState.states.length > 0) {
 			filteredData = filteredData.filter(lead =>
 				tableState.states.includes(lead.state)
 			);
 		}
 
-		// Apply sorting
+		// Sorting
 		if (tableState.sort.key) {
 			filteredData.sort((a, b) => {
 				let aVal = a[tableState.sort.key];
 				let bVal = b[tableState.sort.key];
-
-				// Handle string sorting
 				if (typeof aVal === 'string') {
 					aVal = aVal.toLowerCase();
 					bVal = bVal.toLowerCase();
 				}
-
 				if (aVal < bVal) {
 					return tableState.sort.direction === 'asc' ? -1 : 1;
 				}
@@ -180,9 +92,8 @@ const Customers = () => {
 				return 0;
 			});
 		}
-
 		return filteredData;
-	}, [mockLeads, activeTab, tableState]);
+	}, [purchasedLeads, activeTab, tableState]);
 
 	// Paginate the filtered data
 	const paginatedData = useMemo(() => {
@@ -196,11 +107,11 @@ const Customers = () => {
 
 	// Calculate counts for each tab
 	const tabCounts = useMemo(() => {
-		const allCount = mockLeads.length;
-		const activeCount = mockLeads.filter(lead => lead.status === 'active').length;
-		const refundedCount = mockLeads.filter(lead => lead.status === 'refunded').length;
+		const allCount = purchasedLeads.length;
+		const activeCount = purchasedLeads.filter(lead => !lead.isRefunded).length;
+		const refundedCount = purchasedLeads.filter(lead => lead.isRefunded).length;
 		return { all: allCount, active: activeCount, refunded: refundedCount };
-	}, []);
+	}, [purchasedLeads]);
 
 	// Table state update handlers
 	const handlePageChange = (newPage) => {
@@ -240,6 +151,21 @@ const Customers = () => {
 
 	const handleSelectAll = (checked) => {
 		setSelectedRows(checked ? paginatedData || [] : []);
+	};
+
+	// Handler for marking a lead as refunded
+	const handleMarkAsRefunded = async (leadId) => {
+		setIsRefunding(true);
+		try {
+			await markLeadUserRefunded(leadId, true);
+			// Optionally, refetch leads or update UI
+			purchasedLeadsData.refetch && purchasedLeadsData.refetch();
+		} catch (err) {
+			// Optionally show error
+			console.error('Failed to mark as refunded', err);
+		} finally {
+			setIsRefunding(false);
+		}
 	};
 
 	// Table columns configuration
@@ -326,7 +252,7 @@ const Customers = () => {
 		{
 			key: 'actions',
 			header: '',
-			render: () => (
+			render: (row) => (
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<Button variant="ghost" size="icon" className="h-8 w-8">
@@ -334,19 +260,25 @@ const Customers = () => {
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="w-48">
-						<DropdownMenuItem>
-							<MaterialIcon icon="edit" size={16} className="mr-2" />
-							Edit Lead
-						</DropdownMenuItem>
-						<DropdownMenuItem>
-							<MaterialIcon icon="visibility" size={16} className="mr-2" />
-							View Details
-						</DropdownMenuItem>
-						<DropdownMenuSeparator />
-						<DropdownMenuItem className="text-red-600">
-							<MaterialIcon icon="delete" size={16} className="mr-2" />
-							Delete Lead
-						</DropdownMenuItem>
+						{!row.isRefunded ? (
+							<DropdownMenuItem
+								onClick={() => handleMarkAsRefunded(row.id, true)}
+								disabled={isRefunding}
+								className="text-blue-600"
+							>
+								<MaterialIcon icon="undo" size={16} className="mr-2" />
+								Mark as refunded
+							</DropdownMenuItem>
+						) : (
+							<DropdownMenuItem
+								onClick={() => handleMarkAsRefunded(row.id, false)}
+								disabled={isRefunding}
+								className="text-red-600"
+							>
+								<MaterialIcon icon="redo" size={16} className="mr-2" />
+								Mark as not refunded
+							</DropdownMenuItem>
+						)}
 					</DropdownMenuContent>
 				</DropdownMenu>
 			)
@@ -539,4 +471,4 @@ const Customers = () => {
 	);
 };
 
-export default Customers; 
+export default Customers;

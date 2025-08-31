@@ -1,13 +1,3 @@
-export const updatePurchasedLeadStatus = async (leadId, status) => {
-  const res = await axiosSecure.patch(`/purchase/${leadId}/status`, { status });
-  return res.data;
-};
-
-export const upsertPurchasedLeadComment = async (leadId, comment) => {
-  const res = await axiosSecure.patch(`/purchase/${leadId}/comment`, { comment });
-  return res.data;
-};
-
 import { axiosSecure } from '@/api/axios/config';
 
 
@@ -21,5 +11,24 @@ export const createCheckoutSession = async (leadIds) => {
 
 export const getPurchaseHistory = async () => {
   const res = await axiosSecure.get('/purchase/history');
+  return res.data;
+};
+
+export const getUserPurchasedLeads = async (userId) => {
+  const res = await axiosSecure.get(`/purchase/user/${userId}/leads`);
+  return res.data;
+};
+export const updatePurchasedLeadStatus = async (leadId, status) => {
+  const res = await axiosSecure.patch(`/purchase/${leadId}/status`, { status });
+  return res.data;
+};
+
+export const upsertPurchasedLeadComment = async (leadId, comment) => {
+  const res = await axiosSecure.patch(`/purchase/${leadId}/comment`, { comment });
+  return res.data;
+};
+
+export const markLeadUserRefunded = async (leadUserId, isRefunded) => {
+  const res = await axiosSecure.patch(`/admin/lead-user/${leadUserId}/refund`, { isRefunded });
   return res.data;
 };

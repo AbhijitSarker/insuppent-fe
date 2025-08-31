@@ -1,7 +1,15 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getLeads, getPublicLeads, updateStatus, getMyLeads } from '../services/leadService';
-import { updatePurchasedLeadStatus, upsertPurchasedLeadComment } from '../services/purchaseService';
+import { updatePurchasedLeadStatus, upsertPurchasedLeadComment, getUserPurchasedLeads } from '../services/purchaseService';
+
+export const useUserPurchasedLeads = (userId) => {
+  return useQuery({
+    queryKey: ['userPurchasedLeads', userId],
+    queryFn: () => getUserPurchasedLeads(userId),
+    enabled: !!userId,
+  });
+};
 
 
 export const useLeads = () => {
