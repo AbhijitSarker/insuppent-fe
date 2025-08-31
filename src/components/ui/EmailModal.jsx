@@ -3,35 +3,9 @@ import Button from '@/components/ui/button';
 import MaterialIcon from '@/components/ui/MaterialIcon';
 import { Badge } from '@/components/ui/badge';
 
-const sampleLead = {
-    name: 'Darlene Robertson',
-    email: 'trungkienksptknd@gmail.com',
-    address: '4140 Parker Rd. Allentown',
-    state: 'Indiana',
-    type: 'Home',
-};
-
-const sampleEmails = [
-    {
-        style: 'Friendly',
-        subject: 'Ready to Find Your Perfect Home in Indiana?',
-        body: `Hi Darlene,\n\nI hope you’re doing well! I saw that you’re exploring home options in Indiana, and I’d love to help make your search easier.\n\nWhether you’re buying your first home or looking for something new, we offer expert guidance and personalized options that match your needs and budget.\n\nWould you be open to a quick chat to discuss what you’re looking for?\nLooking forward to hearing from you!\n\nBest regards,\nYour Name\nYour Company\n[Phone Number] | [Email]\n[Website Link]`
-    },
-    {
-        style: 'Professional',
-        subject: 'Indiana Homes You’ll Love – Take a Look',
-        body: `Hi Darlene,\n\nJust checking in to see how your home search is going!\n\nWe’ve helped many Indiana residents like yourself find their ideal homes, and I’d love to do the same for you. I’ve put together a quick list of homes currently available that might interest you.\n\n👉 [Insert link to listings or guide]\n\nWould you be open to a quick chat to discuss what you’re looking for?\nLooking forward to hearing from you!\n\nLet me know if you’d like to schedule a time to talk or view any properties.\n\nAll the best,\nYour Name\nYour Company\n[Phone Number] | [Email]`
-    },
-    {
-        style: 'Casual',
-        subject: 'Ready to Find Your Perfect Home in Indiana?',
-        body: `Hi Darlene,\n\nI hope you’re doing well! I saw that you’re exploring home options in Indiana, and I’d love to help make your search easier.\n\nWhether you’re buying your first home or looking for something new, we offer expert guidance and personalized options that match your needs and budget.\n\nWould you be open to a quick chat to discuss what you’re looking for?\nLooking forward to hearing from you!\n\nBest regards,\nYour Name\nYour Company\n[Phone Number] | [Email]\n[Website Link]`
-    }
-];
-
-const EmailModal = ({ open, onClose }) => {
+const EmailModal = ({ open, onClose, lead }) => {
     const [copiedIdx, setCopiedIdx] = useState(null);
-    if (!open) return null;
+    if (!open || !lead) return null;
     return (
         <div className="fixed inset-0 z-50 rounded-3xl">
             {/* Dark overlay */}
@@ -40,9 +14,7 @@ const EmailModal = ({ open, onClose }) => {
             <div className="rounded-3xl absolute left-1/2 bottom-0 w-full -translate-x-1/2 h-[90vh] bg-bg-secondary  flex flex-col border-t border-border animate-slideUpModal">
                 {/* Header with icon and title */}
                 <div className="flex items-center gap-4 px-5 py-5 border-b border-border bg-white rounded-t-3xl">
-                    {/* <div className="rounded-full bg-primary/10 p-2 flex items-center"> */}
                     <img src="/src/assets/ai.svg" alt="" />
-                    {/* </div> */}
                     <h2 className="text-2xl text-content-primary tracking-tight font-semibold">AI Generated Email</h2>
                     <div className="flex-1" />
                     <button onClick={onClose} className="text-2xl px-2 py-1 rounded hover:bg-muted/60 transition-colors" title="Close">
@@ -52,23 +24,18 @@ const EmailModal = ({ open, onClose }) => {
                 {/* Lead info */}
                 <div className="mx-8 border-b py-6 border-border">
                     <div>
-                        <div className="font-semibold text-lg mb-2">Email copy for <span className="text-primary">{sampleLead.name}</span></div>
+                        <div className="font-semibold text-lg mb-2">Email copy for <span className="text-primary">{lead.name}</span></div>
                         <div className="flex gap-5 text-sm text-muted-foreground flex-wrap  text-content-primary ">
-                            <span className="flex items-center gap-[6px] bg-muted py-1 rounded"><MaterialIcon className={'text-content-secondary'} icon="email" size={16} /> {sampleLead.email}</span>
-                            <span className="flex items-center gap-[6px] bg-muted py-1 rounded"><MaterialIcon className={'text-content-secondary'} icon="home_work" size={16} /> {sampleLead.address}</span>
-                            <span className="flex items-center gap-[6px] bg-muted py-1 rounded"><MaterialIcon className={'text-content-secondary'} icon="location_on" size={16} /> {sampleLead.state}</span>
+                            <span className="flex items-center gap-[6px] bg-muted py-1 rounded"><MaterialIcon className={'text-content-secondary'} icon="email" size={16} /> {lead.email}</span>
+                            <span className="flex items-center gap-[6px] bg-muted py-1 rounded"><MaterialIcon className={'text-content-secondary'} icon="home_work" size={16} /> {lead.address}</span>
+                            <span className="flex items-center gap-[6px] bg-muted py-1 rounded"><MaterialIcon className={'text-content-secondary'} icon="location_on" size={16} /> {lead.state}</span>
                             <span className="flex items-center gap-[6px] bg-muted py-1 rounded">
                                 <Badge
-                                    variant={
-                                        sampleLead.type.toLowerCase() === 'auto' ? 'auto'
-                                        : sampleLead.type.toLowerCase() === 'mortgage' ? 'mortgage'
-                                        : sampleLead.type.toLowerCase() === 'home' ? 'home'
-                                        : 'default'
-                                    }
-                                    icon={sampleLead.type.toLowerCase()}
+                                    variant={lead.type?.toLowerCase()}
+                                    icon={lead.type?.toLowerCase()}
                                     className="capitalize"
                                 >
-                                    {sampleLead.type}
+                                    {lead.type}
                                 </Badge>
                             </span>
                         </div>
@@ -77,9 +44,8 @@ const EmailModal = ({ open, onClose }) => {
                 {/* Email styles side by side */}
                 <div className="flex-1 overflow-auto p-8 bg-gray-50">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {sampleEmails.map((email, idx) => (
+                        {(lead.emails || []).map((email, idx) => (
                             <div key={idx} className="relative flex flex-col items-stretch">
-                                {/* Floating tab style label, visually overlapping the box border */}
                                 <div className='w-min'>
                                     <div
                                         className="px-3 py-[6px] bg-white border border-gray-300 font-semibold text-sm shadow-sm"
@@ -93,7 +59,7 @@ const EmailModal = ({ open, onClose }) => {
                                             textAlign: 'center',
                                         }}
                                     >
-                                        {email.style}
+                                        {email.tone ? email.tone.charAt(0).toUpperCase() + email.tone.slice(1) : `Email ${idx + 1}`}
                                     </div>
                                 </div>
                                 <div

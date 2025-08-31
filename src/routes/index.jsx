@@ -141,9 +141,9 @@ export const router = createBrowserRouter([
   {
     path: "admin",
     element: (
-      <AdminRoute>
+      // <AdminRoute>
         <AdminLayout />
-      </AdminRoute>
+      // </AdminRoute>
     ),
     children: [
       {
@@ -167,26 +167,25 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: (
-          <ProtectedRoute>
+          // <ProtectedRoute>
             <FindLeads />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         ),
       },
       {
         path: "my-leads",
         element: (
-          <ProtectedRoute>
+          // <ProtectedRoute>
             <MyLeads />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         ),
       },
       {
         path: "profile",
         element: (
-          <ProtectedRoute>
-            {/* Add your profile component here */}
+          // <ProtectedRoute>
             <div>Profile Page - Protected Route</div>
-          </ProtectedRoute>
+          // </ProtectedRoute>
         ),
       },
       // Add more protected user routes here

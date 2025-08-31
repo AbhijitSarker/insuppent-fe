@@ -1,3 +1,12 @@
+export const updatePurchasedLeadStatus = async (leadId, status) => {
+  const res = await axiosSecure.patch(`/purchase/${leadId}/status`, { status });
+  return res.data;
+};
+
+export const upsertPurchasedLeadComment = async (leadId, comment) => {
+  const res = await axiosSecure.patch(`/purchase/${leadId}/comment`, { comment });
+  return res.data;
+};
 
 import { axiosSecure } from '@/api/axios/config';
 

@@ -1,6 +1,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getLeads, getPublicLeads, updateStatus, getMyLeads } from '../services/leadService';
+import { updatePurchasedLeadStatus, upsertPurchasedLeadComment } from '../services/purchaseService';
 
 
 export const useLeads = () => {
@@ -50,9 +51,32 @@ export const usePublicLeads = () => {
 
 // Fetch only the current user's leads
 export const useMyLeads = () => {
-  return useQuery({
+  const queryClient = useQueryClient();
+  const query = useQuery({
     queryKey: ['my-leads'],
     queryFn: () => getMyLeads(),
     keepPreviousData: true,
   });
+
+  const statusMutation = useMutation({
+    mutationFn: ({ leadId, status }) => updatePurchasedLeadStatus(leadId, status),
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['my-leads'] });
+    },
+  });
+
+  const commentMutation = useMutation({
+    mutationFn: ({ leadId, comment }) => upsertPurchasedLeadComment(leadId, comment),
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['my-leads'] });
+    },
+  });
+
+  return {
+    ...query,
+    updateStatus: (leadId, status) => statusMutation.mutateAsync({ leadId, status }),
+    isUpdatingStatus: statusMutation.isLoading,
+    upsertComment: (leadId, comment) => commentMutation.mutateAsync({ leadId, comment }),
+    isUpdatingComment: commentMutation.isLoading,
+  };
 };

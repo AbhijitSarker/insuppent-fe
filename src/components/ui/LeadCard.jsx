@@ -1,6 +1,7 @@
 import React from "react";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 import { Badge } from "@/components/ui/badge";
+import Button from "./button";
 
 function formatDate(dateStr) {
     const date = new Date(dateStr);
@@ -15,13 +16,30 @@ function formatDate(dateStr) {
     return date.toLocaleDateString();
 }
 
-const LeadCard = ({ lead, onBuy }) => {
+const LeadCard = ({ lead, onBuy, onShowEmails, onUpdateStatus, onComment }) => {
     return (
         <div className="rounded-xl border border-borderColor-primary bg-white mb-4 DIdivide-y divide-borderColor-secondary ">
-            <div className="px-4 py-3 pb-2 border-b border-borderColor-secondary">
+            <div className="px-4 py-3 pb-2 border-b border-borderColor-secondary flex items-center justify-between">
                 <span className="font-bold text-lg text-content-primary  px-1 inline-block rounded">
                     {lead.name}
                 </span>
+            <div className="flex gap-2">
+                {onShowEmails && (
+                    <Button size="icon" variant="ghost" title="Show Emails" onClick={() => onShowEmails(lead)}>
+                        <img className='h-6' src="/src/assets/ai.svg" alt="AI" />
+                    </Button>
+                )}
+                {onUpdateStatus && (
+                    <Button size="icon" variant="ghost" title="Update Status" onClick={() => onUpdateStatus(lead)}>
+                        <MaterialIcon icon="flag" size={20} />
+                    </Button>
+                )}
+                {onComment && (
+                    <Button size="icon" variant="ghost" title="Comment" onClick={() => onComment(lead)}>
+                        <MaterialIcon icon="comment" size={20} />
+                    </Button>
+                )}
+            </div>
             </div>
             {/* Info rows */}
             <div className="flex flex-col justify-center divide-y divide-borderColor-secondary text-[14px] leading-5 font-normal">
