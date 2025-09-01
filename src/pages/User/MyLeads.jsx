@@ -19,6 +19,7 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuSubContent,
 } from '@/components/ui/dropdown-menu';
+import { Select, SelectItem } from '@/components/ui/select';
 // Modal state for AI email
 
 const stateAbbrToName = {
@@ -220,18 +221,6 @@ const MyLeads = () => {
             )
         },
         {
-            key: 'aiEmail',
-            header: '',
-            icon: null,
-            render: (row) => (
-                <Button size="icon" variant="ghost" title="Show Emails" onClick={() => {
-                    setEmailModalOpen(row);
-                }}>
-                    <img className='h-6' src="/src/assets/ai.svg" alt="" />
-                </Button>
-            ),
-        },
-        {
             key: 'leadStatus',
             header: 'Status',
             sortable: true,
@@ -255,6 +244,18 @@ const MyLeads = () => {
             }
         },
         {
+            key: 'aiEmail',
+            header: '',
+            icon: null,
+            render: (row) => (
+                <Button size="icon" variant="ghost" title="Show Emails" onClick={() => {
+                    setEmailModalOpen(row);
+                }}>
+                    <img className='h-6' src="/src/assets/ai.svg" alt="" />
+                </Button>
+            ),
+        },
+        {
             key: 'actions',
             header: '',
             render: (row) => (
@@ -268,8 +269,8 @@ const MyLeads = () => {
                             <MaterialIcon icon="more_vert" size={20} />
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent 
-                        align="end" 
+                    <DropdownMenuContent
+                        align="end"
                         className="w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg"
                     >
                         <DropdownMenuSub className="rounded-xl">
@@ -416,34 +417,23 @@ const MyLeads = () => {
                         My Leads
                     </h1>
                 </div>
-                <div className={` flex gap-2 items-center ${selectedRows.length > 0 ? '' : 'hidden'}`}> 
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setSelectedRows([])}
-                        disabled={selectedRows.length === 0}
-                    >
-                        Clear Selection
-                    </Button>
-                    <Button
-                        variant="primary"
-                        size="sm"
-                        onClick={() => setBulkStatusModalOpen(true)}
-                        disabled={selectedRows.length === 0}
-                    >
-                        Update Status in Bulk
-                    </Button>
-                    <Button
-                        variant="primary"
-                        size="sm"
-                        onClick={() => setBulkCommentModalOpen(true)}
-                        disabled={selectedRows.length === 0}
-                    >
-                        Add Comment in Bulk
-                    </Button>
-                    <span className="text-xs text-muted-foreground">
+                <div className={` flex gap-2 items-center ${selectedRows.length > 0 ? '' : 'hidden'}`}>
+                    <span className="text-sm font-semibold leading-5 text-muted-foreground">
                         {selectedRows.length} lead(s) selected
                     </span>
+                    <button
+                        onClick={() => setBulkStatusModalOpen(true)}
+                        className={`bg-[#0D0D0D14] px-3 py-2  rounded-lg text-content-primary text-sm font-semibold leading-5 flex items-center justify-center min-w-[90px]`}
+                    >
+                        Change Status
+                    </button>
+                    <button
+                        className={`bg-[#0D0D0D14] px-3 py-2  rounded-lg text-content-primary text-sm font-semibold leading-5 flex items-center justify-center min-w-[90px]`}
+                        onClick={() => setBulkCommentModalOpen(true)}
+                    >
+                        Add Comment
+                    </button>
+
                 </div>
                 <Table
                     columns={columns}
@@ -504,17 +494,20 @@ const MyLeads = () => {
                 title={`Update Status for ${selectedRows.length} Lead(s)`}
                 content={
                     <>
-                        <div className="mb-4">Select status to apply to all selected leads:</div>
-                        <select
-                            className="w-full border rounded p-2 mb-4"
+                        <Select
                             value={bulkStatus}
-                            onChange={e => setBulkStatus(e.target.value)}
+                            onValueChange={setBulkStatus}
+                            className="w-min mt-4"
+                            label="Status"
+                            icon="verified_user"
                         >
                             {statusOptions.map(opt => (
-                                <option key={opt} value={opt}>{opt}</option>
+                                <SelectItem key={opt} value={opt}>
+                                    {opt}
+                                </SelectItem>
                             ))}
-                        </select>
-                        <div className="mb-2 text-sm text-muted-foreground">This will update the status for all selected leads.</div>
+                        </Select>
+                        <div className="mb-2 mt-4 text-sm text-muted-foreground">This will update the status for all selected leads.</div>
                     </>
                 }
                 buttonText={'Update Status'}

@@ -259,17 +259,16 @@ const FindLeads = () => {
                 {/* <Link to="/admin">Admin</Link> */}
             </div>
             <div className={`flex gap-2 items-center ${selectedRows.length > 0 ? '' : 'hidden'}`}>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setCheckoutLeads(selectedRows)}
-                    disabled={selectedRows.length === 0}
-                >
-                    Purchase Selected
-                </Button>
-                <span className="text-xs text-muted-foreground">
+
+                <span className="text-sm font-semibold leading-5 text-muted-foreground">
                     {selectedRows.length} lead(s) selected
                 </span>
+                <button
+                    className={`bg-bg-brand border-blue-500 px-3 py-2  rounded-lg text-white text-sm font-semibold leading-5 flex items-center justify-center min-w-[90px]`}
+                    onClick={() => setCheckoutLeads(selectedRows)}
+                >
+                    Buy Selected
+                </button>
             </div>
 
             {checkoutLeads && (

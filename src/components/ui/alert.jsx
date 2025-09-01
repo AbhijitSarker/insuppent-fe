@@ -1,7 +1,7 @@
 import React from 'react';
 
 const alertStyles = {
-  base: 'fixed top-5 left-1/2 -translate-x-1/2 z-50 px-4 py-3 rounded shadow-lg flex items-center min-w-[500px]',
+  base: 'fixed top-5 left-1/2 -translate-x-1/2 z-50 px-4 py-3 rounded shadow-lg flex items-center min-w-[90vw] max-w-[500px] sm:min-w-[500px] w-auto',
   success: 'bg-green-100 text-green-800 border border-green-300',
   error: 'bg-red-100 text-red-800 border border-red-300',
   info: 'bg-blue-100 text-blue-800 border border-blue-300',
@@ -26,7 +26,7 @@ export default function Alert({ type = 'info', message, onClose }) {
       role="alert"
     >
       {icons[type]}
-      <span className="flex-1">{message}</span>
+  <span className="flex-1 break-words text-sm sm:text-base">{message}</span>
       {onClose && (
         <button onClick={onClose} className="ml-4 text-xl leading-none focus:outline-none">&times;</button>
       )}

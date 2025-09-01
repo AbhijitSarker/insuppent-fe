@@ -127,18 +127,18 @@ const Customers = () => {
 	};
 
 	const handleTypeChange = (values) => {
-		setTableState(prev => ({ 
-			...prev, 
+		setTableState(prev => ({
+			...prev,
 			types: values === '__ALL__' ? [] : Array.isArray(values) ? values : [values],
-			page: 1 
+			page: 1
 		}));
 	};
 
 	const handleStateChange = (values) => {
-		setTableState(prev => ({ 
-			...prev, 
+		setTableState(prev => ({
+			...prev,
 			states: values === '__ALL__' ? [] : Array.isArray(values) ? values : [values],
-			page: 1 
+			page: 1
 		}));
 	};
 
@@ -371,115 +371,115 @@ const Customers = () => {
 		navigate('/admin/settings');
 	};
 
-		return (
-			<div className="">
-				{/* Header with Back Navigation */}
-				<div className="bg-bg-primary px-6 pt-6 border-b border-borderColor-primary">
-					<div className="flex items-center gap-2 p-3 w-[90px] h-9 rounded-lg hover:bg-bg-tertiary" onClick={handleBackClick}>
-						<Button 
-							variant="ghost" 
-							size="icon" 
-							className="h-8 w-8"
-							
-						>
-							<MaterialIcon icon="arrow_back" size={20} />
-						</Button>
-						<span className="text-sm text-content-primary font-semibold">Back</span>
-					</div>
+	return (
+		<div className="">
+			{/* Header with Back Navigation */}
+			<div className="bg-bg-primary px-6 pt-6 border-b border-borderColor-primary">
+				<div className="flex items-center gap-2 p-3 w-[90px] h-9 rounded-lg hover:bg-bg-tertiary" onClick={handleBackClick}>
+					<Button
+						variant="ghost"
+						size="icon"
+						className="h-8 w-8"
 
-					{/* User Profile Section */}
-					{isUserLoading ? (
-						<div className="flex items-center gap-4 my-6">
-							<div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center animate-pulse" />
-							<div>
-								<div className="h-6 w-32 bg-bg-tertiary rounded mb-2 animate-pulse" />
-								<div className="h-4 w-48 bg-bg-tertiary rounded animate-pulse" />
-							</div>
-						</div>
-					) : isUserError ? (
-						<div className="text-red-500 my-6">Customer not found.</div>
-					) : customer ? (
-						<div className="flex items-center gap-4 my-6">
-							<div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
-								<span className="text-2xl font-bold text-content-brand">{customer.avatar || (customer.name ? customer.name[0] : '')}</span>
-							</div>
-							<div>
-								<div className="flex items-center gap-4 justify-between">
-									<h1 className="text-3xl font-semibold text-content-primary leading-9 tracking-[-0.025em]">{customer.name}</h1>
-									<Badge variant="secondary" className="bg-gray-100 text-gray-700">
-										{customer.subscription || 'Subscriber'}
-									</Badge>
-								</div>
-								<p className="text-gray-600 ">{customer.email}</p>
-							</div>
-						</div>
-					) : null}
-
-					{/* Lead Categories/Tabs */}
-					<div className="flex h-[46px] border-borderColor-primary mb-0">
-						<button
-							onClick={() => setActiveTab('all')}
-							className={cn(
-								"relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-5 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
-								activeTab === 'all'
-									? "text-content-brand"
-									: "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
-						   )}
-							style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
-						>
-							All leads ({tabCounts.all})
-							{activeTab === 'all' && (
-<span
-								className={cn(
-									"absolute left-0 rounded-full -bottom-[2px] w-full h-[2px] bg-bg-brand",
-								)}
-							/>							)}
-						</button>
-						<button
-							onClick={() => setActiveTab('active')}
-							className={cn(
-								"relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
-								activeTab === 'active'
-									? "text-content-brand"
-									: "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
-						   )}
-							style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
-						>
-							Active leads ({tabCounts.active})
-							{activeTab === 'active' && (
-<span
-								className={cn(
-									"absolute left-0 rounded-full -bottom-[2px] w-full h-[2px] bg-bg-brand",
-								)}
-							/>							)}
-						</button>
-						<button
-							onClick={() => setActiveTab('refunded')}
-							className={cn(
-								"relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
-								activeTab === 'refunded'
-									? "text-content-brand"
-									: "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
-						)}
-							style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
-						>
-							Refunded leads ({tabCounts.refunded})
-							{activeTab === 'refunded' && (
-<span
-								className={cn(
-									"absolute left-0 rounded-full -bottom-[2px] w-full h-[2px] bg-bg-brand",
-								)}
-							/>							)}
-						</button>
-					</div>
+					>
+						<MaterialIcon icon="arrow_back" size={20} />
+					</Button>
+					<span className="text-sm text-content-primary font-semibold">Back</span>
 				</div>
+
+				{/* User Profile Section */}
+				{isUserLoading ? (
+					<div className="flex items-center gap-4 my-6">
+						<div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center animate-pulse" />
+						<div>
+							<div className="h-6 w-32 bg-bg-tertiary rounded mb-2 animate-pulse" />
+							<div className="h-4 w-48 bg-bg-tertiary rounded animate-pulse" />
+						</div>
+					</div>
+				) : isUserError ? (
+					<div className="text-red-500 my-6">Customer not found.</div>
+				) : customer ? (
+					<div className="flex items-center gap-4 my-6">
+						<div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
+							<span className="text-2xl font-bold text-content-brand">{customer.avatar || (customer.name ? customer.name[0] : '')}</span>
+						</div>
+						<div>
+							<div className="flex items-center gap-4 justify-between">
+								<h1 className="text-3xl font-semibold text-content-primary leading-9 tracking-[-0.025em]">{customer.name}</h1>
+								<Badge variant="secondary" className="bg-gray-100 text-gray-700">
+									{customer.subscription || 'Subscriber'}
+								</Badge>
+							</div>
+							<p className="text-gray-600 ">{customer.email}</p>
+						</div>
+					</div>
+				) : null}
+
+				{/* Lead Categories/Tabs */}
+				<div className="flex h-[46px] border-borderColor-primary mb-0">
+					<button
+						onClick={() => setActiveTab('all')}
+						className={cn(
+							"relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-5 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
+							activeTab === 'all'
+								? "text-content-brand"
+								: "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
+						)}
+						style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
+					>
+						All leads ({tabCounts.all})
+						{activeTab === 'all' && (
+							<span
+								className={cn(
+									"absolute left-0 rounded-full -bottom-[2px] w-full h-[2px] bg-bg-brand",
+								)}
+							/>)}
+					</button>
+					<button
+						onClick={() => setActiveTab('active')}
+						className={cn(
+							"relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
+							activeTab === 'active'
+								? "text-content-brand"
+								: "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
+						)}
+						style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
+					>
+						Active leads ({tabCounts.active})
+						{activeTab === 'active' && (
+							<span
+								className={cn(
+									"absolute left-0 rounded-full -bottom-[2px] w-full h-[2px] bg-bg-brand",
+								)}
+							/>)}
+					</button>
+					<button
+						onClick={() => setActiveTab('refunded')}
+						className={cn(
+							"relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
+							activeTab === 'refunded'
+								? "text-content-brand"
+								: "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
+						)}
+						style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
+					>
+						Refunded leads ({tabCounts.refunded})
+						{activeTab === 'refunded' && (
+							<span
+								className={cn(
+									"absolute left-0 rounded-full -bottom-[2px] w-full h-[2px] bg-bg-brand",
+								)}
+							/>)}
+					</button>
+				</div>
+			</div>
 
 			{/* Main Content */}
 			<div className='p-6 pt-0'>
 				<div className="flex items-center justify-between mt-[18px] mb-5">
 					<h2 className="text-xl font-semibold text-content-primary">
-						{activeTab === 'all' ? 'All leads' : 
-						 activeTab === 'active' ? 'Active leads' : 'Refunded leads'}
+						{activeTab === 'all' ? 'All leads' :
+							activeTab === 'active' ? 'Active leads' : 'Refunded leads'}
 					</h2>
 				</div>
 
