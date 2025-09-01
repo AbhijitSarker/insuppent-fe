@@ -236,11 +236,23 @@ const MyLeads = () => {
             header: 'Status',
             sortable: true,
             icon: <MaterialIcon className={'text-content-secondary'} icon="verified_user" size={16} />,
-            render: (row) => (
-                <Badge variant={row.leadStatus === 'active' ? 'success' : 'secondary'}>
-                    {row.leadStatus?.charAt(0).toUpperCase() + row.leadStatus?.slice(1) || '--'}
-                </Badge>
-            )
+            render: (row) => {
+                const status = row.leadStatus?.charAt(0).toUpperCase() + row.leadStatus?.slice(1);
+                let colorClass = 'text-gray-700', dotClass = 'bg-gray-400';
+                if (status === 'In Discussion') { colorClass = 'text-[#A16207]'; dotClass = 'bg-[#A16207]'; }
+                else if (status === 'Purchased') { colorClass = 'text-[#1D4ED8]'; dotClass = 'bg-[#1D4ED8]'; }
+                else if (status === 'Contacted') { colorClass = 'text-[#0E7490]'; dotClass = 'bg-[#0E7490]'; }
+                else if (status === 'No Response') { colorClass = 'text-[#B91C1C]'; dotClass = 'bg-[#B91C1C]'; }
+                else if (status === 'Sold') { colorClass = 'text-[#15803D]'; dotClass = 'bg-[#15803D]'; }
+                return (
+                    <div className="flex items-center gap-2">
+                        <div className={`flex items-center gap-2 font-medium ${colorClass}`}>
+                            <span className={`w-2 h-2 rounded-full ${dotClass}`} />
+                            {status || '--'}
+                        </div>
+                    </div>
+                );
+            }
         },
         {
             key: 'actions',

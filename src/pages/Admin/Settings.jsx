@@ -394,7 +394,7 @@ const Settings = () => {
 						  <button
 							  onClick={() => setActiveTab('customers')}
 							  className={cn(
-								  "relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-5 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
+								  "relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
 								  activeTab === 'customers'
 									  ? "text-content-brand"
 									  : "text-content-primary hover:border-b-2 hover:border-borderColor-primary"

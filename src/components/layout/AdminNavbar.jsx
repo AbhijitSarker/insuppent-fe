@@ -24,6 +24,14 @@ const AdminNavbar = ({ onMenuClick }) => {
   return (
     <div className="w-full h-14 flex items-center justify-between border-b border-borderColor-primary bg-white px-4 lg:px-6">
       <div className="flex items-center gap-4">
+        {/* Mobile menu button */}
+        <button
+          className="md:hidden mr-2 p-2 rounded-lg hover:bg-gray-100 focus:outline-none"
+          onClick={onMenuClick}
+          aria-label="Open sidebar menu"
+        >
+          <MaterialIcon icon="menu" size={24} />
+        </button>
         <div className="h-12">
           <img src="/Insuplex360.svg" alt="Logo" className="h-full w-full" />
         </div>

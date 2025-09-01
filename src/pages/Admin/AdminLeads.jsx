@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Alert from '@/components/ui/alert';
 import { Table } from '@/components/ui/Table';
+import LeadCard from '@/components/ui/LeadCard';
 import { useLeads } from '@/api/hooks/useLeads';
 import { Button } from '@/components/ui/button';
 import Modal from '@/components/ui/modal';
@@ -474,38 +475,62 @@ const stateAbbrToName = {
 						{selectedRows.length} row(s) selected
 					</span>
 				</div>
-			   <Table
-				   columns={columns}
-				   data={paginatedData}
-				   loading={isLoading}
-				   page={tableState.page}
-				   pageSize={tableState.pageSize}
-				   total={totalCount}
-				   onPageChange={handlePageChange}
-				   onPageSizeChange={(newPageSize) => {
-					   setTableState(prev => ({
-						   ...prev,
-						   pageSize: newPageSize,
-						   page: 1 // Reset to first page when changing page size
-					   }));
-				   }}
-				   onSortChange={handleSortChange}
-				   sort={tableState.sort}
-				   search={tableState.search}
-				   onSearch={handleSearch}
-				   rowSelection
-				   selectedRows={selectedRows}
-				   onRowSelect={handleRowSelect}
-				   onSelectAll={handleSelectAll}
-				   filters={filters}
-				   footerContent={
-					   <span className=''>
-						   Showing {paginatedData?.length || 0} of {totalCount || 0} results
-					   </span>
-				   }
-				    paginationDelta={2}
-					searchFilterVisibility={selectedRows.length > 0 ? false : true}
-			   />
+					 {/* Mobile: Card grid for leads */}
+					 <div className="block md:hidden">
+							 <div className="grid grid-cols-1 gap-4 mt-6">
+								 {paginatedData && paginatedData.length > 0 ? (
+									 paginatedData.map((lead) => (
+										 <LeadCard
+											 key={lead.id}
+											 lead={lead}
+											 onStatusChange={openStatusModal}
+										 />
+									 ))
+								 ) : (
+									 <div className="col-span-full text-center text-gray-500 py-8">No leads found.</div>
+								 )}
+							 </div>
+						 <div className="flex flex-col items-center justify-between mt-6 gap-2">
+							 <span className="text-sm text-muted-foreground">
+								 Showing {paginatedData?.length || 0} of {totalCount || 0} results
+							 </span>
+						 </div>
+					 </div>
+					 {/* Desktop: Table for leads */}
+					 <div className="hidden md:block">
+						 <Table
+							 columns={columns}
+							 data={paginatedData}
+							 loading={isLoading}
+							 page={tableState.page}
+							 pageSize={tableState.pageSize}
+							 total={totalCount}
+							 onPageChange={handlePageChange}
+							 onPageSizeChange={(newPageSize) => {
+								 setTableState(prev => ({
+									 ...prev,
+									 pageSize: newPageSize,
+									 page: 1 // Reset to first page when changing page size
+								 }));
+							 }}
+							 onSortChange={handleSortChange}
+							 sort={tableState.sort}
+							 search={tableState.search}
+							 onSearch={handleSearch}
+							 rowSelection
+							 selectedRows={selectedRows}
+							 onRowSelect={handleRowSelect}
+							 onSelectAll={handleSelectAll}
+							 filters={filters}
+							 footerContent={
+								 <span className=''>
+									 Showing {paginatedData?.length || 0} of {totalCount || 0} results
+								 </span>
+							 }
+							 paginationDelta={2}
+							 searchFilterVisibility={selectedRows.length > 0 ? false : true}
+						 />
+					 </div>
 			   {/* Confirm Modal for status change */}
 			   <Modal
 				   open={modalOpen}
