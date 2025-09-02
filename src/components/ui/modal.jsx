@@ -16,7 +16,7 @@ export default function Modal({ open, onOpenChange, type = "confirm", title, con
     if (!open) return null;
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 ">
-            <div className="min-w-[464px] rounded-lg p-6 bg-white shadow-xl relative">
+            <div className="w-full max-w-xs md:min-w-[464px] md:max-w-lg rounded-lg p-4 md:p-6 bg-white shadow-xl relative mx-2">
                 <div className="mb-4">
                     <h2 className={"text-xl leading-7 font-semibold text-content-primary"}>
                         {title}

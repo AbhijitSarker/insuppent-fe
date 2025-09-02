@@ -1,3 +1,4 @@
+// contexts/AuthContext.jsx
 import { createContext, useContext, useEffect, useState } from 'react';
 import { authService } from '@/api/services/authService';
 
@@ -6,56 +7,129 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const initAuth = async () => {
       try {
-        const token = localStorage.getItem('token');
-        if (token) {
-          const response = await authService.getProfile();
-          setUser(response.data);
+        // Check authentication status from session
+        const authStatus = await authService.checkAuth();
+
+        if (authStatus.isAuthenticated && authStatus.user) {
+          setUser(authStatus.user);
+          setIsAuthenticated(true);
+          console.log('User authenticated:', authStatus.user);
+        } else {
+          setUser(null);
+          setIsAuthenticated(false);
+          console.log('User not authenticated');
         }
       } catch (error) {
-        localStorage.removeItem('token');
+        console.error('Auth initialization error:', error);
+        setUser(null);
+        setIsAuthenticated(false);
       } finally {
         setLoading(false);
       }
     };
 
     initAuth();
+
+    // Listen for focus events to refresh auth status
+    const handleFocus = () => {
+      if (!loading) {
+        refreshUser();
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
   }, []);
 
-  const login = async (credentials) => {
-    const response = await authService.login(credentials);
-    // After login, fetch profile to get user info
-    const profile = await authService.getProfile();
-    setUser(profile.data);
-    return response;
+  const login = async () => {
+    // For SSO, redirect to WordPress login
+    authService.ssoLogin();
+    return Promise.resolve();
   };
 
-  const signup = async (adminData) => {
-    const response = await authService.signup(adminData);
-    return response;
+  const signup = async () => {
+    // For SSO, redirect to WordPress (same as login)
+    authService.ssoLogin();
+    return Promise.resolve();
   };
 
-  const logout = () => {
-    authService.logout();
-    setUser(null);
+  const logout = async () => {
+    try {
+      await authService.logout();
+      // authService.logout() redirects, but in case it doesn't:
+      setUser(null);
+      setIsAuthenticated(false);
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Force local logout even if backend fails
+      setUser(null);
+      setIsAuthenticated(false);
+      window.location.href = '/auth/login';
+    }
   };
 
   const updateProfile = async (data) => {
-    const response = await authService.updateProfile(data);
-    setUser(response.data);
-    return response;
+    try {
+      const response = await authService.updateProfile(data);
+      if (response.success && response.data) {
+        setUser(response.data);
+      }
+      return response;
+    } catch (error) {
+      console.error('Profile update error:', error);
+      throw error;
+    }
+  };
+
+  // Refresh user data (useful after SSO callback)
+  const refreshUser = async () => {
+    try {
+      const authStatus = await authService.checkAuth();
+      if (authStatus.isAuthenticated && authStatus.user) {
+        setUser(authStatus.user);
+        setIsAuthenticated(true);
+      } else {
+        setUser(null);
+        setIsAuthenticated(false);
+      }
+    } catch (error) {
+      console.error('User refresh error:', error);
+      setUser(null);
+      setIsAuthenticated(false);
+    }
+  };
+
+  // Helper functions
+  const hasRole = (role) => {
+    return authService.hasRole(user, role);
+  };
+
+  const isAdmin = () => {
+    return authService.isAdmin(user);
+  };
+
+  const getUserDisplayName = () => {
+    if (!user) return 'Guest';
+    return user.displayName || `${user.firstName} ${user.lastName}`.trim() || user.username || user.email;
   };
 
   const value = {
     user,
     loading,
+    isAuthenticated,
     login,
     signup,
     logout,
     updateProfile,
+    refreshUser,
+    hasRole,
+    isAdmin,
+    getUserDisplayName,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

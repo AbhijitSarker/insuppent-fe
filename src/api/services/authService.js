@@ -1,38 +1,86 @@
 import { axiosOpen, axiosSecure } from '../axios/config';
 
 export const authService = {
-  login: async (credentials) => {
-    const response = await axiosOpen.post('/admin/login', credentials);
-    if (response.data?.data?.accessToken) {
-      localStorage.setItem('token', response.data.data.accessToken);
+  // SSO Login - redirects to WordPress OAuth
+  ssoLogin: () => {
+    window.location.href = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/auth/login`;
+  },
+
+  // Check authentication status from session
+  checkAuth: async () => {
+    try {
+      const response = await axiosOpen.get('/auth/check', {
+        withCredentials: true // Important for session cookies
+      });
+      console.log('Auth check response:', response);
+      return response.data;
+    } catch (error) {
+      console.error('Auth check error:', error);
+      return { isAuthenticated: false, user: null };
     }
-    return response.data;
   },
 
-  signup: async (adminData) => {
-    const response = await axiosOpen.post('/admin/signup', adminData);
-    return response.data;
+  // Get current user info
+  getUser: async () => {
+    try {
+      const response = await axiosOpen.get('/auth/user', {
+        withCredentials: true
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Get user error:', error);
+      throw error;
+    }
   },
 
+  // Logout - destroys session
+  logout: async () => {
+    try {
+      // This will redirect to frontend after logout
+      window.location.href = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/auth/logout`;
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Force redirect to login page even if logout fails
+      window.location.href = '/auth/login';
+    }
+  },
+
+  // Refresh token
   refreshToken: async () => {
-    const response = await axiosOpen.post('/admin/refresh-token');
-    if (response.data?.data?.accessToken) {
-      localStorage.setItem('token', response.data.data.accessToken);
+    try {
+      const response = await axiosOpen.post('/auth/refresh', {}, {
+        withCredentials: true
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Token refresh error:', error);
+      throw error;
     }
-    return response.data;
   },
 
-  getProfile: async () => {
-    const response = await axiosSecure.get('/admin/profile');
-    return response.data;
-  },
-
+  // Update profile (if you have this endpoint)
   updateProfile: async (data) => {
-    const response = await axiosSecure.patch('/admin/profile', data);
-    return response.data;
+    try {
+      const response = await axiosOpen.put('/profile', data, {
+        withCredentials: true
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Profile update error:', error);
+      throw error;
+    }
   },
 
-  logout: () => {
-    localStorage.removeItem('token');
+  // Check if user has specific role
+  hasRole: (user, role) => {
+    if (!user || !user.roles || !Array.isArray(user.roles)) {
+      return false;
+    }
+    return user.roles.includes(role);
   },
+
+  // Check if user is admin
+  isAdmin: (user) => {
+    return authService.hasRole(user, 'admin') || authService.hasRole(user, 'administrator');
+  }
 };

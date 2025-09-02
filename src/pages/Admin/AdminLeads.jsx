@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Alert from '@/components/ui/alert';
 import { Table } from '@/components/ui/Table';
+import LeadCard from '@/components/ui/LeadCard';
 import { useLeads } from '@/api/hooks/useLeads';
 import { Button } from '@/components/ui/button';
 import Modal from '@/components/ui/modal';
@@ -16,6 +17,8 @@ import {
 	DropdownMenuSubTrigger,
 	DropdownMenuSubContent,
 } from "@/components/ui/dropdown-menu";
+import { Link } from 'react-router-dom';
+import { Select, SelectItem } from '@/components/ui/select';
 
 const typeIcons = {
 	auto: 'directions_car',
@@ -25,37 +28,53 @@ const typeIcons = {
 };
 
 const AdminLeads = () => {
-const [tableState, setTableState] = useState({
- page: 1,
- pageSize: 13,
- sort: { key: 'createdAt', direction: 'desc' },
- search: '',
- types: [],
- statuses: [],
- states: []
-});
+	// Bulk status modal state
+	const [bulkStatusModalOpen, setBulkStatusModalOpen] = useState(false);
+	// Bulk status state and handler
+	const [bulkStatus, setBulkStatus] = useState('public');
+	const handleConfirmBulkStatus = async () => {
+		if (!selectedRows.length || !bulkStatus) return;
+		try {
+			await Promise.all(selectedRows.map(lead => updateStatus(lead.id, bulkStatus)));
+			setBulkStatusModalOpen(false);
+			setBulkStatus('public');
+			setSelectedRows([]);
+			setAlert({ type: 'success', message: 'Lead statuses updated successfully!' });
+		} catch (error) {
+			setAlert({ type: 'error', message: 'Failed to update lead statuses.' });
+		}
+	};
+	const [tableState, setTableState] = useState({
+		page: 1,
+		pageSize: 13,
+		sort: { key: 'createdAt', direction: 'desc' },
+		search: '',
+		types: [],
+		statuses: [],
+		states: []
+	});
 
-// Helper: Map state abbreviation to full name
-const stateAbbrToName = {
-	'AL': 'Alabama', 'AK': 'Alaska', 'AZ': 'Arizona', 'AR': 'Arkansas', 'CA': 'California',
-	'CO': 'Colorado', 'CT': 'Connecticut', 'DE': 'Delaware', 'FL': 'Florida', 'GA': 'Georgia',
-	'HI': 'Hawaii', 'ID': 'Idaho', 'IL': 'Illinois', 'IN': 'Indiana', 'IA': 'Iowa',
-	'KS': 'Kansas', 'KY': 'Kentucky', 'LA': 'Louisiana', 'ME': 'Maine', 'MD': 'Maryland',
-	'MA': 'Massachusetts', 'MI': 'Michigan', 'MN': 'Minnesota', 'MS': 'Mississippi', 'MO': 'Missouri',
-	'MT': 'Montana', 'NE': 'Nebraska', 'NV': 'Nevada', 'NH': 'New Hampshire', 'NJ': 'New Jersey',
-	'NM': 'New Mexico', 'NY': 'New York', 'NC': 'North Carolina', 'ND': 'North Dakota', 'OH': 'Ohio',
-	'OK': 'Oklahoma', 'OR': 'Oregon', 'PA': 'Pennsylvania', 'RI': 'Rhode Island', 'SC': 'South Carolina',
-	'SD': 'South Dakota', 'TN': 'Tennessee', 'TX': 'Texas', 'UT': 'Utah', 'VT': 'Vermont',
-	'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming'
-};
-			const [selectedRows, setSelectedRows] = useState([]);
-			const [loadingStatuses, setLoadingStatuses] = useState({});
-			// Modal state for status change
-			const [modalOpen, setModalOpen] = useState(false);
-			const [modalLead, setModalLead] = useState(null);
-			const [modalStatus, setModalStatus] = useState(null);
-			// Alert state
-			const [alert, setAlert] = useState({ type: '', message: '' });
+	// Helper: Map state abbreviation to full name
+	const stateAbbrToName = {
+		'AL': 'Alabama', 'AK': 'Alaska', 'AZ': 'Arizona', 'AR': 'Arkansas', 'CA': 'California',
+		'CO': 'Colorado', 'CT': 'Connecticut', 'DE': 'Delaware', 'FL': 'Florida', 'GA': 'Georgia',
+		'HI': 'Hawaii', 'ID': 'Idaho', 'IL': 'Illinois', 'IN': 'Indiana', 'IA': 'Iowa',
+		'KS': 'Kansas', 'KY': 'Kentucky', 'LA': 'Louisiana', 'ME': 'Maine', 'MD': 'Maryland',
+		'MA': 'Massachusetts', 'MI': 'Michigan', 'MN': 'Minnesota', 'MS': 'Mississippi', 'MO': 'Missouri',
+		'MT': 'Montana', 'NE': 'Nebraska', 'NV': 'Nevada', 'NH': 'New Hampshire', 'NJ': 'New Jersey',
+		'NM': 'New Mexico', 'NY': 'New York', 'NC': 'North Carolina', 'ND': 'North Dakota', 'OH': 'Ohio',
+		'OK': 'Oklahoma', 'OR': 'Oregon', 'PA': 'Pennsylvania', 'RI': 'Rhode Island', 'SC': 'South Carolina',
+		'SD': 'South Dakota', 'TN': 'Tennessee', 'TX': 'Texas', 'UT': 'Utah', 'VT': 'Vermont',
+		'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming'
+	};
+	const [selectedRows, setSelectedRows] = useState([]);
+	const [loadingStatuses, setLoadingStatuses] = useState({});
+	// Modal state for status change
+	const [modalOpen, setModalOpen] = useState(false);
+	const [modalLead, setModalLead] = useState(null);
+	const [modalStatus, setModalStatus] = useState(null);
+	// Alert state
+	const [alert, setAlert] = useState({ type: '', message: '' });
 
 	// Reset selected rows when filters change
 	useEffect(() => {
@@ -158,26 +177,26 @@ const stateAbbrToName = {
 	};
 
 	const handleTypeChange = (values) => {
-		setTableState(prev => ({ 
-			...prev, 
+		setTableState(prev => ({
+			...prev,
 			types: values === '__ALL__' ? [] : Array.isArray(values) ? values : [values],
-			page: 1 
+			page: 1
 		}));
 	};
 
 	const handleStatusChange = (values) => {
-		setTableState(prev => ({ 
-			...prev, 
+		setTableState(prev => ({
+			...prev,
 			statuses: values === '__ALL__' ? [] : Array.isArray(values) ? values : [values],
-			page: 1 
+			page: 1
 		}));
 	};
 
 	const handleStateChange = (values) => {
-		setTableState(prev => ({ 
-			...prev, 
+		setTableState(prev => ({
+			...prev,
 			states: values === '__ALL__' ? [] : Array.isArray(values) ? values : [values],
-			page: 1 
+			page: 1
 		}));
 	};
 
@@ -211,142 +230,142 @@ const stateAbbrToName = {
 		URL.revokeObjectURL(url);
 	};
 
-	   // Open modal and set lead/status
-	   const openStatusModal = (lead, status) => {
-		   setModalLead(lead);
-		   setModalStatus(status);
-		   setModalOpen(true);
-	   };
+	// Open modal and set lead/status
+	const openStatusModal = (lead, status) => {
+		setModalLead(lead);
+		setModalStatus(status);
+		setModalOpen(true);
+	};
 
-		// Confirm status change
-		const handleConfirmStatus = async () => {
-			if (!modalLead || !modalStatus) return;
-			try {
-				await updateStatus(modalLead.id, modalStatus);
-				setModalOpen(false);
-				setModalLead(null);
-				setModalStatus(null);
-				setAlert({ type: 'success', message: 'Lead status updated successfully!' });
-			} catch (error) {
-				console.error('Error updating lead status:', error);
-				setAlert({ type: 'error', message: 'Failed to update lead status.' });
-			}
-		};
+	// Confirm status change
+	const handleConfirmStatus = async () => {
+		if (!modalLead || !modalStatus) return;
+		try {
+			await updateStatus(modalLead.id, modalStatus);
+			setModalOpen(false);
+			setModalLead(null);
+			setModalStatus(null);
+			setAlert({ type: 'success', message: 'Lead status updated successfully!' });
+		} catch (error) {
+			console.error('Error updating lead status:', error);
+			setAlert({ type: 'error', message: 'Failed to update lead status.' });
+		}
+	};
 
-		const columns = [
-			{
-				key: 'createdAt',
-				header: 'Date Added',
-				sortable: true,
-				icon: <MaterialIcon className={'text-content-secondary'} icon="date_range" size={16} />,
-				render: (row) => (
-					<span>{new Date(row.createdAt).toLocaleDateString()}</span>
-				)
-			},
-			{ key: 'name', header: 'Name', sortable: true, icon: <MaterialIcon className={'text-content-secondary'} icon="group" size={16} /> },
-			{ key: 'email', header: 'Email', sortable: true, icon: <MaterialIcon className={'text-content-secondary'} icon="email" size={16} /> },
-			{ key: 'phone', header: 'Phone', sortable: true, icon: <MaterialIcon className={'text-content-secondary'} icon="phone" size={16} /> },
-			{ 
-				key: 'type', 
-				header: 'Type', 
-				sortable: true, 
-				icon: <MaterialIcon className={'text-content-secondary'} icon="local_offer" size={16} />, 
-				render: (row) => (
-					<Badge variant={row.type} icon={row.type}>
-						{row.type.charAt(0).toUpperCase() + row.type.slice(1)}
-					</Badge>
-				)
-			},
-			{ key: 'address', header: 'Address', sortable: true, icon: <MaterialIcon className={'text-content-secondary'} icon="home_work" size={16} /> },
-			{
-				key: 'state',
-				header: 'State',
-				sortable: true,
-				icon: <MaterialIcon className={'text-content-secondary'} icon="location_on" size={16} />,
-				render: (row) => (
-					<span>{stateAbbrToName[row.state] || row.state}</span>
-				)
-			},
-			{ 
-				key: 'status', 
-				header: 'Status', 
-				sortable: true, 
-				icon: <MaterialIcon className={'text-content-secondary'} icon="flag" size={16} />,
-				render: (row) => (
-					<div className="flex items-center gap-2">
-						<div className={cn(
-							"flex items-center gap-2 font-medium",
-							row.status === 'public' ? "text-green-700" : "text-red-700"
-						)}>
-							<span className={cn(
-								"w-2 h-2 rounded-full",
-								row.status === 'public' ? "bg-green-700" : "bg-red-700"
-							)} />
-							{row.status === 'public' ? 'Public' : 'Private'}
-						</div>
+	const columns = [
+		{
+			key: 'createdAt',
+			header: 'Date Added',
+			sortable: true,
+			icon: <MaterialIcon className={'text-content-secondary'} icon="date_range" size={16} />,
+			render: (row) => (
+				<span>{new Date(row.createdAt).toLocaleDateString()}</span>
+			)
+		},
+		{ key: 'name', header: 'Name', sortable: true, icon: <MaterialIcon className={'text-content-secondary'} icon="group" size={16} /> },
+		{ key: 'email', header: 'Email', sortable: true, icon: <MaterialIcon className={'text-content-secondary'} icon="email" size={16} /> },
+		{ key: 'phone', header: 'Phone', sortable: true, icon: <MaterialIcon className={'text-content-secondary'} icon="phone" size={16} /> },
+		{
+			key: 'type',
+			header: 'Type',
+			sortable: true,
+			icon: <MaterialIcon className={'text-content-secondary'} icon="local_offer" size={16} />,
+			render: (row) => (
+				<Badge variant={row.type} icon={row.type}>
+					{row.type.charAt(0).toUpperCase() + row.type.slice(1)}
+				</Badge>
+			)
+		},
+		{ key: 'address', header: 'Address', sortable: true, icon: <MaterialIcon className={'text-content-secondary'} icon="home_work" size={16} /> },
+		{
+			key: 'state',
+			header: 'State',
+			sortable: true,
+			icon: <MaterialIcon className={'text-content-secondary'} icon="location_on" size={16} />,
+			render: (row) => (
+				<span>{stateAbbrToName[row.state] || row.state}</span>
+			)
+		},
+		{
+			key: 'status',
+			header: 'Status',
+			sortable: true,
+			icon: <MaterialIcon className={'text-content-secondary'} icon="flag" size={16} />,
+			render: (row) => (
+				<div className="flex items-center gap-2">
+					<div className={cn(
+						"flex items-center gap-2 font-medium",
+						row.status === 'public' ? "text-green-700" : "text-red-700"
+					)}>
+						<span className={cn(
+							"w-2 h-2 rounded-full",
+							row.status === 'public' ? "bg-green-700" : "bg-red-700"
+						)} />
+						{row.status === 'public' ? 'Public' : 'Private'}
 					</div>
-				)
-			},
-			{
-				key: 'actions',
-				header: '',
-				render: (row) => (
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button
-								variant="ghost"
-								size="icon"
-								className="h-8 w-8 p-0"
-							>
-								<MaterialIcon icon="more_vert" size={20} />
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent 
-							align="end" 
-							className="w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg"
+				</div>
+			)
+		},
+		{
+			key: 'actions',
+			header: '',
+			render: (row) => (
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button
+							variant="ghost"
+							size="icon"
+							className="h-8 w-8 p-0"
 						>
-							<DropdownMenuSub className="rounded-xl">
-								<DropdownMenuSubTrigger className="flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors !hover:bg-red-50">
-									Update Status
-								</DropdownMenuSubTrigger>
-								<DropdownMenuSubContent className="w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg mr-2">
-									<DropdownMenuItem
-										onClick={(e) => {
-											e.stopPropagation();
-											openStatusModal(row, 'public');
-										}}
-										className={cn(
-											"flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors",
-											row.status === 'public' ? 'bg-bg-secondary' : 'hover:bg-bg-tertiary'
-										)}
-									>
-										<div className="flex items-center justify-between w-full gap-2">
-											<span>Public</span>
-											{row.status === 'public' ? <MaterialIcon icon="check" size={20} className={'text-content-brand'} /> : <></>}
-										</div>
-									</DropdownMenuItem>
-									<DropdownMenuItem
-										onClick={(e) => {
-											e.stopPropagation();
-											openStatusModal(row, 'private');
-										}}
-										className={cn(
-											"flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors",
-											row.status === 'private' ? 'bg-bg-secondary' : 'hover:bg-bg-tertiary'
-										)}
-									>
-										<div className="flex items-center justify-between gap-2 w-full">
-											<span>Private</span>
-											{row.status === 'private' ? <MaterialIcon icon="check" size={20} className={'text-content-brand'} /> : <></>}
-										</div>
-									</DropdownMenuItem>
-								</DropdownMenuSubContent>
-							</DropdownMenuSub>
-						</DropdownMenuContent>
-					</DropdownMenu>
-				)
-			}
-		];
+							<MaterialIcon icon="more_vert" size={20} />
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent
+						align="end"
+						className="w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg"
+					>
+						<DropdownMenuSub className="rounded-xl">
+							<DropdownMenuSubTrigger className="flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors !hover:bg-red-50">
+								Update Status
+							</DropdownMenuSubTrigger>
+							<DropdownMenuSubContent className="w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg mr-2">
+								<DropdownMenuItem
+									onClick={(e) => {
+										e.stopPropagation();
+										openStatusModal(row, 'public');
+									}}
+									className={cn(
+										"flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors",
+										row.status === 'public' ? 'bg-bg-secondary' : 'hover:bg-bg-tertiary'
+									)}
+								>
+									<div className="flex items-center justify-between w-full gap-2">
+										<span>Public</span>
+										{row.status === 'public' ? <MaterialIcon icon="check" size={20} className={'text-content-brand'} /> : <></>}
+									</div>
+								</DropdownMenuItem>
+								<DropdownMenuItem
+									onClick={(e) => {
+										e.stopPropagation();
+										openStatusModal(row, 'private');
+									}}
+									className={cn(
+										"flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors",
+										row.status === 'private' ? 'bg-bg-secondary' : 'hover:bg-bg-tertiary'
+									)}
+								>
+									<div className="flex items-center justify-between gap-2 w-full">
+										<span>Private</span>
+										{row.status === 'private' ? <MaterialIcon icon="check" size={20} className={'text-content-brand'} /> : <></>}
+									</div>
+								</DropdownMenuItem>
+							</DropdownMenuSubContent>
+						</DropdownMenuSub>
+					</DropdownMenuContent>
+				</DropdownMenu>
+			)
+		}
+	];
 
 	const statusOptions = [
 		{ value: 'public', label: 'Public' },
@@ -443,66 +462,130 @@ const stateAbbrToName = {
 		}
 	];
 
-		// Auto-hide alert after 3 seconds
-		useEffect(() => {
-			if (alert.message) {
-				const timer = setTimeout(() => setAlert({ type: '', message: '' }), 3000);
-				return () => clearTimeout(timer);
-			}
-		}, [alert]);
+	// Auto-hide alert after 3 seconds
+	useEffect(() => {
+		if (alert.message) {
+			const timer = setTimeout(() => setAlert({ type: '', message: '' }), 3000);
+			return () => clearTimeout(timer);
+		}
+	}, [alert]);
 
-		return (
-			<div className="p-8 !bg-transparent">
-				<Alert type={alert.type} message={alert.message} onClose={() => setAlert({ type: '', message: '' })} />
-			   <div className="flex items-center justify-between mb-7 mt-0">
-				   <h1 className="w-full font-bold text-[32px] leading-[32px] tracking-[-0.025em]">
-					   All Leads
-				   </h1>
-			   </div>
-			   <Table
-				   columns={columns}
-				   data={paginatedData}
-				   loading={isLoading}
-				   page={tableState.page}
-				   pageSize={tableState.pageSize}
-				   total={totalCount}
-				   onPageChange={handlePageChange}
-				   onPageSizeChange={(newPageSize) => {
-					   setTableState(prev => ({
-						   ...prev,
-						   pageSize: newPageSize,
-						   page: 1 // Reset to first page when changing page size
-					   }));
-				   }}
-				   onSortChange={handleSortChange}
-				   sort={tableState.sort}
-				   search={tableState.search}
-				   onSearch={handleSearch}
-				   rowSelection
-				   selectedRows={selectedRows}
-				   onRowSelect={handleRowSelect}
-				   onSelectAll={handleSelectAll}
-				   filters={filters}
-				   footerContent={
-					   <span className=''>
-						   Showing {paginatedData?.length || 0} of {totalCount || 0} results
-					   </span>
-				   }
-				   paginationDelta={2}
-			   />
-			   {/* Confirm Modal for status change */}
-			   <Modal
-				   open={modalOpen}
-				   onOpenChange={setModalOpen}
-				   type={'confirm'}
-				   title={`Change Status for ${modalLead?.name || 'Lead'}`}
-				   content={`Are you sure you want to change status to "${modalStatus}" for this lead?`}
-				   buttonText={modalStatus === 'private' ? 'Set Private' : 'Set Public'}
-				   onConfirm={handleConfirmStatus}
-				   loading={isUpdating}
-			   />
-		   </div>
-	   );
+	return (
+		<div className="p-8 !bg-transparent">
+			<Alert type={alert.type} message={alert.message} onClose={() => setAlert({ type: '', message: '' })} />
+			<div className="flex items-center justify-between mb-7 mt-0">
+				<h1 className="w-full font-bold text-[32px] leading-[32px] tracking-[-0.025em]">
+					All Leads
+				</h1>
+				<Link to="/">User</Link>
+			</div>
+			<div className={`flex gap-2 items-center ${selectedRows.length > 0 ? '' : 'hidden'}`}>
+				<span className="text-sm font-semibold leading-5 text-muted-foreground">
+					{selectedRows.length} lead(s) selected
+				</span>
+				<button
+					onClick={() => setBulkStatusModalOpen(true)}
+					className={`bg-[#0D0D0D14] px-3 py-2  rounded-lg text-content-primary text-sm font-semibold leading-5 flex items-center justify-center min-w-[90px]`}
+				>
+					Change Status
+				</button>
+			</div>
+			{/* Bulk Status Modal */}
+			<Modal
+				open={bulkStatusModalOpen}
+				onOpenChange={setBulkStatusModalOpen}
+				type={'confirm'}
+				title={`Update Status for ${selectedRows.length} Lead(s)`}
+				content={
+					<>
+						<Select
+							value={bulkStatus}
+							onValueChange={setBulkStatus}
+							className="w-min"
+							label="Status"
+							icon="flag"
+						>
+							{statusOptions.map(opt => (
+								<SelectItem key={opt.value} value={opt.value}>
+									{opt.label}
+								</SelectItem>
+							))}
+						</Select>
+						<div className="mb-2 mt-4 text-sm text-muted-foreground">This will update the status for all selected leads.</div>
+					</>
+				}
+				buttonText={'Update Status'}
+				onConfirm={handleConfirmBulkStatus}
+			/>
+			{/* Mobile: Card grid for leads */}
+			<div className="block md:hidden">
+				<div className="grid grid-cols-1 gap-4 mt-6">
+					{paginatedData && paginatedData.length > 0 ? (
+						paginatedData.map((lead) => (
+							<LeadCard
+								key={lead.id}
+								lead={lead}
+								onStatusChange={openStatusModal}
+							/>
+						))
+					) : (
+						<div className="col-span-full text-center text-gray-500 py-8">No leads found.</div>
+					)}
+				</div>
+				<div className="flex flex-col items-center justify-between mt-6 gap-2">
+					<span className="text-sm text-muted-foreground">
+						Showing {paginatedData?.length || 0} of {totalCount || 0} results
+					</span>
+				</div>
+			</div>
+			{/* Desktop: Table for leads */}
+			<div className="hidden md:block">
+				<Table
+					columns={columns}
+					data={paginatedData}
+					loading={isLoading}
+					page={tableState.page}
+					pageSize={tableState.pageSize}
+					total={totalCount}
+					onPageChange={handlePageChange}
+					onPageSizeChange={(newPageSize) => {
+						setTableState(prev => ({
+							...prev,
+							pageSize: newPageSize,
+							page: 1 // Reset to first page when changing page size
+						}));
+					}}
+					onSortChange={handleSortChange}
+					sort={tableState.sort}
+					search={tableState.search}
+					onSearch={handleSearch}
+					rowSelection
+					selectedRows={selectedRows}
+					onRowSelect={handleRowSelect}
+					onSelectAll={handleSelectAll}
+					filters={filters}
+					footerContent={
+						<span className=''>
+							Showing {paginatedData?.length || 0} of {totalCount || 0} results
+						</span>
+					}
+					paginationDelta={2}
+					searchFilterVisibility={selectedRows.length > 0 ? false : true}
+				/>
+			</div>
+			{/* Confirm Modal for status change */}
+			<Modal
+				open={modalOpen}
+				onOpenChange={setModalOpen}
+				type={'confirm'}
+				title={`Change Status for ${modalLead?.name || 'Lead'}`}
+				content={`Are you sure you want to change status to "${modalStatus}" for this lead?`}
+				buttonText={modalStatus === 'private' ? 'Set Private' : 'Set Public'}
+				onConfirm={handleConfirmStatus}
+				loading={isUpdating}
+			/>
+		</div>
+	);
 };
 
 export default AdminLeads;

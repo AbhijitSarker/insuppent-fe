@@ -57,10 +57,10 @@ const Navbar = ({ onMenuClick, showNavigation = false, showAdminButton = false }
             <Link
               key={link.href}
               to={link.href}
-              className={`text-sm font-medium transition-colors ${
+              className={`text-sm font-medium transition-colors pb-2  ${
                 location.pathname === link.href
-                  ? "text-content-brand border-b-2 border-blue-600 pb-1"
-                  : "text-content-primary hover:text-content-brand"
+                  ? "text-content-brand border-b-2 border-blue-600 "
+                  : "text-content-primary hover:text-content-brand hov"
               }`}
             >
               {link.label}
@@ -108,4 +108,3 @@ const Navbar = ({ onMenuClick, showNavigation = false, showAdminButton = false }
   );
 };
 
-export default Navbar;

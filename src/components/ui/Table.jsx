@@ -52,10 +52,10 @@ export const MaterialCheckbox = ({ checked, onChange, className }) => {
       )}
     >
       {checked && (
-        <MaterialIcon 
-          icon="check" 
-          size={12} 
-          className="text-white" 
+        <MaterialIcon
+          icon="check"
+          size={12}
+          className="text-white"
         />
       )}
     </button>
@@ -83,13 +83,16 @@ export function Table({
   filters = [],
   footerContent = null,
   paginationDelta = 2,
+  searchFilterVisibility = true,
+  cardComponent: CardComponent,
+  isMobile = false,
 }) {
   const [internalSearch, setInternalSearch] = React.useState(search);
   const [pageSizeInput, setPageSizeInput] = React.useState(pageSize.toString());
   const debouncedSearch = useDebounce(internalSearch, 500);
 
   // Calculate if all rows are selected
-  const allSelected = data.length > 0 && selectedRows.length === data.length && 
+  const allSelected = data.length > 0 && selectedRows.length === data.length &&
     data.every(row => selectedRows.some(selected => selected.id === row.id));
 
   // Reset internal search when external search prop changes
@@ -226,69 +229,183 @@ export function Table({
 
   const paginationRange = getPaginationRange(page, totalPages, paginationDelta);
 
+  // Render cards for mobile if cardComponent is provided
+  if (isMobile && CardComponent) {
+    return (
+      <div className={cn("", className)}>
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+          {searchFilterVisibility && (
+            <div className="flex flex-1 flex-wrap items-center gap-4">
+              <div className="relative w-full lg:w-[400px]">
+                <MaterialIcon
+                  icon="search"
+                  size={20}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-content-tertiary pointer-events-none"
+                />
+                <Input
+                  type="text"
+                  placeholder="Search"
+                  value={internalSearch}
+                  onChange={handleSearch}
+                  className="w-full md:w-[400px] h-9 pl-10 pr-3 py-2 bg-white border border-borderColor-primary rounded-lg text-sm text-content-primary focus:ring-1 focus:ring-gray-300 focus:border-gray-300 placeholder:text-content-tertiary font-['Inter'] font-normal text-[14px] leading-[20px] tracking-[0%]"
+                />
+              </div>
+              <div className="flex flex-wrap items-center gap-3">
+                {filters.map((filter) => (
+                  <Select
+                    key={filter.key}
+                    value={filter.value || (filter.isMulti ? [] : "__ALL__")}
+                    onValueChange={(value) => handleFilterChange(filter, value)}
+                    className="h-[36px]"
+                    icon={filter.icon}
+                    label={filter.label}
+                    isMulti={filter.isMulti}
+                    hasSearch={filter.hasSearch}
+                  >
+                    {filter.options.filter(opt => opt.value !== "__ALL__").map((opt) => (
+                      <SelectItem
+                        key={opt.value}
+                        value={opt.value}
+                        isMulti={filter.isMulti}
+                        data-state={filter.value}
+                      >
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                ))}
+                {(filters.some(f => (f.isMulti ? (f.value && f.value.length > 0) : (f.value && f.value !== "__ALL__")))) && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleClearFilters}
+                    className="flex items-center gap-2 px-3 py-2 h-9 text-sm font-semibold border-none rounded-lg !hover:bg-blue-100 !bg-transparent text-content-brand hover:text-content-brand shadow-none"
+                  >
+                    <MaterialIcon icon="close" size={20} className="text-content-brand p-0" />
+                    Clear filter
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="flex flex-col gap-4">
+          {loading ? (
+            Array.from({ length: pageSize }).map((_, idx) => (
+              <div key={idx} className="rounded-xl border border-borderColor-secondary bg-white p-4 shadow-sm mb-4 animate-pulse h-[180px]" />
+            ))
+          ) : data.length === 0 ? (
+            <div className="text-center py-8">No data found.</div>
+          ) : (
+            data.map((row) => <CardComponent key={row.id} lead={row} />)
+          )}
+        </div>
+
+        {/* pagination */}
+        <div className="flex items-center justify-center h-12 px-4 py-2 border-t border-borderColor-secondary rounded-b-lg">
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => handlePageChange(page - 1)}
+              disabled={page <= 1 || loading}
+              className="rounded-full"
+            >
+              <MaterialIcon icon="chevron_left" size={20} className="text-content-secondary" />
+            </Button>
+            {paginationRange.map((p, idx) =>
+              p === '...'
+                ? <span key={idx} className="px-2">...</span>
+                : <Button
+                  key={p}
+                  variant={p === page ? "outline" : "ghost"}
+                  size="icon"
+                  onClick={() => handlePageChange(p)}
+                  className={cn(
+                    "rounded-[8px] w-8 h-8",
+                    p === page && "border border-gray-300 bg-red shadow text-content-primary"
+                  )}
+                  disabled={p === page}
+                >
+                  {p}
+                </Button>
+            )}
+
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => handlePageChange(page + 1)}
+              disabled={page >= totalPages || loading}
+              className="rounded-full"
+            >
+              <MaterialIcon icon="chevron_right" size={20} className="text-content-secondary" />
+            </Button>
+
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop/table view
   return (
     <div className={cn("", className)}>
       <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-        <div className="flex flex-1 flex-wrap items-center gap-4">
-          <div className="relative w-[400px]">
-            <MaterialIcon 
-              icon="search" 
-              size={20} 
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-content-tertiary pointer-events-none" 
-            />
-            <Input
-              type="text"
-              placeholder="Search"
-              value={internalSearch}
-              onChange={handleSearch}
-              className="w-[400px] h-9 pl-10 pr-3 py-2 bg-white border border-borderColor-primary rounded-lg text-sm text-content-primary focus:ring-1 focus:ring-gray-300 focus:border-gray-300 placeholder:text-content-tertiary font-['Inter'] font-normal text-[14px] leading-[20px] tracking-[0%]"
-            />
-          </div>
-          <div className="flex flex-wrap items-center gap-3">
-            {filters.map((filter) => (
-              <Select
-                key={filter.key}
-                value={filter.value || (filter.isMulti ? [] : "__ALL__")}
-                onValueChange={(value) => handleFilterChange(filter, value)}
-                className="h-[36px]"
-                icon={filter.icon}
-                label={filter.label}
-                isMulti={filter.isMulti}
-                hasSearch={filter.hasSearch}
-              >
-                {filter.options.filter(opt => opt.value !== "__ALL__").map((opt) => (
-                  <SelectItem 
-                    key={opt.value} 
-                    value={opt.value}
+        {
+          searchFilterVisibility && (
+            <div className="flex flex-1 flex-wrap items-center gap-4 sm:w-full">
+              <div className="relative w-[400px]">
+                <MaterialIcon
+                  icon="search"
+                  size={20}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-content-tertiary pointer-events-none"
+                />
+                <Input
+                  type="text"
+                  placeholder="Search"
+                  value={internalSearch}
+                  onChange={handleSearch}
+                  className="w-[400px] h-9 pl-10 pr-3 py-2 bg-white border border-borderColor-primary rounded-lg text-sm text-content-primary focus:ring-1 focus:ring-gray-300 focus:border-gray-300 placeholder:text-content-tertiary font-['Inter'] font-normal text-[14px] leading-[20px] tracking-[0%]"
+                />
+              </div>
+              <div className="flex flex-wrap items-center gap-3">
+                {filters.map((filter) => (
+                  <Select
+                    key={filter.key}
+                    value={filter.value || (filter.isMulti ? [] : "__ALL__")}
+                    onValueChange={(value) => handleFilterChange(filter, value)}
+                    className="h-[36px] sm:w-auto"
+                    icon={filter.icon}
+                    label={filter.label}
                     isMulti={filter.isMulti}
-                    data-state={filter.value}
+                    hasSearch={filter.hasSearch}
                   >
-                    {opt.label}
-                  </SelectItem>
+                    {filter.options.filter(opt => opt.value !== "__ALL__").map((opt) => (
+                      <SelectItem
+                        key={opt.value}
+                        value={opt.value}
+                        isMulti={filter.isMulti}
+                        data-state={filter.value}
+                      >
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </Select>
                 ))}
-              </Select>
-            ))}
-            {(filters.some(f => (f.isMulti ? (f.value && f.value.length > 0) : (f.value && f.value !== "__ALL__")))) && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleClearFilters}
-                className="flex items-center gap-2 px-3 py-2 h-9 text-sm font-semibold border-none rounded-lg !hover:bg-blue-100 !bg-transparent text-content-brand hover:text-content-brand shadow-none"
-              >
-                <MaterialIcon icon="close" size={20} className="text-content-brand p-0" />
-                Clear filter
-              </Button>
-            )}
-          </div>
-        </div>
-        {/* <Button 
-          variant="default" 
-          size="lg"
-          onClick={handleExport}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 h-10 min-w-[140px] rounded-md"
-        >
-          Export CSV
-        </Button> */}
+                {(filters.some(f => (f.isMulti ? (f.value && f.value.length > 0) : (f.value && f.value !== "__ALL__")))) && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleClearFilters}
+                    className="flex items-center gap-2 px-3 py-2 h-9 text-sm font-semibold border-none rounded-lg !hover:bg-blue-100 !bg-transparent text-content-brand hover:text-content-brand shadow-none"
+                  >
+                    <MaterialIcon icon="close" size={20} className="text-content-brand p-0" />
+                    Clear filter
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
       </div>
       <div className="overflow-x-auto rounded-lg border border-borderColor-primary bg-white">
         <table className="min-w-full bg-white text-sm">
@@ -297,8 +414,8 @@ export function Table({
               {rowSelection && (
                 <th className="px-2 py-3 w-[48px] border-b border-borderColor-secondary">
                   <div className="flex items-center justify-center">
-                    <MaterialCheckbox 
-                      checked={allSelected} 
+                    <MaterialCheckbox
+                      checked={allSelected}
                       onChange={() => handleSelectAllRows(!allSelected)}
                     />
                   </div>
@@ -331,7 +448,7 @@ export function Table({
                           sort.direction === "asc" ? (
                             <MaterialIcon icon="keyboard_arrow_up" size={16} />
                           ) : (
-                              <MaterialIcon icon="keyboard_arrow_down" size={16} />
+                            <MaterialIcon icon="keyboard_arrow_down" size={16} />
                           )
                         ) : (
                           <MaterialIcon icon="unfold_more" size={16} />
@@ -353,8 +470,8 @@ export function Table({
                     </td>
                   )}
                   {columns.map((col, colIdx) => (
-                    <td 
-                      key={col.key || colIdx} 
+                    <td
+                      key={col.key || colIdx}
                       className={cn(
                         "px-4 py-2.5 text-sm",
                         col.key === "createdAt" && "w-[140px]",
@@ -384,8 +501,8 @@ export function Table({
                 const isSelected = selectedRows?.some(selected => selected.id === row.id);
                 const nextRowSelected = i < data.length - 1 && selectedRows?.some(selected => selected.id === data[i + 1].id);
                 return (
-                  <tr 
-                    key={i} 
+                  <tr
+                    key={i}
                     className={cn(
                       "border-b last:border-0 transition-colors h-[48px]",
                       isSelected ? "bg-bg-tertiary border-borderColor-secondary" : nextRowSelected ? "border-borderColor-secondary hover:bg-borderColor-tertiary" : "border-borderColor-secondary hover:bg-bg-tertiary"
@@ -402,7 +519,7 @@ export function Table({
                       </td>
                     )}
                     {columns.map((col) => (
-                      <td 
+                      <td
                         key={col.key}
                         className={cn(
                           "px-3 py-2 align-middle text-sm whitespace-nowrap",
@@ -417,7 +534,7 @@ export function Table({
                           col.key === "actions" && "w-[50px]"
                         )}
                       >
-                        <TableCell col={col} row={row} forceString={['email','address','phone','state','createdAt','datePurchased','subscription','purchased','refunded','price'].includes(col.key)} />
+                        <TableCell col={col} row={row} forceString={['email', 'address', 'phone', 'state', 'createdAt', 'datePurchased', 'subscription', 'purchased', 'refunded', 'price'].includes(col.key)} />
                       </td>
                     ))}
                   </tr>
@@ -426,13 +543,12 @@ export function Table({
             )}
           </tbody>
         </table>
-        <div className="flex items-center justify-between h-12 px-4 py-2 border-t border-borderColor-secondary] bg-white rounded-b-lg">
+        <div className="flex items-center justify-between h-12 px-4 py-2 border-t border-borderColor-secondary bg-white rounded-b-lg">
           <div className="flex items-center gap-4">
             <div className="text-content-primary text-[13px] leading-5 tracking-normal font-[450] flex items-center justify-start !antialiased">
               Page Size:
             </div>
             <div className="flex items-center gap-1 mr-2">
-              {/* <span className="text-sm text-gray-600">Show</span> */}
               <Input
                 type="number"
                 value={pageSizeInput}
@@ -443,9 +559,7 @@ export function Table({
                 max={100}
                 className="w-16 h-8 text-center text-sm border-gray-300 rounded-md"
               />
-              {/* <span className="text-sm text-gray-600">entries</span> */}
             </div>
-            {/* Separator */}
             <div className="w-px h-6 bg-gray-300"></div>
             <div className="text-content-primary text-[13px] leading-5 tracking-normal font-[450] flex items-center justify-start">
               Showing {data?.length || 0} of {total || 0} results
