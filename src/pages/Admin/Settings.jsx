@@ -17,6 +17,7 @@ function getRandomLightColor(str) {
 	return pastelPalette[idx];
 }
 import React, { useState, useMemo, useEffect } from 'react';
+import { getLeadMembershipMaxSaleCounts, updateLeadMembershipMaxSaleCount } from '@/api/services/leadMembershipService';
 import Modal from '@/components/ui/modal';
 import Alert from '@/components/ui/alert';
 import { useUpdateUserStatus } from '@/api/hooks/useUpdateUserStatus';
@@ -38,55 +39,89 @@ import {
 	DropdownMenuSubContent,
 } from "@/components/ui/dropdown-menu";
 
-
-
-
 const Settings = () => {
-	// Pricing table columns
-	const pricingColumns = [
-		{
-			key: 'name',
-			header: 'Name',
-			sortable: false,
-			render: (row) => (<span className="font-medium text-content-primary">{row.name}</span>),
-		},
-		{
-			key: 'price',
-			header: 'Price',
-			sortable: false,
-			render: (row) => (<span className="text-content-primary">${row.price}</span>),
-		},
-		{
-			key: 'leadCount',
-			header: 'Lead sale count',
-			sortable: false,
-			render: (row) => (<span className="text-content-primary">{row.leadCount}</span>),
-		},
-	];
-	// Pricing plans state and handlers
-		const initialPlans = [
-			{ name: 'Basic', price: '24.99', leadCount: 50 },
-			{ name: 'Startup', price: '80.50', leadCount: 80 },
-			{ name: 'Agency', price: '120.99', leadCount: 200 }
-		];
+		 // Pricing plans state and handlers
+		 const [pricingPlans, setPricingPlans] = useState([]);
+		 const [loadingPricing, setLoadingPricing] = useState(false);
+		 const [editCountModal, setEditCountModal] = useState({ open: false, plan: null, count: '' });
+		 const [editCountLoading, setEditCountLoading] = useState(false);
 
-		const [pricingPlans, setPricingPlans] = useState(initialPlans);
-		const [editingIdx, setEditingIdx] = useState(null);
-		const [editPrice, setEditPrice] = useState('');
+		 // Fetch pricing plans (lead sale counts) from API
+		 useEffect(() => {
+			 const fetchPlans = async () => {
+				 setLoadingPricing(true);
+				 try {
+					 const data = await getLeadMembershipMaxSaleCounts();
+					 setPricingPlans(data.map(item => ({
+						 name: item.membership.charAt(0).toUpperCase() + item.membership.slice(1),
+						 membership: item.membership,
+						 leadCount: item.maxLeadSaleCount,
+					 })));
+				 } catch (e) {
+					 setAlert({ type: 'error', message: 'Failed to fetch lead sale counts.' });
+				 } finally {
+					 setLoadingPricing(false);
+				 }
+			 };
+			 fetchPlans();
+		 }, []);
 
-		const handleEditPrice = (idx) => {
-			setEditingIdx(idx);
-			setEditPrice(pricingPlans[idx].price);
-		};
+		 // Pricing table columns
+		 const pricingColumns = [
+			 {
+				 key: 'name',
+				 header: 'Membership',
+				 sortable: false,
+				 render: (row) => (<span className="font-medium text-content-primary">{row.name}</span>),
+			 },
+			 {
+				 key: 'leadCount',
+				 header: 'Lead sale count',
+				 sortable: false,
+				 render: (row) => (<span className="text-content-primary">{row.leadCount}</span>),
+			 },
+			 {
+				 key: 'actions',
+				 header: '',
+				 render: (row) => (
+					 <DropdownMenu>
+						 <DropdownMenuTrigger asChild>
+							 <Button variant="ghost" size="icon" className="h-8 w-8">
+								 <MaterialIcon icon="more_vert" size={16} />
+							 </Button>
+						 </DropdownMenuTrigger>
+						 <DropdownMenuContent align="end" className="rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg">
+							 <DropdownMenuItem
+								 onClick={() => setEditCountModal({ open: true, plan: row, count: row.leadCount })}
+								 className="flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors hover:bg-bg-tertiary"
+							 >
+								 Edit Lead Sale Count
+							 </DropdownMenuItem>
+						 </DropdownMenuContent>
+					 </DropdownMenu>
+				 ),
+			 },
+		 ];
 
-		const handleSavePrice = (idx) => {
-			const updatedPlans = pricingPlans.map((plan, i) => {
-				return i === idx ? { ...plan, price: editPrice } : plan;
-			});
-			setPricingPlans(updatedPlans);
-			setEditingIdx(null);
-			setAlert({ type: 'success', message: `[${pricingPlans[idx].name}] package price has been changed.` });
-		};
+		 // Save lead sale count
+		 const handleSaveLeadCount = async () => {
+			 if (!editCountModal.plan) return;
+			 setEditCountLoading(true);
+			 try {
+				 await updateLeadMembershipMaxSaleCount(editCountModal.plan.membership, Number(editCountModal.count));
+				 setPricingPlans(plans => plans.map(p =>
+					 p.membership === editCountModal.plan.membership
+						 ? { ...p, leadCount: Number(editCountModal.count) }
+						 : p
+				 ));
+				 setEditCountModal({ open: false, plan: null, count: '' });
+				 setAlert({ type: 'success', message: `[${editCountModal.plan.name}] lead sale count updated.` });
+			 } catch (e) {
+				 setAlert({ type: 'error', message: 'Failed to update lead sale count.' });
+			 } finally {
+				 setEditCountLoading(false);
+			 }
+		 };
    const navigate = useNavigate();
    const [activeTab, setActiveTab] = useState('customers');
    const [tableState, setTableState] = useState({
@@ -475,37 +510,61 @@ const Settings = () => {
 						   onConfirm={handleConfirmStatus}
 						   loading={updateUserStatus.isLoading}
 					   />
-				   </div>
-			   )}
+				</div>
+			)}
 
 			{/* Pricing Plans Tab Content */}
 			{activeTab === 'pricing' && (
-				<div >
-					   <div className="flex items-center justify-between mt-[22px] mb-5">
-						   <h2 className="text-2xl font-semibold text-content-primary">Customers</h2>
-					   </div>
-					<Table
-						columns={pricingColumns}
-						data={pricingPlans}
-						page={1}
-						pageSize={10}
-						total={pricingPlans.length}
-						onPageChange={() => {}}
-						onPageSizeChange={() => {}}
-						onSortChange={() => {}}
-						sort={{ key: '', direction: 'asc' }}
-						search={''}
-						onSearch={() => {}}
-						rowSelection={false}
-						selectedRows={[]}
-						onRowSelect={() => {}}
-						onSelectAll={() => {}}
-						filters={[]}
-					/>
-				</div>
-			)}
-		   </div>
-	   );
+				<div>
+					<div className="flex items-center justify-between mt-[22px] mb-5">
+						<h2 className="text-2xl font-semibold text-content-primary">Pricing Plan</h2>
+					</div>
+								 <Table
+									 columns={pricingColumns}
+									 data={pricingPlans}
+									 page={1}
+									 pageSize={10}
+									 total={pricingPlans.length}
+									 onPageChange={() => { }}
+									 onPageSizeChange={() => { }}
+									 onSortChange={() => { }}
+									 sort={{ key: '', direction: 'asc' }}
+									 search={''}
+									 onSearch={() => { }}
+									 rowSelection={false}
+									 selectedRows={[]}
+									 onRowSelect={() => { }}
+									 onSelectAll={() => { }}
+									 filters={[]}
+									 loading={loadingPricing}
+								 />
+								 {/* Modal for editing lead sale count */}
+								 <Modal
+									 open={editCountModal.open}
+									 onOpenChange={open => setEditCountModal(m => ({ ...m, open }))}
+									 type="confirm"
+									 title={`Edit Lead Sale Count for ${editCountModal.plan?.name || ''}`}
+									 content={
+										 <div className="flex flex-col gap-2">
+											 <label htmlFor="leadCountInput" className="text-sm font-medium">Lead Sale Count</label>
+											 <input
+												 id="leadCountInput"
+												 type="number"
+												 min={1}
+												 className="border rounded px-3 py-2 text-base"
+												 value={editCountModal.count}
+												 onChange={e => setEditCountModal(m => ({ ...m, count: e.target.value }))}
+												 autoFocus
+											 />
+										 </div>
+									 }
+									 buttonText="Save"
+									 onConfirm={handleSaveLeadCount}
+									 loading={editCountLoading}
+								 />
+				</div>)}
+		</div>
+	);
 };
 
 export default Settings;

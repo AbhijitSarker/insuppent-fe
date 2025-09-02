@@ -10,6 +10,7 @@ import Button from '@/components/ui/button';
 import Modal from '@/components/ui/modal';
 import EmailModal from '@/components/ui/EmailModal';
 import { useMyLeads } from '@/api/hooks/useLeads';
+import aiSvg from '../../assets/ai.svg';
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -251,7 +252,7 @@ const MyLeads = () => {
                 <Button size="icon" variant="ghost" title="Show Emails" onClick={() => {
                     setEmailModalOpen(row);
                 }}>
-                    <img className='h-6' src="/src/assets/ai.svg" alt="" />
+                    <img className='h-6' src={aiSvg} alt="AI" />
                 </Button>
             ),
         },
