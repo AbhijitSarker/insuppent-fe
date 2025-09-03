@@ -15,6 +15,7 @@ import {
 	DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { markLeadUserRefunded } from '@/api/services/purchaseService.js';
+import Modal from '@/components/ui/modal';
 import LeadCard from '@/components/ui/LeadCard';
 
 const Customers = () => {
@@ -31,6 +32,10 @@ const Customers = () => {
 	});
 	const [selectedRows, setSelectedRows] = useState([]);
 	const [isRefunding, setIsRefunding] = useState(false);
+	// Modal state for refund confirmation
+	const [refundModalOpen, setRefundModalOpen] = useState(false);
+	const [refundModalLead, setRefundModalLead] = useState(null);
+	const [refundModalAction, setRefundModalAction] = useState('refund'); // 'refund' or 'not_refund'
 
 	// Get customer data from API
 	const { data: customer, isLoading: isUserLoading, isError: isUserError } = useUser(customerId);
@@ -154,19 +159,33 @@ const Customers = () => {
 		setSelectedRows(checked ? paginatedData || [] : []);
 	};
 
-	// Handler for marking a lead as refunded
-	const handleMarkAsRefunded = async (leadId) => {
+	// Handler for marking a lead as refunded or not refunded (with modal)
+	const handleMarkAsRefunded = async (leadId, isRefunded) => {
 		setIsRefunding(true);
 		try {
-			await markLeadUserRefunded(leadId, true);
-			// Refetch leads to update datatable
+			await markLeadUserRefunded(leadId, isRefunded);
 			refetch && refetch();
 		} catch (err) {
-			// Optionally show error
-			console.error('Failed to mark as refunded', err);
+			console.error('Failed to update refund status', err);
 		} finally {
 			setIsRefunding(false);
 		}
+	};
+
+	// Open modal for refund action
+	const openRefundModal = (lead, action) => {
+		setRefundModalLead(lead);
+		setRefundModalAction(action);
+		setRefundModalOpen(true);
+	};
+
+	// Confirm modal action
+	const handleConfirmRefund = async () => {
+		if (!refundModalLead) return;
+		await handleMarkAsRefunded(refundModalLead.id, refundModalAction === 'refund');
+		setRefundModalOpen(false);
+		setRefundModalLead(null);
+		setRefundModalAction('refund');
 	};
 
 	// Table columns configuration
@@ -260,23 +279,19 @@ const Customers = () => {
 							<MaterialIcon icon="more_vert" size={16} />
 						</Button>
 					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end" className="w-48">
+					<DropdownMenuContent align="end" className="">
 						{!row.isRefunded ? (
 							<DropdownMenuItem
-								onClick={() => handleMarkAsRefunded(row.id)}
+								onClick={() => openRefundModal(row, 'refund')}
 								disabled={isRefunding}
-								className="text-blue-600"
 							>
-								<MaterialIcon icon="undo" size={16} className="mr-2" />
 								Mark as refunded
 							</DropdownMenuItem>
 						) : (
 							<DropdownMenuItem
-								onClick={() => handleMarkAsRefunded(row.id)}
+								onClick={() => openRefundModal(row, 'not_refund')}
 								disabled={isRefunding}
-								className="text-red-600"
 							>
-								<MaterialIcon icon="redo" size={16} className="mr-2" />
 								Mark as not refunded
 							</DropdownMenuItem>
 						)}
@@ -443,7 +458,7 @@ const Customers = () => {
 					<button
 						onClick={() => setActiveTab('all')}
 						className={cn(
-							"relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-5 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
+							"relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
 							activeTab === 'all'
 								? "text-content-brand"
 								: "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
@@ -525,7 +540,7 @@ const Customers = () => {
 					sort={tableState.sort}
 					search={tableState.search}
 					onSearch={handleSearch}
-					rowSelection={true}
+					rowSelection={false}
 					selectedRows={selectedRows}
 					onRowSelect={handleRowSelect}
 					onSelectAll={handleSelectAll}
@@ -540,11 +555,22 @@ const Customers = () => {
 					cardComponent={(props) => (
 						<LeadCard
 							{...props}
-							onStatusChange={(lead, status) => handleMarkAsRefunded(lead.id)}
+							onStatusChange={(lead, status) => openRefundModal(lead, status === true ? 'refund' : 'not_refund')}
 						/>
 					)}
 					isMobile={isMobile}
 				/>
+			{/* Refund Confirmation Modal */}
+			<Modal
+				open={refundModalOpen}
+				onOpenChange={setRefundModalOpen}
+				type={'confirm'}
+				title={`Mark this lead as ${refundModalAction === 'refund' ? 'refunded' : 'not refunded'}`}
+				content={`Are you sure you want to mark this lead as ${refundModalAction === 'refund' ? 'refunded' : 'not refunded'}?`}
+				buttonText={refundModalAction === 'refund' ? 'Mark as refunded' : 'Mark as not refunded'}
+				onConfirm={handleConfirmRefund}
+				loading={isRefunding}
+			/>
 			</div>
 		</div>
 	);

@@ -7,10 +7,22 @@ import MaterialIcon from "../ui/MaterialIcon";
 const Sidebar = ({ className, routes, onNavigate }) => {
        const location = useLocation();
 
-       const navigationRoutes = routes.map((route) => ({
-	       ...route,
-	       active: location.pathname === route.href,
-       }));
+       const navigationRoutes = routes.map((route) => {
+	       // Special logic for Settings tab
+	       if (route.label === 'Settings') {
+		       // Active if on /admin/settings or any /admin/customers/:id route
+		       const isSettings = location.pathname.startsWith('/admin/settings');
+		       const isCustomerDetail = /^\/admin\/customers\/[\w-]+$/.test(location.pathname);
+		       return {
+			       ...route,
+			       active: isSettings || isCustomerDetail,
+		       };
+	       }
+	       return {
+		       ...route,
+		       active: location.pathname === route.href,
+	       };
+       });
 
        return (
 	       <div

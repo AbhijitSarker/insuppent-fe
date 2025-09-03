@@ -269,6 +269,15 @@ const FindLeads = () => {
                 >
                     Buy Selected
                 </button>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSelectedRows([])}
+                    className="flex items-center gap-2 px-3 py-2 h-9 text-sm font-semibold border-none rounded-lg !hover:bg-blue-100 !bg-transparent text-content-brand hover:text-content-brand shadow-none"
+                >
+                    <MaterialIcon icon="close" size={20} className="text-content-brand p-0" />
+                    Clear Selection
+                </Button>
             </div>
 
             {checkoutLeads && (

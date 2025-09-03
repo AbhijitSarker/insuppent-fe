@@ -21,6 +21,7 @@ import {
     DropdownMenuSubContent,
 } from '@/components/ui/dropdown-menu';
 import { Select, SelectItem } from '@/components/ui/select';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 // Modal state for AI email
 
 const stateAbbrToName = {
@@ -41,6 +42,7 @@ const statusOptions = [
 ];
 
 const MyLeads = () => {
+
     const [tableState, setTableState] = useState({
         page: 1,
         pageSize: 13,
@@ -179,15 +181,22 @@ const MyLeads = () => {
                 <span className="flex items-center gap-1">
                     {row.name}
                     {row.comment && (
-                        <span className="group">
-                            <MaterialIcon icon="comment" size={18} className="text-content-secondary cursor-pointer" />
-                            <span className="absolute left-1/4 -translate-x-1/2 mt-2 z-50 whitespace-pre-line min-w-[220px] max-w-[320px] px-3 py-2 rounded-lg bg-black text-white text-xs font-normal opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                                {row.comment}
-                            </span>
-                        </span>
+                        <TooltipProvider>
+                            <Tooltip delayDuration={100}>
+                                <TooltipTrigger asChild>
+                                    <span tabIndex={0} className="flex items-center">
+                                        <MaterialIcon icon="comment" size={18} className="text-content-secondary cursor-pointer" />
+                                    </span>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom" align="center" className="whitespace-pre-line !min-w-0 !max-w-fit">
+                                    {row.comment}
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
                     )}
                 </span>
             )
+
         },
         { key: 'phone', header: 'Phone', sortable: true, icon: <MaterialIcon className={'text-content-secondary'} icon="phone" size={16} /> },
         { key: 'email', header: 'Email', sortable: true, icon: <MaterialIcon className={'text-content-secondary'} icon="email" size={16} /> },
@@ -249,11 +258,20 @@ const MyLeads = () => {
             header: '',
             icon: null,
             render: (row) => (
-                <Button size="icon" variant="ghost" title="Show Emails" onClick={() => {
-                    setEmailModalOpen(row);
-                }}>
-                    <img className='h-6' src={aiSvg} alt="AI" />
-                </Button>
+                <TooltipProvider>
+                    <Tooltip delayDuration={100}>
+                        <TooltipTrigger asChild>
+                            <Button size="icon" variant="ghost" onClick={() => {
+                                setEmailModalOpen(row);
+                            }}>
+                                <img className='h-6' src={aiSvg} alt="AI" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" align="center" className="text-base px-4 py-2">
+                            Generate Email
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             ),
         },
         {
@@ -434,7 +452,15 @@ const MyLeads = () => {
                     >
                         Add Comment
                     </button>
-
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSelectedRows([])}
+                        className="flex items-center gap-2 px-3 py-2 h-9 text-sm font-semibold border-none rounded-lg !hover:bg-blue-100 !bg-transparent text-content-brand hover:text-content-brand shadow-none"
+                    >
+                        <MaterialIcon icon="close" size={20} className="text-content-brand p-0" />
+                        Clear Selection
+                    </Button>
                 </div>
                 <Table
                     columns={columns}
