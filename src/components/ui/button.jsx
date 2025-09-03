@@ -30,8 +30,9 @@ const buttonVariants = cva(
   }
 )
 
-const Button = React.forwardRef(({ className, variant, size, asChild = false, ...props }, ref) => {
+const Button = React.forwardRef(({ className, variant, size, asChild = false, loading, ...props }, ref) => {
   const Comp = asChild ? Slot : "button"
+  // You can use 'loading' internally if needed, e.g. to show a spinner, but do not pass it to the DOM
   return (
     <Comp
       className={cn(buttonVariants({ variant, size, className }))}

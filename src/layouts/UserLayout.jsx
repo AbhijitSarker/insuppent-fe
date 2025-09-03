@@ -4,7 +4,7 @@ import UserNavbar from '@/components/layout/UserNavbar';
 
 const UserLayout = () => {
 	return (
-		<div className="min-h-screen bg-[#F9FAFB]">
+		<div className="min-h-screen bg-bg-secondary">
 			{/* Fixed Navbar */}
 			<div className="fixed top-0 left-0 right-0 z-50">
 				<UserNavbar />

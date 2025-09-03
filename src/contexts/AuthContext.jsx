@@ -18,11 +18,9 @@ export const AuthProvider = ({ children }) => {
         if (authStatus.isAuthenticated && authStatus.user) {
           setUser(authStatus.user);
           setIsAuthenticated(true);
-          console.log('User authenticated:', authStatus.user);
         } else {
           setUser(null);
           setIsAuthenticated(false);
-          console.log('User not authenticated');
         }
       } catch (error) {
         console.error('Auth initialization error:', error);

@@ -12,7 +12,6 @@ export const authService = {
       const response = await axiosOpen.get('/auth/check', {
         withCredentials: true // Important for session cookies
       });
-      console.log('Auth check response:', response);
       return response.data;
     } catch (error) {
       console.error('Auth check error:', error);

@@ -307,7 +307,7 @@ const MyLeads = () => {
                             }}
                             className="flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors hover:bg-bg-tertiary"
                         >
-                            Add Comment
+                            {row.comment ? 'Edit Comment' : 'Add Comment'}
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
@@ -513,45 +513,63 @@ const MyLeads = () => {
                 }
                 buttonText={'Update Status'}
                 onConfirm={handleConfirmBulkStatus}
-                loading={isUpdatingStatus}
+                loading={isUpdatingStatus ? true : undefined}
             />
             {/* Bulk Comment Modal */}
             <Modal
                 open={bulkCommentModalOpen}
                 onOpenChange={setBulkCommentModalOpen}
                 type={'confirm'}
-                title={`Add Comment for ${selectedRows.length} Lead(s)`}
+                title={`Edit Comment for ${selectedRows.length} Lead(s)`}
                 content={
-                    <textarea
-                        className="w-full border rounded p-2 mt-2"
-                        rows={4}
-                        value={bulkComment}
-                        onChange={e => setBulkComment(e.target.value)}
-                        placeholder="Enter your comment to apply to all selected leads..."
-                    />
+                    <div>
+                        <textarea
+                            className="w-full border rounded p-2 mt-2"
+                            rows={4}
+                            value={bulkComment}
+                            onChange={e => setBulkComment(e.target.value)}
+                            placeholder="Enter your comment to apply to all selected leads..."
+                        />
+                        <button
+                            type="button"
+                            className="mt-2 px-3 py-1 rounded bg-gray-200 text-gray-700 text-xs font-semibold hover:bg-gray-300"
+                            onClick={() => setBulkComment("")}
+                        >
+                            Clear
+                        </button>
+                    </div>
                 }
-                buttonText={'Add Comment'}
+                buttonText={'Edit Comment'}
                 onConfirm={handleConfirmBulkComment}
-                loading={isUpdatingComment}
+                loading={isUpdatingComment ? true : undefined}
             />
             {/* Comment Modal */}
             <Modal
                 open={commentModalOpen}
                 onOpenChange={setCommentModalOpen}
                 type={'confirm'}
-                title={`Add comment for ${commentLead?.name || 'Lead'}`}
+                title={`${commentLead?.comment ? 'Edit' : 'Add'} comment for ${commentLead?.name || 'Lead'}`}
                 content={
-                    <textarea
-                        className="w-full border rounded p-2 mt-2"
-                        rows={4}
-                        value={commentValue}
-                        onChange={e => setCommentValue(e.target.value)}
-                        placeholder="Enter your comment here..."
-                    />
+                    <div>
+                        <textarea
+                            className="w-full border rounded p-2 mt-2"
+                            rows={4}
+                            value={commentValue}
+                            onChange={e => setCommentValue(e.target.value)}
+                            placeholder="Enter your comment here..."
+                        />
+                        <button
+                            type="button"
+                            className="mt-2 px-3 py-1 rounded bg-gray-200 text-gray-700 text-xs font-semibold hover:bg-gray-300"
+                            onClick={() => setCommentValue("")}
+                        >
+                            Clear
+                        </button>
+                    </div>
                 }
-                buttonText={"Add comment"}
+                buttonText={commentLead?.comment ? "Edit comment" : "Add comment"}
                 onConfirm={handleConfirmComment}
-                loading={isUpdatingComment}
+                loading={isUpdatingComment ? true : undefined}
             />
         </>
     );
