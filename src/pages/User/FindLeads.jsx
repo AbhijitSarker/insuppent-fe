@@ -279,6 +279,7 @@ const FindLeads = () => {
                     />
                 </div>
             )}
+            
             {/* Table handles both desktop and mobile rendering */}
             <Table
                 columns={columns}

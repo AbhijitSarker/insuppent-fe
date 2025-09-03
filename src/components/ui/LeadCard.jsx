@@ -1,6 +1,6 @@
 import React from "react";
 import MaterialIcon from "@/components/ui/MaterialIcon";
-import { Badge } from "@/components/ui/badge";
+import { Badge, badgeVariants } from "@/components/ui/badge";
 import Button from "./button";
 
 function formatDate(dateStr) {
@@ -130,6 +130,18 @@ const LeadCard = ({ lead, onBuy, onShowEmails, onUpdateStatus, onComment, onStat
             </div>
             {/* Buy button */}
             <div className="px-4 py-3 flex justify-center border-t border-borderColor-secondary">
+                {
+                        lead.isRefunded &&(
+                            <Badge variant="refunded">
+                                {lead.isRefunded ? "Refunded" : ""}
+                            </Badge>
+                            
+                        // <div className="text-red-500 font-medium mr-4 self-center">
+                        //     {lead.isRefunded ? "Refunded" : ""}
+                        // </div>
+                    )
+                }
+                
                 {lead.price && (
                     <button
                         className="text-content-brand px-3 rounded-lg py-1 font-medium leading-[17px] text-[14px] w-full sm:w-auto"

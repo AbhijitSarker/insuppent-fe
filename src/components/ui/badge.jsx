@@ -12,6 +12,7 @@ const badgeVariants = cva(
         auto: "bg-[#F0FDF4] text-[#15803D]",
         // home: "bg-lime-50 text-lime-700",
         // mortgage: "bg-green-50 text-green-700",
+        refunded: "bg-[#CFFAFE] text-[#0E7490]",
         home: "bg-[#FFF7ED] text-[#EA580C]",
         mortgage: "bg-[#FEFCE8] text-[#CA8A04]",
       },

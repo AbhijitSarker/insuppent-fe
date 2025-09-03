@@ -470,8 +470,17 @@ const AdminLeads = () => {
 		}
 	}, [alert]);
 
+	// Responsive: detect mobile
+	const [isMobile, setIsMobile] = useState(false);
+	React.useEffect(() => {
+		const checkMobile = () => setIsMobile(window.innerWidth < 768);
+		checkMobile();
+		window.addEventListener('resize', checkMobile);
+		return () => window.removeEventListener('resize', checkMobile);
+	}, []);
+
 	return (
-		<div className="p-8 !bg-transparent">
+		<div className="p-5 md:p-8 !bg-transparent">
 			<Alert type={alert.type} message={alert.message} onClose={() => setAlert({ type: '', message: '' })} />
 			<div className="flex items-center justify-between mb-7 mt-0">
 				<h1 className="w-full font-bold text-[32px] leading-[32px] tracking-[-0.025em]">
@@ -571,6 +580,7 @@ const AdminLeads = () => {
 					}
 					paginationDelta={2}
 					searchFilterVisibility={selectedRows.length > 0 ? false : true}
+					isMobile={isMobile}
 				/>
 			</div>
 			{/* Confirm Modal for status change */}

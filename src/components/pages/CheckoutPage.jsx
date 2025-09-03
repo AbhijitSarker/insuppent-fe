@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { createCheckoutSession } from '@/api/services/purchaseService';
 import Button from '@/components/ui/button';
+import { Badge } from '../ui/badge';
 
 
 const CheckoutPage = ({ leads, onCancel }) => {
@@ -28,7 +29,8 @@ const CheckoutPage = ({ leads, onCancel }) => {
       <ul className="mb-4">
         {leads.map(lead => (
           <li key={lead.id} className="flex justify-between border-b py-2">
-            <span>{lead.name} ({lead.type})</span>
+            <span className='mr-16'>{lead.name}</span>
+            <Badge variant={lead.type.toLowerCase()}>{lead.type.charAt(0).toUpperCase() + lead.type?.slice(1)}</Badge>
             <span>${lead.price?.toFixed(2) ?? '--'}</span>
           </li>
         ))}
@@ -39,8 +41,8 @@ const CheckoutPage = ({ leads, onCancel }) => {
       </div>
       {error && <div className="text-red-500 mb-2">{error}</div>}
       <div className="flex gap-2">
-        <Button onClick={handleConfirm} loading={isLoading} className="w-full">Pay with Card</Button>
         <Button onClick={onCancel} variant="outline" className="w-full">Cancel</Button>
+        <Button onClick={handleConfirm} loading={isLoading} className="w-full">Buy now</Button>
       </div>
     </div>
   );

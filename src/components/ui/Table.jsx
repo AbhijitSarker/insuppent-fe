@@ -286,9 +286,12 @@ export function Table({
                   </Button>
                 )}
               </div>
+
             </div>
           )}
+          
         </div>
+        
         <div className="flex flex-col gap-4">
           {loading ? (
             Array.from({ length: pageSize }).map((_, idx) => (
@@ -545,7 +548,7 @@ export function Table({
         </table>
         <div className="flex items-center justify-between h-12 px-4 py-2 border-t border-borderColor-secondary bg-white rounded-b-lg">
           <div className="flex items-center gap-4">
-            <div className="text-content-primary text-[13px] leading-5 tracking-normal font-[450] flex items-center justify-start !antialiased">
+            <div className="hidden md:block text-content-primary text-[13px] leading-5 tracking-normal font-[450] items-center justify-start !antialiased">
               Page Size:
             </div>
             <div className="flex items-center gap-1 mr-2">
@@ -560,8 +563,8 @@ export function Table({
                 className="w-16 h-8 text-center text-sm border-gray-300 rounded-md"
               />
             </div>
-            <div className="w-px h-6 bg-gray-300"></div>
-            <div className="text-content-primary text-[13px] leading-5 tracking-normal font-[450] flex items-center justify-start">
+            <div className="w-px h-6 bg-gray-300 hidden md:block"></div>
+            <div className="hidden md:flex text-content-primary text-[13px] leading-5 tracking-normal font-[450]  items-center justify-start">
               Showing {data?.length || 0} of {total || 0} results
             </div>
           </div>

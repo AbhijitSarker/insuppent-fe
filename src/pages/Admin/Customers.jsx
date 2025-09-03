@@ -15,6 +15,7 @@ import {
 	DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { markLeadUserRefunded } from '@/api/services/purchaseService.js';
+import LeadCard from '@/components/ui/LeadCard';
 
 const Customers = () => {
 	const navigate = useNavigate();
@@ -178,7 +179,7 @@ const Customers = () => {
 			render: (row) => (
 				<div className="flex items-center gap-2">
 					<span className="font-medium text-content-primary">{row.name}</span>
-					{row.status === 'refunded' && (
+					{row.isRefunded && (
 						<Badge variant="secondary" className="bg-blue-100 text-blue-700 text-xs">
 							Refunded
 						</Badge>
@@ -228,7 +229,7 @@ const Customers = () => {
 			sortable: true,
 			icon: <MaterialIcon className={'text-content-secondary'} icon="location_on" size={16} />,
 			render: (row) => (
-				<span className="text-content-primary">{row.state}</span>
+				<span className="text-content-primary">{stateAbbrToName[row.state] || row.state}</span>
 			)
 		},
 		// {
@@ -246,7 +247,7 @@ const Customers = () => {
 			sortable: true,
 			icon: <MaterialIcon className={'text-content-secondary'} icon="event" size={16} />,
 			render: (row) => (
-				<span className="text-content-primary">{row.datePurchased}</span>
+				<span className="text-content-primary">{new Date(row.datePurchased).toLocaleDateString()}</span>
 			)
 		},
 		{
@@ -291,6 +292,19 @@ const Customers = () => {
 		{ value: 'home', label: 'Home' },
 	];
 
+	const stateAbbrToName = {
+		'AL': 'Alabama', 'AK': 'Alaska', 'AZ': 'Arizona', 'AR': 'Arkansas', 'CA': 'California',
+		'CO': 'Colorado', 'CT': 'Connecticut', 'DE': 'Delaware', 'FL': 'Florida', 'GA': 'Georgia',
+		'HI': 'Hawaii', 'ID': 'Idaho', 'IL': 'Illinois', 'IN': 'Indiana', 'IA': 'Iowa',
+		'KS': 'Kansas', 'KY': 'Kentucky', 'LA': 'Louisiana', 'ME': 'Maine', 'MD': 'Maryland',
+		'MA': 'Massachusetts', 'MI': 'Michigan', 'MN': 'Minnesota', 'MS': 'Mississippi', 'MO': 'Missouri',
+		'MT': 'Montana', 'NE': 'Nebraska', 'NV': 'Nevada', 'NH': 'New Hampshire', 'NJ': 'New Jersey',
+		'NM': 'New Mexico', 'NY': 'New York', 'NC': 'North Carolina', 'ND': 'North Dakota', 'OH': 'Ohio',
+		'OK': 'Oklahoma', 'OR': 'Oregon', 'PA': 'Pennsylvania', 'RI': 'Rhode Island', 'SC': 'South Carolina',
+		'SD': 'South Dakota', 'TN': 'Tennessee', 'TX': 'Texas', 'UT': 'Utah', 'VT': 'Vermont',
+		'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming'
+	};
+	
 	const stateOptions = [
 		{ value: 'AL', label: 'Alabama' },
 		{ value: 'AK', label: 'Alaska' },
@@ -370,6 +384,15 @@ const Customers = () => {
 	const handleBackClick = () => {
 		navigate('/admin/settings');
 	};
+
+	// Responsive: detect mobile
+		const [isMobile, setIsMobile] = useState(false);
+		React.useEffect(() => {
+			const checkMobile = () => setIsMobile(window.innerWidth < 768);
+			checkMobile();
+			window.addEventListener('resize', checkMobile);
+			return () => window.removeEventListener('resize', checkMobile);
+		}, []);
 
 	return (
 		<div className="">
@@ -507,6 +530,20 @@ const Customers = () => {
 					onRowSelect={handleRowSelect}
 					onSelectAll={handleSelectAll}
 					filters={filters}
+					footerContent={
+						<span>
+							Showing {paginatedData?.length || 0} of {totalCount || 0} results
+						</span>
+					}
+					paginationDelta={2}
+					searchFilterVisibility={selectedRows.length > 0 ? false : true}
+					cardComponent={(props) => (
+						<LeadCard
+							{...props}
+							onStatusChange={(lead, status) => handleMarkAsRefunded(lead.id)}
+						/>
+					)}
+					isMobile={isMobile}
 				/>
 			</div>
 		</div>
