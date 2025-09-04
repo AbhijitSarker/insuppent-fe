@@ -23,7 +23,7 @@ export default {
         
         // Content colors
         content: {
-          brand: '#2563EB', // Blue/600
+          brand: 'var(--brand-color)',
           primary: '#1C1917', // Gray/900
           secondary: '#78716C', // Gray/500
           tertiary: '#A8A29E', // Gray/400
@@ -33,21 +33,21 @@ export default {
           green: '#15803D', // Green/700
           red: '#B91C1C' // Red/700
         },
-        
+
         // Background colors
         bg: {
           primary: '#FFFFFF', // White
           secondary: '#FAFAF9', // Gray/50
           tertiary: '#F5F5F4', // Gray/100
-          brand: '#2563EB', // Blue/600
+          brand: 'var(--brand-color)',
         },
-        
+
         // Border colors
         borderColor: {
           primary: '#D6D3D1', // Gray/300
           secondary: '#F5F5F4', // Gray/100
           tertiary: '#FAFAF9', // Gray/50
-          brand: '#2563EB', // Blue/600
+          brand: 'var(--brand-color)',
         },
       },
       borderRadius: {

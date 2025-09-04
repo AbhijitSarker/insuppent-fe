@@ -69,7 +69,7 @@ const CheckoutPage = ({ leads, onCancel }) => {
       {error && <div className="text-red-500 mb-2">{error}</div>}
       <div className="flex flex-col justify-end sm:flex-row gap-2">
         <Button onClick={onCancel} variant="outline" className="!bg-bg-tertiary border-none">Cancel</Button>
-        <Button onClick={handleConfirm} loading={isLoading} className={`bg-bg-brand border-blue-500 px-3 py-2  rounded-lg text-white text-sm font-semibold leading-5 flex items-center justify-center min-w-[90px]`}>Buy Now</Button>
+        <Button onClick={handleConfirm} loading={isLoading} className={`bg-bg-brand px-3 py-2  rounded-lg text-white text-sm font-semibold leading-5 flex items-center justify-center min-w-[90px]`}>Buy Now</Button>
       </div>
     </div>
   );

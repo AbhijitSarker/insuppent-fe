@@ -29,7 +29,7 @@ export default function Modal({ open, onOpenChange, type = "confirm", title, con
                         Cancel
                     </button>
                     <button
-                        className={`${type === 'confirm' ? 'bg-bg-brand border-blue-500 ' : 'bg-content-red'} px-3 py-2  rounded-lg text-white text-sm font-semibold leading-5 border-t-2 flex items-center justify-center min-w-[90px]`}
+                        className={`${type === 'confirm' ? 'bg-bg-brand border-blue-500 ' : 'bg-content-red'} px-3 py-2  rounded-lg text-white text-sm font-semibold leading-5 flex items-center justify-center min-w-[90px]`}
                     onClick={onConfirm}
                     >
                         {buttonText}

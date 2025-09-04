@@ -17,6 +17,7 @@ function getRandomLightColor(str) {
 	return pastelPalette[idx];
 }
 import React, { useState, useMemo, useEffect } from 'react';
+import axios from 'axios';
 import { getLeadMembershipMaxSaleCounts, updateLeadMembershipMaxSaleCount } from '@/api/services/leadMembershipService';
 import Modal from '@/components/ui/modal';
 import Alert from '@/components/ui/alert';
@@ -38,6 +39,7 @@ import {
 	DropdownMenuSubTrigger,
 	DropdownMenuSubContent,
 } from "@/components/ui/dropdown-menu";
+import { axiosSecure } from '@/api/axios/config';
 
 const Settings = () => {
 		 // Pricing plans state and handlers
@@ -123,7 +125,39 @@ const Settings = () => {
 			 }
 		 };
    const navigate = useNavigate();
-   const [activeTab, setActiveTab] = useState('customers');
+	const [activeTab, setActiveTab] = useState('customers');
+	// Appearance tab state
+	const [brandColor, setBrandColor] = useState('#2563EB');
+	const [brandColorLoading, setBrandColorLoading] = useState(false);
+	const [brandColorSaving, setBrandColorSaving] = useState(false);
+	// Fetch brand color from backend
+	 useEffect(() => {
+		 const fetchBrandColor = async () => {
+			 setBrandColorLoading(true);
+			 try {
+				 const res = await axiosSecure.get('/settings/brand-color');
+				 setBrandColor(res.data.brandColor || '#2563EB');
+			 } catch (e) {
+				 setBrandColor('#2563EB');
+			 } finally {
+				 setBrandColorLoading(false);
+			 }
+		 };
+		 fetchBrandColor();
+	 }, []);
+
+	 // Save brand color to backend
+	 const handleSaveBrandColor = async () => {
+		 setBrandColorSaving(true);
+		 try {
+			 await axiosSecure.put('/settings/brand-color', { brandColor });
+			 setAlert({ type: 'success', message: 'Brand color updated.' });
+		 } catch (e) {
+			 setAlert({ type: 'error', message: 'Failed to update brand color.' });
+		 } finally {
+			 setBrandColorSaving(false);
+		 }
+	 };
    const [tableState, setTableState] = useState({
 	   page: 1,
 	   pageSize: 10,
@@ -414,8 +448,8 @@ const Settings = () => {
 		}
 	];
 
-	   return (
-		   <div className="p-8">
+		 return (
+			 <div className="p-8" style={{ '--brand-color': brandColor }}>
 			   <Alert type={alert.type} message={alert.message} onClose={() => setAlert({ type: '', message: '' })} />
 			   {/* Header */}
 			   <div className="flex items-center justify-between mb-6 mt-0">
@@ -423,49 +457,122 @@ const Settings = () => {
 					   Settings
 				   </h1>
 			   </div>
-			   <div>               
-					  {/* Navigation Tabs */}
-					  <div className="flex h-[46px] border-b border-borderColor-primary mb-0">
-						  <button
-							  onClick={() => setActiveTab('customers')}
-							  className={cn(
-								  "relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
-								  activeTab === 'customers'
-									  ? "text-content-brand"
-									  : "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
-							  )}
-							  style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
-						  >
-							  Customers
-							  {activeTab === 'customers' && (
-							   <span
-								   className={cn(
-									   "absolute left-0 rounded-full -bottom-[2px] w-full h-[2px] bg-bg-brand",
-								   )}
-							   />
-							  )}
-						  </button>
-						  <button
-							  onClick={() => setActiveTab('pricing')}
-							  className={cn(
-								  "relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
-								  activeTab === 'pricing'
-									  ? "text-content-brand"
-									  : "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
-						   )}
-						   style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
-					   >
-						   Pricing plans
-						   {activeTab === 'pricing' && (
-							   <span
-								   className={cn(
-									   "absolute left-0 rounded-full -bottom-[2px] w-full h-[2px] bg-bg-brand",
-								   )}
-							   />
-						   )}
-					   </button>
-					  </div>
-			   </div>
+				 <div>
+					 {/* Navigation Tabs */}
+					 <div className="flex h-[46px] border-b border-borderColor-primary mb-0">
+						 <button
+							 onClick={() => setActiveTab('customers')}
+							 className={cn(
+								 "relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
+								 activeTab === 'customers'
+									 ? "text-content-brand"
+									 : "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
+							 )}
+							 style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
+						 >
+							 Customers
+									 {activeTab === 'customers' && (
+										 <span
+											 className={cn(
+												 "absolute left-0 rounded-full -bottom-[2px] w-full h-[2px]",
+											 )}
+											 style={{ backgroundColor: 'var(--brand-color)' }}
+										 />
+									 )}
+						 </button>
+						 <button
+							 onClick={() => setActiveTab('pricing')}
+							 className={cn(
+								 "relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
+								 activeTab === 'pricing'
+									 ? "text-content-brand"
+									 : "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
+							 )}
+							 style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
+						 >
+							 Pricing plans
+									 {activeTab === 'pricing' && (
+										 <span
+											 className={cn(
+												 "absolute left-0 rounded-full -bottom-[2px] w-full h-[2px]",
+											 )}
+											 style={{ backgroundColor: 'var(--brand-color)' }}
+										 />
+									 )}
+						 </button>
+						 <button
+							 onClick={() => setActiveTab('appearance')}
+							 className={cn(
+								 "relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
+								 activeTab === 'appearance'
+									 ? "text-content-brand"
+									 : "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
+							 )}
+							 style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
+						 >
+							 Appearance
+									 {activeTab === 'appearance' && (
+										 <span
+											 className={cn(
+												 "absolute left-0 rounded-full -bottom-[2px] w-full h-[2px]",
+											 )}
+											 style={{ backgroundColor: 'var(--brand-color)' }}
+										 />
+									 )}
+						 </button>
+					 </div>
+				 </div>
+					{/* Appearance Tab Content */}
+					{activeTab === 'appearance' && (
+						<div className="mt-[22px]">
+							<h2 className="text-2xl font-semibold text-content-primary mb-6">Appearance</h2>
+							<div className="bg-white rounded-lg shadow p-6 w-full max-w-2xl">
+								<div className="flex flex-col gap-6">
+									<div className="flex flex-col gap-2">
+										<label htmlFor="brandColorInput" className="block text-sm font-bold mb-1 ">Brand Color</label>
+										<span className="text-sm leading-5 text-content-secondary mb-2">Select or customize your brand color</span>
+									</div>
+									<div className="flex items-center gap-4">
+										{/* <div className="w-8 h-8 rounded bg-white border flex items-center justify-center">
+											<span className="w-6 h-6 rounded" style={{ backgroundColor: brandColor, display: 'inline-block' }}></span>
+										</div> */}
+										<input
+											id="brandColorInput"
+											type="color"
+											value={brandColor}
+											onChange={e => setBrandColor(e.target.value)}
+											className="w-10 h-10 border rounded"
+											disabled={brandColorLoading}
+										/>
+										<input
+											type="text"
+											value={brandColor}
+											onChange={e => setBrandColor(e.target.value)}
+											className="border rounded px-3 py-2 text-base w-[120px]"
+											disabled={brandColorLoading}
+										/>
+										<div className="flex gap-2 ml-auto">
+											<button
+												type="button"
+												className="px-4 py-2 bg-gray-100 text-gray-700 rounded border border-gray-300 hover:bg-gray-200"
+												disabled={brandColorSaving || brandColorLoading}
+												onClick={() => setBrandColor('#2563EB')}
+											>
+												Cancel
+											</button>
+											<button
+												onClick={handleSaveBrandColor}
+												className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+												disabled={brandColorSaving || brandColorLoading}
+											>
+												{brandColorSaving ? 'Saving...' : 'Save changes'}
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					)}
 
 			   {/* Customers Tab Content */}
 			   {activeTab === 'customers' && (

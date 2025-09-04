@@ -32,6 +32,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar, *::-webkit-scrollbar {
     --input: 0 0% 89.8%;
     --ring: 0 0% 3.9%;
     --radius: 0.5rem;
+    --brand-color: #2563EB;
   }
 
   .dark {
@@ -55,10 +56,14 @@ html::-webkit-scrollbar, body::-webkit-scrollbar, *::-webkit-scrollbar {
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
     --radius: 0.5rem;
+    --brand-color: #2563EB;
   }
 }
 
 /* Material Icons Styles */
+.bg-brand-color {
+  background-color: var(--brand-color) !important;
+}
 .material-icons,
 .material-icons-outlined,
 .material-icons-round,
