@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { Table } from '@/components/ui/Table';
 import LeadCard from '@/components/ui/LeadCard';
@@ -49,7 +47,8 @@ const MyLeads = () => {
         sort: { key: 'createdAt', direction: 'desc' },
         search: '',
         types: [],
-        states: []
+        states: [],
+        statuses: []
     });
     const [selectedRows, setSelectedRows] = useState([]);
     const [alert, setAlert] = useState({ type: '', message: '' });
@@ -83,6 +82,11 @@ const MyLeads = () => {
         if (tableState.states.length > 0) {
             filteredData = filteredData.filter(lead =>
                 tableState.states.includes(lead.state)
+            );
+        }
+        if (tableState.statuses && tableState.statuses.length > 0) {
+            filteredData = filteredData.filter(lead =>
+                tableState.statuses.includes(lead.leadStatus)
             );
         }
         if (tableState.sort.key) {
@@ -414,6 +418,21 @@ const MyLeads = () => {
             icon: 'location_on',
             isMulti: true,
             hasSearch: true
+        },
+        {
+            key: 'status',
+            label: 'Status',
+            options: statusOptions.map(opt => ({ value: opt, label: opt })),
+            value: tableState.statuses || [],
+            onChange: (values) => {
+                setTableState(prev => ({
+                    ...prev,
+                    statuses: values === '__ALL__' ? [] : Array.isArray(values) ? values : [values],
+                    page: 1
+                }));
+            },
+            icon: 'flag',
+            isMulti: true
         }
     ];
 
@@ -495,6 +514,7 @@ const MyLeads = () => {
                     searchFilterVisibility={selectedRows.length > 0 ? false : true}
                     cardComponent={(props) => <LeadCard {...props} onShowEmails={setEmailModalOpen} onUpdateStatus={(lead) => { setModalLead(lead); setModalStatus(lead.leadStatus || 'Purchased'); setModalOpen(true); }} onComment={(lead) => { setCommentLead(lead); setCommentValue(lead.comment || ""); setCommentModalOpen(true); }} />}
                     isMobile={isMobile}
+                    showExport={true}
                 />
             </div>
             <EmailModal

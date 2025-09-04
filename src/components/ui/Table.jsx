@@ -86,6 +86,7 @@ export function Table({
   searchFilterVisibility = true,
   cardComponent: CardComponent,
   isMobile = false,
+  showExport = false,
 }) {
   const [internalSearch, setInternalSearch] = React.useState(search);
   const [pageSizeInput, setPageSizeInput] = React.useState(pageSize.toString());
@@ -356,7 +357,7 @@ export function Table({
       <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
         {
           searchFilterVisibility && (
-            <div className="flex flex-1 flex-wrap items-center gap-4 sm:w-full">
+            <div className="flex flex-1 flex-wrap items-center gap-4 w-full sm:w-full">
               <div className="relative w-[400px]">
                 <MaterialIcon
                   icon="search"
@@ -371,44 +372,58 @@ export function Table({
                   className="w-[400px] h-9 pl-10 pr-3 py-2 bg-white border border-borderColor-primary rounded-lg text-sm text-content-primary focus:ring-1 focus:ring-gray-300 focus:border-gray-300 placeholder:text-content-tertiary font-['Inter'] font-normal text-[14px] leading-[20px] tracking-[0%]"
                 />
               </div>
-              <div className="flex flex-wrap items-center gap-3">
-                {filters.map((filter) => (
-                  <Select
-                    key={filter.key}
-                    value={filter.value || (filter.isMulti ? [] : "__ALL__")}
-                    onValueChange={(value) => handleFilterChange(filter, value)}
-                    className="h-[36px] sm:w-auto"
-                    icon={filter.icon}
-                    label={filter.label}
-                    isMulti={filter.isMulti}
-                    hasSearch={filter.hasSearch}
-                  >
-                    {filter.options.filter(opt => opt.value !== "__ALL__").map((opt) => (
-                      <SelectItem
-                        key={opt.value}
-                        value={opt.value}
-                        isMulti={filter.isMulti}
-                        data-state={filter.value}
-                      >
-                        {opt.label}
-                      </SelectItem>
-                    ))}
-                  </Select>
-                ))}
-                {(filters.some(f => (f.isMulti ? (f.value && f.value.length > 0) : (f.value && f.value !== "__ALL__")))) && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleClearFilters}
-                    className="flex items-center gap-2 px-3 py-2 h-9 text-sm font-semibold border-none rounded-lg !hover:bg-blue-100 !bg-transparent text-content-brand hover:text-content-brand shadow-none"
-                  >
-                    <MaterialIcon icon="close" size={20} className="text-content-brand p-0" />
-                    Clear filter
-                  </Button>
-                )}
+
+              <div className="flex justify-between w-max">
+                <div className="flex flex-wrap items-center gap-3">
+                  {filters.map((filter) => (
+                    <Select
+                      key={filter.key}
+                      value={filter.value || (filter.isMulti ? [] : "__ALL__")}
+                      onValueChange={(value) => handleFilterChange(filter, value)}
+                      className="h-[36px] sm:w-auto"
+                      icon={filter.icon}
+                      label={filter.label}
+                      isMulti={filter.isMulti}
+                      hasSearch={filter.hasSearch}
+                    >
+                      {filter.options.filter(opt => opt.value !== "__ALL__").map((opt) => (
+                        <SelectItem
+                          key={opt.value}
+                          value={opt.value}
+                          isMulti={filter.isMulti}
+                          data-state={filter.value}
+                        >
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                  ))}
+                  {(filters.some(f => (f.isMulti ? (f.value && f.value.length > 0) : (f.value && f.value !== "__ALL__")))) && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleClearFilters}
+                      className="flex items-center gap-2 px-3 py-2 h-9 text-sm font-semibold border-none rounded-lg !hover:bg-blue-100 !bg-transparent text-content-brand hover:text-content-brand shadow-none"
+                    >
+                      <MaterialIcon icon="close" size={20} className="text-content-brand p-0" />
+                      Clear filter
+                    </Button>
+
+                  )}
+
+                </div>
               </div>
             </div>
           )}
+        {showExport && (!selectedRows || selectedRows.length === 0) && (
+          <Button
+            size="sm"
+            onClick={handleExport}
+            className={`bg-bg-brand border-blue-500 px-3 py-2  rounded-lg text-white text-sm font-semibold leading-5 flex items-center justify-center min-w-[90px]`}          >
+            <MaterialIcon icon="file_upload" size={20} className="text-white p-0" />
+            Export CSV
+          </Button>
+        )}
       </div>
       <div className="overflow-x-auto rounded-lg border border-borderColor-primary bg-white">
         <table className="min-w-full bg-white text-sm">
