@@ -46,7 +46,7 @@ export const MaterialCheckbox = ({ checked, onChange, className }) => {
       onClick={onChange}
       className={cn(
         "w-4 h-4 rounded-sm border border-gray-300 flex items-center justify-center transition-all duration-200 cursor-pointer",
-        checked && "bg-blue-600 border-blue-600",
+        checked && "bg-bg-brand border-borderColor-brand",
         !checked && "bg-white hover:border-gray-400",
         className
       )}

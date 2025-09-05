@@ -43,7 +43,7 @@ const Sidebar = ({ className, routes, onNavigate }) => {
 						       variant="ghost"
 						       className="w-full justify-start gap-3 h-10 rounded-lg transition-all duration-200 relative hover:bg-transparent">
 						       {route.active && (
-							       <div className="absolute left-0 h-[32px] w-[6px] bg-blue-600 rounded-r-lg"></div>
+							       <div className="absolute left-0 h-[32px] w-[6px] bg-bg-brand rounded-r-lg"></div>
 						       )}
 						       <div
 							       className={cn(

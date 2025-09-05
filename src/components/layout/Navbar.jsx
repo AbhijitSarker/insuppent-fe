@@ -59,7 +59,7 @@ const Navbar = ({ onMenuClick, showNavigation = false, showAdminButton = false }
               to={link.href}
               className={`text-sm font-medium transition-colors pb-2  ${
                 location.pathname === link.href
-                  ? "text-content-brand border-b-2 border-blue-600 "
+                  ? "text-content-brand border-b-2 border-borderColor-brand "
                   : "text-content-primary hover:text-content-brand hov"
               }`}
             >
@@ -89,7 +89,7 @@ const Navbar = ({ onMenuClick, showNavigation = false, showAdminButton = false }
             {/* Dropdown for user profile */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-medium focus:outline-none">
+                <button className="w-8 h-8 rounded-full bg-bg-brand flex items-center justify-center text-white text-sm font-medium focus:outline-none">
                   {user.name?.charAt(0)?.toUpperCase() || 'U'}
                 </button>
               </DropdownMenuTrigger>

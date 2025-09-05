@@ -45,7 +45,7 @@ const AdminNavbar = ({ onMenuClick }) => {
           <div className="flex items-center gap-3">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-medium focus:outline-none">
+                <button className="w-8 h-8 rounded-full bg-bg-brand flex items-center justify-center text-white text-sm font-medium focus:outline-none">
                   {user.name?.charAt(0)?.toUpperCase() || 'U'}
                 </button>
               </DropdownMenuTrigger>

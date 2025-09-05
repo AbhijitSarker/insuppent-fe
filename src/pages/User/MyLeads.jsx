@@ -265,9 +265,12 @@ const MyLeads = () => {
                 <TooltipProvider>
                     <Tooltip delayDuration={100}>
                         <TooltipTrigger asChild>
-                            <Button size="icon" variant="ghost" onClick={() => {
-                                setEmailModalOpen(row);
-                            }}>
+                            <Button
+                                size="icon"
+                                variant="ghost"
+                                onClick={() => { setEmailModalOpen(row); }}
+                                className="ai-gradient-hover"
+                            >
                                 <img className='h-6' src={aiSvg} alt="AI" />
                             </Button>
                         </TooltipTrigger>
@@ -596,9 +599,9 @@ const MyLeads = () => {
                 type={'confirm'}
                 title={`${commentLead?.comment ? 'Edit' : 'Add'} comment for ${commentLead?.name || 'Lead'}`}
                 content={
-                    <div>
+                    <div className="mt-2 relative">
                         <textarea
-                            className="w-full border rounded p-2 mt-2"
+                            className="w-full border rounded p-2"
                             rows={4}
                             value={commentValue}
                             onChange={e => setCommentValue(e.target.value)}
@@ -606,7 +609,8 @@ const MyLeads = () => {
                         />
                         <button
                             type="button"
-                            className="mt-2 px-3 py-1 rounded bg-gray-200 text-gray-700 text-xs font-semibold hover:bg-gray-300"
+                            className="absolute left-0 -bottom-[52px] text-sm font-semibold leading-5 px-3 py-[6px]  rounded border border-red-500 bg-white text-red-500 hover:bg-red-100 focus:outline-none"
+                            aria-label="Clear comment"
                             onClick={() => setCommentValue("")}
                         >
                             Clear
@@ -620,5 +624,6 @@ const MyLeads = () => {
         </>
     );
 };
+
 
 export default MyLeads;

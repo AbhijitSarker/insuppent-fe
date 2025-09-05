@@ -41,13 +41,7 @@ const LeadCard = ({ lead, onBuy, onShowEmails, onUpdateStatus, onComment, onStat
                             <img className='h-6' src={aiSvg} alt="AI" />
                         </Button>
                     )}
-                    {onComment && (
-                        <Button size="icon" variant="ghost" title="Comment" onClick={() => onComment(lead)}>
-                            <MaterialIcon icon="comment" size={20} />
-                        </Button>
-                    )}
-                    {/* Three dots dropdown for status change (matches table) */}
-                    {onStatusChange && (
+                    {(onStatusChange || onComment || onUpdateStatus) && (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button size="icon" variant="ghost" title="More actions">
@@ -58,6 +52,7 @@ const LeadCard = ({ lead, onBuy, onShowEmails, onUpdateStatus, onComment, onStat
                                 align="end"
                                 className="w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg"
                             >
+                            {onStatusChange && (
                                 <DropdownMenuSub className="rounded-xl">
                                     <DropdownMenuSubTrigger className="flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors !hover:bg-red-50">
                                         Update Status
@@ -95,6 +90,45 @@ const LeadCard = ({ lead, onBuy, onShowEmails, onUpdateStatus, onComment, onStat
                                         </DropdownMenuItem>
                                     </DropdownMenuSubContent>
                                 </DropdownMenuSub>
+                                )}
+                                {onUpdateStatus && (
+                                    <DropdownMenuSub className="rounded-xl">
+                                        <DropdownMenuSubTrigger className="flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors !hover:bg-red-50">
+                                            Update Status
+                                        </DropdownMenuSubTrigger>
+                                        <DropdownMenuSubContent className="w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg mr-2">
+                                            {['Purchased', 'Contacted', 'In Discussion', 'No Response', 'Sold'].map(status => (
+                                                <DropdownMenuItem
+                                                    key={status}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        onUpdateStatus(lead, status);
+                                                    }}
+                                                    className={cn(
+                                                        "flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors",
+                                                        lead.leadStatus === status ? 'bg-bg-secondary' : 'hover:bg-bg-tertiary'
+                                                    )}
+                                                >
+                                                    <div className="flex items-center justify-between w-full gap-2">
+                                                        <span>{status}</span>
+                                                        {lead.leadStatus === status ? <MaterialIcon icon="check" size={20} className={'text-content-brand'} /> : <></>}
+                                                    </div>
+                                                </DropdownMenuItem>
+                                            ))}
+                                        </DropdownMenuSubContent>
+                                    </DropdownMenuSub>
+                                )}
+                                {onComment && (
+                                    <DropdownMenuItem
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            onComment(lead);
+                                        }}
+                                        className="flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors hover:bg-bg-tertiary"
+                                    >
+                                        Add Comment
+                                    </DropdownMenuItem>
+                                )}
                             </DropdownMenuContent>
                         </DropdownMenu>
                     )}

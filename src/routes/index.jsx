@@ -96,7 +96,7 @@ const UnauthorizedPage = () => (
       <div className="space-x-4">
         <button
           onClick={() => window.history.back()}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="px-4 py-2 bg-bg-brand text-white rounded hover:bg-blue-700"
         >
           Go Back
         </button>

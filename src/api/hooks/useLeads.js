@@ -75,6 +75,26 @@ export const useMyLeads = () => {
 
   const commentMutation = useMutation({
     mutationFn: ({ leadId, comment }) => upsertPurchasedLeadComment(leadId, comment),
+    onMutate: async ({ leadId, comment }) => {
+      await queryClient.cancelQueries({ queryKey: ['my-leads'] });
+      const previousLeads = queryClient.getQueryData(['my-leads']);
+      // Optimistically update the comment
+      queryClient.setQueryData(['my-leads'], old => {
+        if (!old?.data) return old;
+        return {
+          ...old,
+          data: old.data.map(lead =>
+            lead.id === leadId ? { ...lead, comment } : lead
+          ),
+        };
+      });
+      return { previousLeads };
+    },
+    onError: (err, variables, context) => {
+      if (context?.previousLeads) {
+        queryClient.setQueryData(['my-leads'], context.previousLeads);
+      }
+    },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['my-leads'] });
     },

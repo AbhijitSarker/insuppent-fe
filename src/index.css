@@ -101,3 +101,38 @@ html::-webkit-scrollbar, body::-webkit-scrollbar, *::-webkit-scrollbar {
 .material-icons-two-tone {
   font-family: 'Material Icons Two Tone';
 }
+
+/* AI Email Button Gradient Styles */
+.ai-gradient-hover {
+  position: relative;
+  z-index: 1;
+  overflow: visible;
+}
+
+.ai-gradient-hover:hover {
+  border: 1.5px solid transparent;
+  background-clip: padding-box;
+  position: relative;
+}
+
+.ai-gradient-hover:hover::before {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  z-index: -1;
+  border-radius: 12px;
+  background: linear-gradient(130deg, 
+      #3792FE -10%, 
+      #BD2DED 50%, 
+      #F77545 110%
+  );
+}
+
+.ai-gradient-hover:hover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: white;
+  border-radius: 10px;
+  z-index: -1;
+}
