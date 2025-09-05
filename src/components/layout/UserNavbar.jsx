@@ -80,7 +80,7 @@ const UserNavbar = ({ onMenuClick }) => {
                         <div className="flex items-center gap-3">
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <button className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-medium focus:outline-none">
+                                    <button className="w-8 h-8 rounded-full bg-bg-brand flex items-center justify-center text-white text-sm font-medium focus:outline-none">
                                         {user.name?.charAt(0)?.toUpperCase() || 'U'}
                                     </button>
                                 </DropdownMenuTrigger>
@@ -111,7 +111,7 @@ const UserNavbar = ({ onMenuClick }) => {
                         <div className="flex items-center gap-3">
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <button className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-medium focus:outline-none">
+                                    <button className="w-8 h-8 rounded-full bg-bg-brand flex items-center justify-center text-white text-sm font-medium focus:outline-none">
                                         {user.name?.charAt(0)?.toUpperCase() || 'U'}
                                     </button>
                                 </DropdownMenuTrigger>
@@ -133,15 +133,15 @@ const UserNavbar = ({ onMenuClick }) => {
                         className={[
                             "relative flex items-center px-6 py-4 text-base font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
                             location.pathname === link.href
-                                ? "text-blue-600"
-                                : "text-black hover:border-b-2 hover:border-blue-600"
+                                ? "text-content-brand"
+                                : "text-black hover:border-b-2 hover:border-content-brand"
                         ].join(' ')}
                         style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
                     >
                         {link.label}
                         {location.pathname === link.href && (
                             <span
-                                className="absolute left-0 rounded-full -bottom-[2px] w-full h-[2px] bg-blue-600"
+                                className="absolute left-0 rounded-full -bottom-[2px] w-full h-[2px] bg-bg-brand"
                             />
                         )}
                     </Link>
