@@ -4,6 +4,30 @@ import { Badge, badgeVariants } from "@/components/ui/badge";
 import Button from "./button";
 import aiSvg from '../../assets/ai.svg';
 
+// Format phone number as (000) 000-0000
+const formatPhoneNumber = (phoneNumber) => {
+    if (!phoneNumber) return '';
+    const cleaned = phoneNumber.replace(/\D/g, '');
+    const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+    if (match) {
+        return `(${match[1]}) ${match[2]}-${match[3]}`;
+    }
+    return phoneNumber;
+};
+
+const stateAbbrToName = {
+    'AL': 'Alabama', 'AK': 'Alaska', 'AZ': 'Arizona', 'AR': 'Arkansas', 'CA': 'California',
+    'CO': 'Colorado', 'CT': 'Connecticut', 'DE': 'Delaware', 'FL': 'Florida', 'GA': 'Georgia',
+    'HI': 'Hawaii', 'ID': 'Idaho', 'IL': 'Illinois', 'IN': 'Indiana', 'IA': 'Iowa',
+    'KS': 'Kansas', 'KY': 'Kentucky', 'LA': 'Louisiana', 'ME': 'Maine', 'MD': 'Maryland',
+    'MA': 'Massachusetts', 'MI': 'Michigan', 'MN': 'Minnesota', 'MS': 'Mississippi', 'MO': 'Missouri',
+    'MT': 'Montana', 'NE': 'Nebraska', 'NV': 'Nevada', 'NH': 'New Hampshire', 'NJ': 'New Jersey',
+    'NM': 'New Mexico', 'NY': 'New York', 'NC': 'North Carolina', 'ND': 'North Dakota', 'OH': 'Ohio',
+    'OK': 'Oklahoma', 'OR': 'Oregon', 'PA': 'Pennsylvania', 'RI': 'Rhode Island', 'SC': 'South Carolina',
+    'SD': 'South Dakota', 'TN': 'Tennessee', 'TX': 'Texas', 'UT': 'Utah', 'VT': 'Vermont',
+    'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming'
+};
+
 function formatDate(dateStr) {
     const date = new Date(dateStr);
     const today = new Date();
@@ -142,7 +166,7 @@ const LeadCard = ({ lead, onBuy, onShowEmails, onUpdateStatus, onComment, onStat
                 </div>
                 <div className="flex items-center gap-2 px-4 py-2 h-auto sm:h-10 flex-wrap">
                     <MaterialIcon icon="phone" size={18} className="text-content-secondary" />
-                    <span className="break-all">{lead.phone}</span>
+                    <span className="break-all">{formatPhoneNumber(lead.phone)}</span>
                 </div>
                 <div className="flex items-center gap-2 px-4 py-2 h-auto sm:h-10 flex-wrap">
                     <MaterialIcon icon="email" size={18} className="text-content-secondary" />
@@ -160,7 +184,7 @@ const LeadCard = ({ lead, onBuy, onShowEmails, onUpdateStatus, onComment, onStat
                 </div>
                 <div className="flex items-center gap-2 px-4 py-2 h-auto sm:h-10 flex-wrap">
                     <MaterialIcon icon="location_on" size={18} className="text-content-secondary" />
-                    <span>{lead.state}{lead.zip ? `, ${lead.zip}` : ''}</span>
+                    <span>{stateAbbrToName[lead.state]}{lead.zip ? `, ${lead.zip}` : ''}</span>
                 </div>
             </div>
             {/* Buy button */}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '@/components/ui/button';
 import MaterialIcon from '@/components/ui/MaterialIcon';
 import { Badge } from '@/components/ui/badge';
@@ -6,6 +6,18 @@ import aiSvg from '../../assets/ai.svg';
 
 const EmailModal = ({ open, onClose, lead }) => {
     const [copiedIdx, setCopiedIdx] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        if (open) {
+            setIsLoading(true);
+            const timer = setTimeout(() => {
+                setIsLoading(false);
+            }, 2000); // 2 second loading screen
+            return () => clearTimeout(timer);
+        }
+    }, [open]);
+
     if (!open || !lead) return null;
     return (
         <div className="fixed inset-0 z-50 rounded-3xl">
@@ -22,6 +34,21 @@ const EmailModal = ({ open, onClose, lead }) => {
                         &times;
                     </button>
                 </div>
+
+                {isLoading ? (
+                    <div className="h-full flex items-center justify-center">
+                        <div className=" p-4 rounded-lg w-[320px]">
+                            <h3 className="text-2xl font-semibold text-content-primary">Generating email copy for {lead.name}</h3>
+                            <p className="text-sm text-content-primary mt-2">Analyzing lead's data</p>
+                            <div className="mt-1">
+                                <span className="rounded-lg block w-full h-2 bg-[#E7E5E4] animate-pulse mt-4" />
+                                <span className="rounded-lg block w-full h-2 bg-[#E7E5E4] animate-pulse mt-4" />
+                                <span className="rounded-lg block w-3/4 h-2 bg-[#E7E5E4] animate-pulse mt-4" />
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <>
                 {/* Lead info */}
                 <div className="mx-8 border-b py-6 border-borderColor-primary">
                     <div>
@@ -116,6 +143,8 @@ const EmailModal = ({ open, onClose, lead }) => {
                         ))}
                     </div>
                 </div>
+                    </>
+                )}
             </div>
             {/* Animations */}
             <style jsx>{`

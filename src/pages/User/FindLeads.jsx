@@ -253,7 +253,7 @@ const FindLeads = () => {
         <div className="p-4 sm:p-8 !bg-transparent">
             <Alert type={alert.type} message={alert.message} onClose={() => setAlert({ type: '', message: '' })} />
             <div className="flex items-center justify-between mb-7 mt-0">
-                <h1 className="w-full font-bold text-[2rem] sm:text-[32px] leading-[32px] tracking-[-0.025em] md:block hidden">
+                <h1 className="w-full font-bold text-[2rem] sm:text-[32px] leading-[32px] tracking-[-0.025em] text-bg-secondary md:text-content-primary">
                     Find Leads
                 </h1>
                 {/* <Link to="/admin">Admin</Link> */}

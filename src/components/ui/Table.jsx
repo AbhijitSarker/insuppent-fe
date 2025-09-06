@@ -44,6 +44,20 @@ const formatPhoneNumber = (phoneNumber) => {
   return phoneNumber;
 };
 
+
+function formatDate(dateStr) {
+  const date = new Date(dateStr);
+  const today = new Date();
+  if (
+    date.getDate() === today.getDate() &&
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear()
+  ) {
+    return 'Today';
+  }
+  return date.toLocaleDateString();
+}
+
 export function Table({
   columns,
   data,
@@ -257,6 +271,15 @@ export function Table({
                     ))}
                   </Select>
                 ))}
+               
+                {showExport && (!selectedRows || selectedRows.length === 0) && (
+                  <Button
+                    size="sm"
+                    onClick={handleExport}
+                    className="bg-bg-brand hover:brightness-90 transition-colors duration-200 p-2 rounded-lg text-white text-sm font-semibold leading-5 flex items-center justify-center]"          >
+                    <MaterialIcon icon="file_upload" size={20} className="text-white p-0" />
+                  </Button>
+                )}
                 {(filters.some(f => (f.isMulti ? (f.value && f.value.length > 0) : (f.value && f.value !== "__ALL__")))) && (
                   <Button
                     variant="outline"
@@ -392,7 +415,6 @@ export function Table({
                     </Button>
 
                   )}
-
                 </div>
               </div>
             </div>
