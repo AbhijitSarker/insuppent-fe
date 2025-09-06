@@ -24,13 +24,15 @@ export default function Modal({ open, onOpenChange, type = "confirm", title, con
                     <div className="text-content-secondary mt-2 text-sm font-normal leading-5">{content}</div>
                 </div>
                 <div className="flex gap-2 justify-end mt-4">
-
-                    <button onClick={() => onOpenChange(false)} className="text-content-primary text-sm font-semibold leading-5 px-3 py-2 hover:text-gray-700">
+                    <button 
+                        onClick={() => onOpenChange(false)} 
+                        className="text-content-primary text-sm font-semibold leading-5 px-3 py-2 hover:brightness-75 transition-colors duration-200"
+                    >
                         Cancel
                     </button>
                     <button
-                        className={`${type === 'confirm' ? 'bg-bg-brand ' : 'bg-content-red'} px-3 py-2  rounded-lg text-white text-sm font-semibold leading-5 flex items-center justify-center min-w-[90px]`}
-                    onClick={onConfirm}
+                        className={`${type === 'confirm' ? 'bg-bg-brand' : 'bg-content-red'} hover:brightness-90 transition-colors duration-200 px-3 py-2 rounded-lg text-white text-sm font-semibold leading-5 flex items-center justify-center min-w-[90px]`}
+                        onClick={onConfirm}
                     >
                         {buttonText}
                     </button>

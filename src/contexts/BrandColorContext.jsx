@@ -2,7 +2,10 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { axiosSecure } from '@/api/axios/config';
 
-const BrandColorContext = createContext('#2563EB');
+const BrandColorContext = createContext({
+  brandColor: '#2563EB',
+  setBrandColor: () => {},
+});
 
 export const useBrandColor = () => useContext(BrandColorContext);
 
@@ -28,7 +31,7 @@ export const BrandColorProvider = ({ children }) => {
   }, [brandColor]);
 
   return (
-    <BrandColorContext.Provider value={brandColor}>
+    <BrandColorContext.Provider value={{ brandColor, setBrandColor }}>
       {children}
     </BrandColorContext.Provider>
   );

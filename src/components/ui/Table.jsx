@@ -7,36 +7,7 @@ import { Input } from "./input";
 import Papa from "papaparse";
 import { useDebounce } from "@/hooks/useDebounce";
 import TableCell from "./TableCell";
-// import TableCell from "@/components/ui/TableCell";
-
-/**
- * TableColumn: { key: string, header: string|ReactNode, render?: (row) => ReactNode, sortable?: boolean, filterable?: boolean }
- * TableProps: {
- *   columns: TableColumn[],
- *   data: any[],
- *   loading?: boolean,
- *   page?: number,
- *   pageSize?: number,
- *   total?: number,
- *   onPageChange?: (page) => void,
- *   onSortChange?: (sortKey, direction) => void,
- *   onFilterChange?: (filters) => void,
- *   onSearch?: (search) => void,
- *   sort?: { key: string, direction: 'asc'|'desc' },
- *   filters?: Record<string, any>,
- *   search?: string,
- *   className?: string,
- *   rowSelection?: boolean,
- *   selectedRows?: any[],
- *   onRowSelect?: (row, checked) => void,
- *   onSelectAll?: (checked) => void,
- *   columnVisibility?: boolean,
- *   visibleColumns?: string[],
- *   onVisibleColumnsChange?: (visibleColumns) => void,
- *   columnFilterTypes?: Record<string, 'text'|'select'>,
- *   columnFilterOptions?: Record<string, string[]>,
- * }
- */
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './tooltip';
 
 // Custom Material Icon Checkbox Component
 export const MaterialCheckbox = ({ checked, onChange, className }) => {
@@ -60,6 +31,17 @@ export const MaterialCheckbox = ({ checked, onChange, className }) => {
       )}
     </button>
   );
+};
+
+// Format phone number as (000) 000-0000
+const formatPhoneNumber = (phoneNumber) => {
+  if (!phoneNumber) return '';
+  const cleaned = phoneNumber.replace(/\D/g, '');
+  const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+  if (match) {
+    return `(${match[1]}) ${match[2]}-${match[3]}`;
+  }
+  return phoneNumber;
 };
 
 export function Table({
@@ -248,7 +230,7 @@ export function Table({
                   placeholder="Search"
                   value={internalSearch}
                   onChange={handleSearch}
-                  className="w-full md:w-[400px] h-9 pl-10 pr-3 py-2 bg-white border border-borderColor-primary rounded-lg text-sm text-content-primary focus:ring-1 focus:ring-gray-300 focus:border-gray-300 placeholder:text-content-tertiary font-['Inter'] font-normal text-[14px] leading-[20px] tracking-[0%]"
+                  className="w-full md:w-[400px] h-9 pl-10 pr-3 py-2 bg-white border border-borderColor-primary rounded-lg text-sm text-content-primary focus:ring-1 focus:ring-content-brand focus:border-content-brand placeholder:text-content-tertiary font-['Inter'] font-normal text-[14px] leading-[20px] tracking-[0%]"
                 />
               </div>
               <div className="flex flex-wrap items-center gap-3">
@@ -369,7 +351,7 @@ export function Table({
                   placeholder="Search"
                   value={internalSearch}
                   onChange={handleSearch}
-                  className="w-[400px] h-9 pl-10 pr-3 py-2 bg-white border border-borderColor-primary rounded-lg text-sm text-content-primary focus:ring-1 focus:ring-gray-300 focus:border-gray-300 placeholder:text-content-tertiary font-['Inter'] font-normal text-[14px] leading-[20px] tracking-[0%]"
+                  className="w-[400px] h-9 pl-10 pr-3 py-2 bg-white border border-borderColor-primary rounded-lg text-sm text-content-primary focus:ring-1 focus:ring-content-brand focus:border-content-brand placeholder:text-content-tertiary font-['Inter'] font-normal text-[14px] leading-[20px] tracking-[0%]"
                 />
               </div>
 
@@ -419,7 +401,7 @@ export function Table({
           <Button
             size="sm"
             onClick={handleExport}
-            className={`bg-bg-brand border-blue-500 px-3 py-2  rounded-lg text-white text-sm font-semibold leading-5 flex items-center justify-center min-w-[90px]`}          >
+            className="bg-bg-brand hover:brightness-90 transition-colors duration-200 px-3 py-2 rounded-lg text-white text-sm font-semibold leading-5 flex items-center justify-center min-w-[90px]"          >
             <MaterialIcon icon="file_upload" size={20} className="text-white p-0" />
             Export CSV
           </Button>
@@ -520,14 +502,14 @@ export function Table({
                 const nextRowSelected = i < data.length - 1 && selectedRows?.some(selected => selected.id === data[i + 1].id);
                 return (
                   <tr
-                    key={i}
+                    key={row.id || i}
                     className={cn(
                       "border-b last:border-0 transition-colors h-[48px]",
                       isSelected ? "bg-bg-tertiary border-borderColor-secondary" : nextRowSelected ? "border-borderColor-secondary hover:bg-borderColor-tertiary" : "border-borderColor-secondary hover:bg-bg-tertiary"
                     )}
                   >
                     {rowSelection && (
-                      <td className="px-2 py-2">
+                      <td className="px-2 py-2.5">
                         <div className="flex items-center justify-center">
                           <MaterialCheckbox
                             checked={isSelected}
@@ -540,19 +522,43 @@ export function Table({
                       <td
                         key={col.key}
                         className={cn(
-                          "px-3 py-2 align-middle text-sm whitespace-nowrap",
+                          "px-3 py-2.5 text-sm whitespace-nowrap",
                           col.key === "createdAt" && "w-[140px]",
                           col.key === "name" && "w-[200px]",
-                          col.key === "email" && "w-[260px]",
+                          col.key === "email" && "w-[220px]",
                           col.key === "phone" && "w-[150px]",
                           col.key === "type" && "w-[120px]",
-                          col.key === "address" && "w-[280px]",
+                          col.key === "address" && "w-[250px]",
                           col.key === "state" && "w-[100px]",
-                          col.key === "status" && "w-[80px]",
-                          col.key === "actions" && "w-[50px]"
+                          col.key === "status" && "w-[120px]",
+                          col.key === "actions" && "w-[30px]"
                         )}
                       >
-                        <TableCell col={col} row={row} forceString={['email', 'address', 'phone', 'state', 'createdAt', 'datePurchased', 'subscription', 'purchased', 'refunded', 'price'].includes(col.key)} />
+                        {col.render ? (
+                          col.render(row)
+                        ) : (
+                          <>
+                            {(col.key === 'email' && row[col.key]?.length > 25) || 
+                             (col.key === 'address' && row[col.key]?.length > 30) ? (
+                              <TooltipProvider>
+                                <Tooltip delayDuration={100}>
+                                  <TooltipTrigger asChild>
+                                    <span className="text-content-primary font-normal">
+                                      {`${row[col.key].substring(0, col.key === 'address' ? 30 : 25)}...`}
+                                    </span>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="bottom" align="center" className="whitespace-pre-line !min-w-0 !max-w-fit">
+                                    {row[col.key]}
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            ) : (
+                              <span className="text-content-primary font-normal">
+                                {col.key === 'phone' ? formatPhoneNumber(row[col.key]) : row[col.key]}
+                              </span>
+                            )}
+                          </>
+                        )}
                       </td>
                     ))}
                   </tr>

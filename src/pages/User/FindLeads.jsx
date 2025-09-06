@@ -201,7 +201,7 @@ const FindLeads = () => {
             header: 'Action',
             render: (row) => (
                 <button
-                    className="text-content-brand px-3 rounded-lg py-1 font-medium hover:bg-[#DBEAFE] leading-[18px]"
+                    className="text-content-brand px-3 rounded-lg py-1 font-medium hover:text-white hover:bg-bg-brand hover:brightness-1 transition-colors duration-200 leading-[18px]"
                     onClick={() => setCheckoutLeads([row])}
                 >
                     Buy ${row.price?.toFixed(2) ?? '--'}
@@ -253,7 +253,7 @@ const FindLeads = () => {
         <div className="p-4 sm:p-8 !bg-transparent">
             <Alert type={alert.type} message={alert.message} onClose={() => setAlert({ type: '', message: '' })} />
             <div className="flex items-center justify-between mb-7 mt-0">
-                <h1 className="w-full font-bold text-[2rem] sm:text-[32px] leading-[32px] tracking-[-0.025em]">
+                <h1 className="w-full font-bold text-[2rem] sm:text-[32px] leading-[32px] tracking-[-0.025em] md:block hidden">
                     Find Leads
                 </h1>
                 {/* <Link to="/admin">Admin</Link> */}
@@ -264,7 +264,7 @@ const FindLeads = () => {
                     {selectedRows.length} lead(s) selected
                 </span>
                 <button
-                    className={`bg-bg-brand px-3 py-2  rounded-lg text-white text-sm font-semibold leading-5 flex items-center justify-center min-w-[90px]`}
+                    className="bg-bg-brand hover:brightness-90 transition-colors duration-200 px-3 py-2 rounded-lg text-white text-sm font-semibold leading-5 flex items-center justify-center min-w-[90px]"
                     onClick={() => setCheckoutLeads(selectedRows)}
                 >
                     Buy Selected

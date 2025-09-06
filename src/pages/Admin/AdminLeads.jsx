@@ -486,7 +486,6 @@ const AdminLeads = () => {
 				<h1 className="w-full font-bold text-[32px] leading-[32px] tracking-[-0.025em]">
 					All Leads
 				</h1>
-				<Link to="/">User</Link>
 			</div>
 			<div className={`flex gap-2 items-center ${selectedRows.length > 0 ? '' : 'hidden'}`}>
 				<span className="text-sm font-semibold leading-5 text-muted-foreground">

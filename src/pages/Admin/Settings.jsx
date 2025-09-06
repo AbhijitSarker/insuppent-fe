@@ -18,6 +18,7 @@ function getRandomLightColor(str) {
 }
 import React, { useState, useMemo, useEffect } from 'react';
 import axios from 'axios';
+import { useBrandColor } from '@/contexts/BrandColorContext';
 import { getLeadMembershipMaxSaleCounts, updateLeadMembershipMaxSaleCount } from '@/api/services/leadMembershipService';
 import Modal from '@/components/ui/modal';
 import Alert from '@/components/ui/alert';
@@ -127,8 +128,8 @@ const Settings = () => {
 	const navigate = useNavigate();
 	const [activeTab, setActiveTab] = useState('customers');
 	// Appearance tab state
-	const [brandColor, setBrandColor] = useState('#2563EB');
-	const [initialBrandColor, setInitialBrandColor] = useState('#2563EB');
+	const { brandColor, setBrandColor } = useBrandColor();
+	const [initialBrandColor, setInitialBrandColor] = useState(brandColor);
 	const [brandColorLoading, setBrandColorLoading] = useState(false);
 	const [brandColorSaving, setBrandColorSaving] = useState(false);
 	// Fetch brand color from backend
@@ -572,7 +573,7 @@ const Settings = () => {
 									<button
 										onClick={handleSaveBrandColor}
 										disabled={brandColor === initialBrandColor}
-										className={`relative h-9 px-4 text-sm font-medium text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 overflow-hidden ${brandColor === initialBrandColor
+										className={`relative h-9 px-4 text-sm font-medium text-white rounded-lg transition-colors overflow-hidden ${brandColor === initialBrandColor
 												? 'bg-gray-400 cursor-not-allowed'
 												: 'bg-[var(--brand-color)]'
 											}`}
