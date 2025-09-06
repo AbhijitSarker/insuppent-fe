@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 import { Badge, badgeVariants } from "@/components/ui/badge";
 import Button from "./button";
 import aiSvg from '../../assets/ai.svg';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./tooltip";
 
 // Format phone number as (000) 000-0000
 const formatPhoneNumber = (phoneNumber) => {
@@ -55,11 +56,33 @@ import { cn } from '@/lib/utils';
 const LeadCard = ({ lead, onBuy, onShowEmails, onUpdateStatus, onComment, onStatusChange }) => {
     return (
         <div className="rounded-xl border border-borderColor-primary bg-white mb-4 divide-y divide-borderColor-secondary w-full max-w-md mx-auto sm:max-w-full">
-            <div className="px-4 py-3 pb-2 border-b border-borderColor-secondary flex items-center justify-between flex-wrap gap-2">
+            <div className="px-4 py-3 pb-2 border-b border-borderColor-secondary flex items-center justify-between  gap-2">
                 <span className="font-bold text-lg text-content-primary px-1 inline-block rounded break-words max-w-[60vw] sm:max-w-none">
                     {lead.name}
                 </span>
                 <div className="flex gap-2 flex-shrink-0">
+                    {lead.comment && (
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button 
+                                        size="icon" 
+                                        variant="ghost" 
+                                        className="text-content-secondary"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                        }}
+                                    >
+                                        <MaterialIcon icon="comment" size={20} />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom" sideOffset={5}>
+                                    <span className="whitespace-pre-wrap">{lead.comment}</span>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    )}
                     {onShowEmails && (
                         <Button size="icon" variant="ghost" title="Show Emails" onClick={() => onShowEmails(lead)}>
                             <img className='h-6' src={aiSvg} alt="AI" />
@@ -146,11 +169,13 @@ const LeadCard = ({ lead, onBuy, onShowEmails, onUpdateStatus, onComment, onStat
                                     <DropdownMenuItem
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            onComment(lead);
+                                            if (onComment) {
+                                                onComment(lead);
+                                            }
                                         }}
                                         className="flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors hover:bg-bg-tertiary"
                                     >
-                                        Add Comment
+                                        {lead.comment ? 'Edit Comment' : 'Add Comment'}
                                     </DropdownMenuItem>
                                 )}
                             </DropdownMenuContent>

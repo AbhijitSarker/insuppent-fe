@@ -515,7 +515,14 @@ const MyLeads = () => {
                     }
                     paginationDelta={2}
                     searchFilterVisibility={selectedRows.length > 0 ? false : true}
-                    cardComponent={(props) => <LeadCard {...props} onShowEmails={setEmailModalOpen} onUpdateStatus={(lead) => { setModalLead(lead); setModalStatus(lead.leadStatus || 'Purchased'); setModalOpen(true); }} onComment={(lead) => { setCommentLead(lead); setCommentValue(lead.comment || ""); setCommentModalOpen(true); }} />}
+                    cardComponent={(props) => <LeadCard {...props} onShowEmails={setEmailModalOpen} onUpdateStatus={(lead) => { setModalLead(lead); setModalStatus(lead.leadStatus || 'Purchased'); setModalOpen(true); }} onComment={(lead) => { 
+                        // Only open the comment modal if this is a real comment action (not a tooltip click)
+                        if (!lead.preventModal) {
+                            setCommentLead(lead);
+                            setCommentValue(lead.comment || "");
+                            setCommentModalOpen(true);
+                        }
+                    }} />}
                     isMobile={isMobile}
                     showExport={true}
                 />
