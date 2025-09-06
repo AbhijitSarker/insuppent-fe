@@ -105,34 +105,15 @@ html::-webkit-scrollbar, body::-webkit-scrollbar, *::-webkit-scrollbar {
 /* AI Email Button Gradient Styles */
 .ai-gradient-hover {
   position: relative;
-  z-index: 1;
-  overflow: visible;
+  border: 1.5px solid transparent;
+  border-radius: 8px;
+  background-clip: padding-box;
+  transition: background-image 0.2s ease;
 }
 
 .ai-gradient-hover:hover {
-  border: 1.5px solid transparent;
-  background-clip: padding-box;
-  position: relative;
-}
-
-.ai-gradient-hover:hover::before {
-  content: '';
-  position: absolute;
-  inset: -1.5px;
-  z-index: -1;
-  border-radius: 12px;
-  background: linear-gradient(130deg, 
-      #3792FE -10%, 
-      #BD2DED 50%, 
-      #F77545 110%
-  );
-}
-
-.ai-gradient-hover:hover::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: white;
-  border-radius: 10px;
-  z-index: -1;
+  background-image: linear-gradient(white, white), 
+  linear-gradient(130deg, #3792FE -10%, #BD2DED 50%, #F77545 110%);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
 }
