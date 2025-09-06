@@ -264,7 +264,7 @@ const FindLeads = () => {
                     {selectedRows.length} lead(s) selected
                 </span>
                 <button
-                    className={`bg-bg-brand border-blue-500 px-3 py-2  rounded-lg text-white text-sm font-semibold leading-5 flex items-center justify-center min-w-[90px]`}
+                    className={`bg-bg-brand px-3 py-2  rounded-lg text-white text-sm font-semibold leading-5 flex items-center justify-center min-w-[90px]`}
                     onClick={() => setCheckoutLeads(selectedRows)}
                 >
                     Buy Selected

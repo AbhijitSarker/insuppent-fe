@@ -42,129 +42,133 @@ import {
 import { axiosSecure } from '@/api/axios/config';
 
 const Settings = () => {
-		 // Pricing plans state and handlers
-		 const [pricingPlans, setPricingPlans] = useState([]);
-		 const [loadingPricing, setLoadingPricing] = useState(false);
-		 const [editCountModal, setEditCountModal] = useState({ open: false, plan: null, count: '' });
-		 const [editCountLoading, setEditCountLoading] = useState(false);
+	// Pricing plans state and handlers
+	const [pricingPlans, setPricingPlans] = useState([]);
+	const [loadingPricing, setLoadingPricing] = useState(false);
+	const [editCountModal, setEditCountModal] = useState({ open: false, plan: null, count: '' });
+	const [editCountLoading, setEditCountLoading] = useState(false);
 
-		 // Fetch pricing plans (lead sale counts) from API
-		 useEffect(() => {
-			 const fetchPlans = async () => {
-				 setLoadingPricing(true);
-				 try {
-					 const data = await getLeadMembershipMaxSaleCounts();
-					 setPricingPlans(data.map(item => ({
-						 name: item.membership.charAt(0).toUpperCase() + item.membership.slice(1),
-						 membership: item.membership,
-						 leadCount: item.maxLeadSaleCount,
-					 })));
-				 } catch (e) {
-					 setAlert({ type: 'error', message: 'Failed to fetch lead sale counts.' });
-				 } finally {
-					 setLoadingPricing(false);
-				 }
-			 };
-			 fetchPlans();
-		 }, []);
+	// Fetch pricing plans (lead sale counts) from API
+	useEffect(() => {
+		const fetchPlans = async () => {
+			setLoadingPricing(true);
+			try {
+				const data = await getLeadMembershipMaxSaleCounts();
+				setPricingPlans(data.map(item => ({
+					name: item.membership.charAt(0).toUpperCase() + item.membership.slice(1),
+					membership: item.membership,
+					leadCount: item.maxLeadSaleCount,
+				})));
+			} catch (e) {
+				setAlert({ type: 'error', message: 'Failed to fetch lead sale counts.' });
+			} finally {
+				setLoadingPricing(false);
+			}
+		};
+		fetchPlans();
+	}, []);
 
-		 // Pricing table columns
-		 const pricingColumns = [
-			 {
-				 key: 'name',
-				 header: 'Membership',
-				 sortable: false,
-				 render: (row) => (<span className="font-medium text-content-primary">{row.name}</span>),
-			 },
-			 {
-				 key: 'leadCount',
-				 header: 'Lead sale count',
-				 sortable: false,
-				 render: (row) => (<span className="text-content-primary">{row.leadCount}</span>),
-			 },
-			 {
-				 key: 'actions',
-				 header: '',
-				 render: (row) => (
-					 <DropdownMenu>
-						 <DropdownMenuTrigger asChild>
-							 <Button variant="ghost" size="icon" className="h-8 w-8">
-								 <MaterialIcon icon="more_vert" size={16} />
-							 </Button>
-						 </DropdownMenuTrigger>
-						 <DropdownMenuContent align="end" className="rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg">
-							 <DropdownMenuItem
-								 onClick={() => setEditCountModal({ open: true, plan: row, count: row.leadCount })}
-								 className="flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors hover:bg-bg-tertiary"
-							 >
-								 Edit Lead Sale Count
-							 </DropdownMenuItem>
-						 </DropdownMenuContent>
-					 </DropdownMenu>
-				 ),
-			 },
-		 ];
+	// Pricing table columns
+	const pricingColumns = [
+		{
+			key: 'name',
+			header: 'Membership',
+			sortable: false,
+			render: (row) => (<span className="font-medium text-content-primary">{row.name}</span>),
+		},
+		{
+			key: 'leadCount',
+			header: 'Lead sale count',
+			sortable: false,
+			render: (row) => (<span className="text-content-primary">{row.leadCount}</span>),
+		},
+		{
+			key: 'actions',
+			header: '',
+			render: (row) => (
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button variant="ghost" size="icon" className="h-8 w-8">
+							<MaterialIcon icon="more_vert" size={16} />
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align="end" className="rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg">
+						<DropdownMenuItem
+							onClick={() => setEditCountModal({ open: true, plan: row, count: row.leadCount })}
+							className="flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors hover:bg-bg-tertiary"
+						>
+							Edit Lead Sale Count
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
+			),
+		},
+	];
 
-		 // Save lead sale count
-		 const handleSaveLeadCount = async () => {
-			 if (!editCountModal.plan) return;
-			 setEditCountLoading(true);
-			 try {
-				 await updateLeadMembershipMaxSaleCount(editCountModal.plan.membership, Number(editCountModal.count));
-				 setPricingPlans(plans => plans.map(p =>
-					 p.membership === editCountModal.plan.membership
-						 ? { ...p, leadCount: Number(editCountModal.count) }
-						 : p
-				 ));
-				 setEditCountModal({ open: false, plan: null, count: '' });
-				 setAlert({ type: 'success', message: `[${editCountModal.plan.name}] lead sale count updated.` });
-			 } catch (e) {
-				 setAlert({ type: 'error', message: 'Failed to update lead sale count.' });
-			 } finally {
-				 setEditCountLoading(false);
-			 }
-		 };
-   const navigate = useNavigate();
+	// Save lead sale count
+	const handleSaveLeadCount = async () => {
+		if (!editCountModal.plan) return;
+		setEditCountLoading(true);
+		try {
+			await updateLeadMembershipMaxSaleCount(editCountModal.plan.membership, Number(editCountModal.count));
+			setPricingPlans(plans => plans.map(p =>
+				p.membership === editCountModal.plan.membership
+					? { ...p, leadCount: Number(editCountModal.count) }
+					: p
+			));
+			setEditCountModal({ open: false, plan: null, count: '' });
+			setAlert({ type: 'success', message: `[${editCountModal.plan.name}] lead sale count updated.` });
+		} catch (e) {
+			setAlert({ type: 'error', message: 'Failed to update lead sale count.' });
+		} finally {
+			setEditCountLoading(false);
+		}
+	};
+	const navigate = useNavigate();
 	const [activeTab, setActiveTab] = useState('customers');
 	// Appearance tab state
 	const [brandColor, setBrandColor] = useState('#2563EB');
+	const [initialBrandColor, setInitialBrandColor] = useState('#2563EB');
 	const [brandColorLoading, setBrandColorLoading] = useState(false);
 	const [brandColorSaving, setBrandColorSaving] = useState(false);
 	// Fetch brand color from backend
-	 useEffect(() => {
-		 const fetchBrandColor = async () => {
-			 setBrandColorLoading(true);
-			 try {
-				 const res = await axiosSecure.get('/settings/brand-color');
-				 setBrandColor(res.data.brandColor || '#2563EB');
-			 } catch (e) {
-				 setBrandColor('#2563EB');
-			 } finally {
-				 setBrandColorLoading(false);
-			 }
-		 };
-		 fetchBrandColor();
-	 }, []);
+	useEffect(() => {
+		const fetchBrandColor = async () => {
+			setBrandColorLoading(true);
+			try {
+				const res = await axiosSecure.get('/settings/brand-color');
+				const color = res.data.brandColor || '#2563EB';
+				setBrandColor(color);
+				setInitialBrandColor(color);
+			} catch (e) {
+				setBrandColor('#2563EB');
+				setInitialBrandColor('#2563EB');
+			} finally {
+				setBrandColorLoading(false);
+			}
+		};
+		fetchBrandColor();
+	}, []);
 
-	 // Save brand color to backend
-	 const handleSaveBrandColor = async () => {
-		 setBrandColorSaving(true);
-		 try {
-			 await axiosSecure.put('/settings/brand-color', { brandColor });
-			 setAlert({ type: 'success', message: 'Brand color updated.' });
-		 } catch (e) {
-			 setAlert({ type: 'error', message: 'Failed to update brand color.' });
-		 } finally {
-			 setBrandColorSaving(false);
-		 }
-	 };
-   const [tableState, setTableState] = useState({
-	   page: 1,
-	   pageSize: 10,
-	   sort: { key: 'name', direction: 'asc' },
-	   search: '',
-	   statuses: []
-   });
+	// Save brand color to backend
+	const handleSaveBrandColor = async () => {
+		setBrandColorSaving(true);
+		try {
+			await axiosSecure.put('/settings/brand-color', { brandColor });
+			setAlert({ type: 'success', message: 'Brand color updated.' });
+		} catch (e) {
+			setAlert({ type: 'success', message: 'Brand color updated.' });
+		} finally {
+			setBrandColorSaving(false);
+		}
+	};
+	const [tableState, setTableState] = useState({
+		page: 1,
+		pageSize: 10,
+		sort: { key: 'name', direction: 'asc' },
+		search: '',
+		statuses: []
+	});
 	const [selectedRows, setSelectedRows] = useState([]);
 	// Modal state for status change
 	const [modalOpen, setModalOpen] = useState(false);
@@ -173,65 +177,65 @@ const Settings = () => {
 	// Alert state
 	const [alert, setAlert] = useState({ type: '', message: '' });
 	const updateUserStatus = useUpdateUserStatus();
-   const { data: users = [], isLoading } = useUsers();
+	const { data: users = [], isLoading } = useUsers();
 
 
-	   // Filter and sort data on frontend
-	   const filteredAndSortedData = useMemo(() => {
-		   let filteredData = Array.isArray(users) ? [...users] : [];
+	// Filter and sort data on frontend
+	const filteredAndSortedData = useMemo(() => {
+		let filteredData = Array.isArray(users) ? [...users] : [];
 
-		   // Apply search filter
-		   if (tableState.search) {
-			   const searchTerm = tableState.search.toLowerCase();
-			   filteredData = filteredData.filter(customer =>
-				   customer.name?.toLowerCase().includes(searchTerm) ||
-				   customer.email?.toLowerCase().includes(searchTerm)
-			   );
-		   }
+		// Apply search filter
+		if (tableState.search) {
+			const searchTerm = tableState.search.toLowerCase();
+			filteredData = filteredData.filter(customer =>
+				customer.name?.toLowerCase().includes(searchTerm) ||
+				customer.email?.toLowerCase().includes(searchTerm)
+			);
+		}
 
-		   // Apply status filter
-		   if (tableState.statuses.length > 0) {
-			   filteredData = filteredData.filter(customer =>
-				   tableState.statuses.includes(customer.status)
-			   );
-		   }
+		// Apply status filter
+		if (tableState.statuses.length > 0) {
+			filteredData = filteredData.filter(customer =>
+				tableState.statuses.includes(customer.status)
+			);
+		}
 
-		   // Apply sorting
-		   if (tableState.sort.key) {
-			   filteredData.sort((a, b) => {
-				   let aVal = a[tableState.sort.key];
-				   let bVal = b[tableState.sort.key];
+		// Apply sorting
+		if (tableState.sort.key) {
+			filteredData.sort((a, b) => {
+				let aVal = a[tableState.sort.key];
+				let bVal = b[tableState.sort.key];
 
-				   // Handle string sorting
-				   if (typeof aVal === 'string') {
-					   aVal = aVal.toLowerCase();
-					   bVal = bVal.toLowerCase();
-				   }
+				// Handle string sorting
+				if (typeof aVal === 'string') {
+					aVal = aVal.toLowerCase();
+					bVal = bVal.toLowerCase();
+				}
 
-				   if (aVal < bVal) {
-					   return tableState.sort.direction === 'asc' ? -1 : 1;
-				   }
-				   if (aVal > bVal) {
-					   return tableState.sort.direction === 'asc' ? 1 : -1;
-				   }
-				   return 0;
-			   });
-		   }
+				if (aVal < bVal) {
+					return tableState.sort.direction === 'asc' ? -1 : 1;
+				}
+				if (aVal > bVal) {
+					return tableState.sort.direction === 'asc' ? 1 : -1;
+				}
+				return 0;
+			});
+		}
 
-		   return filteredData;
-	   }, [users, tableState]);
-
-
-	   // Paginate the filtered data
-	   const paginatedData = useMemo(() => {
-		   const startIndex = (tableState.page - 1) * tableState.pageSize;
-		   const endIndex = startIndex + tableState.pageSize;
-		   return filteredAndSortedData.slice(startIndex, endIndex);
-	   }, [filteredAndSortedData, tableState.page, tableState.pageSize]);
+		return filteredData;
+	}, [users, tableState]);
 
 
-		// Calculate total count for pagination
-		const totalCount = filteredAndSortedData.length;
+	// Paginate the filtered data
+	const paginatedData = useMemo(() => {
+		const startIndex = (tableState.page - 1) * tableState.pageSize;
+		const endIndex = startIndex + tableState.pageSize;
+		return filteredAndSortedData.slice(startIndex, endIndex);
+	}, [filteredAndSortedData, tableState.page, tableState.pageSize]);
+
+
+	// Calculate total count for pagination
+	const totalCount = filteredAndSortedData.length;
 
 	// Table state update handlers
 	const handlePageChange = (newPage) => {
@@ -247,10 +251,10 @@ const Settings = () => {
 	};
 
 	const handleStatusChange = (values) => {
-		setTableState(prev => ({ 
-			...prev, 
+		setTableState(prev => ({
+			...prev,
 			statuses: values === '__ALL__' ? [] : Array.isArray(values) ? values : [values],
-			page: 1 
+			page: 1
 		}));
 	};
 
@@ -270,166 +274,166 @@ const Settings = () => {
 		navigate(`/admin/customers/${customerId}`);
 	};
 
-	   // Table columns configuration
-		 const openStatusModal = (user, status) => {
-			 setModalUser(user);
-			 setModalStatus(status);
-			 setModalOpen(true);
-		 };
+	// Table columns configuration
+	const openStatusModal = (user, status) => {
+		setModalUser(user);
+		setModalStatus(status);
+		setModalOpen(true);
+	};
 
-		 const handleConfirmStatus = async () => {
-			 if (!modalUser || !modalStatus) return;
-			 try {
-				 await updateUserStatus.mutateAsync({ id: modalUser.id, status: modalStatus });
-				 setModalOpen(false);
-				 setModalUser(null);
-				 setModalStatus(null);
-				 setAlert({ type: 'success', message: 'User status updated successfully!' });
-			 } catch (error) {
-				 setAlert({ type: 'error', message: 'Failed to update user status.' });
-			 }
-		 };
+	const handleConfirmStatus = async () => {
+		if (!modalUser || !modalStatus) return;
+		try {
+			await updateUserStatus.mutateAsync({ id: modalUser.id, status: modalStatus });
+			setModalOpen(false);
+			setModalUser(null);
+			setModalStatus(null);
+			setAlert({ type: 'success', message: 'User status updated successfully!' });
+		} catch (error) {
+			setAlert({ type: 'error', message: 'Failed to update user status.' });
+		}
+	};
 
-		 useEffect(() => {
-			 if (alert.message) {
-				 const timer = setTimeout(() => setAlert({ type: '', message: '' }), 3000);
-				 return () => clearTimeout(timer);
-			 }
-		 }, [alert]);
+	useEffect(() => {
+		if (alert.message) {
+			const timer = setTimeout(() => setAlert({ type: '', message: '' }), 3000);
+			return () => clearTimeout(timer);
+		}
+	}, [alert]);
 
-		 const columns = [
-		   {
-			   key: 'customer',
-			   header: 'Customer',
-			   sortable: true,
-			   icon: <MaterialIcon className={'text-content-secondary'} icon="group" size={16} />, 
-			   render: (row) => (
+	const columns = [
+		{
+			key: 'customer',
+			header: 'Customer',
+			sortable: true,
+			icon: <MaterialIcon className={'text-content-secondary'} icon="group" size={16} />,
+			render: (row) => (
 				<Link to={`/admin/customers/${row.id}`}>
-				   <div className="flex items-center gap-3">
-										 <div
-											 className="w-8 h-8 rounded-full flex items-center justify-center"
-											 style={{ backgroundColor: getRandomLightColor(row.name || row.id || "avatar") }}
-										 >
-												 <span className="text-sm font-semibold text-content-primary">{row.avatar || (row.name ? row.name[0] : '')}</span>
-										 </div>
-					   <button
-						   className="font-medium text-content-primary hover:text-content-brand hover:underline transition-colors text-left"
-						   >
-						   {row.name}
-					   </button>
-				   </div>
-						   </Link>
-			   )
-		   },
-		   {
-			   key: 'email',
-			   header: 'Email',
-			   sortable: true,
-			   icon: <MaterialIcon className={'text-content-secondary'} icon="email" size={16} />, 
-			   render: (row) => (
-				   <span className="font-normal text-content-primary">{row.email}</span>
-			   )
-		   },
-		   {
-			   key: 'subscription',
-			   header: 'Subscription',
-			   sortable: true,
-			   icon: <MaterialIcon className={'text-content-secondary'} icon="diamond" size={16} />, 
-			   render: (row) => (
-				   <span className="font-normal text-content-primary">{row.subscription || 'Subscriber'}</span>
-			   )
-		   },
-		   {
-			   key: 'purchased',
-			   header: 'Purchased',
-			   sortable: true,
-			   icon: <MaterialIcon className={'text-content-secondary'} icon="shopping_cart" size={16} />, 
-			   render: (row) => (
-				   <span className="font-normal text-content-primary">{row.purchased ?? 0}</span>
-			   )
-		   },
-		   {
-			   key: 'refunded',
-			   header: 'Refunded',
-			   sortable: true,
-			   icon: <MaterialIcon className={'text-content-secondary'} icon="currency_exchange" size={16} />, 
-			   render: (row) => (
-				   <span className="font-normal text-content-primary">{row.refunded ?? 0}</span>
-			   )
-		   },
-		   {
-			   key: 'status',
-			   header: 'Status',
-			   sortable: true,
-			   icon: <MaterialIcon className={'text-content-secondary'} icon="flag" size={16} />, 
-			   render: (row) => (
-				   <div className="flex items-center gap-2">
-					   <div className={cn(
-						   "w-2 h-2 rounded-full",
-						   row.status === 'active' ? "bg-green-700" : "bg-red-700"
-					   )} />
-					   <span className={cn(
-						   "text-sm font-medium",
-						   row.status === 'active' ? "text-green-700" : "text-red-700"
-					   )}>
-						   {row.status === 'active' ? 'Enabled' : 'Disabled'}
-					   </span>
-				   </div>
-			   )
-		   },
-		   {
-			   key: 'actions',
-			   header: '',
-			   render: (row) => (
-				   <DropdownMenu>
-					   <DropdownMenuTrigger asChild>
-						   <Button variant="ghost" size="icon" className="h-8 w-8">
-							   <MaterialIcon icon="more_vert" size={16} />
-						   </Button>
-					   </DropdownMenuTrigger>
-					   <DropdownMenuContent align="end" className="w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg">
-						   <DropdownMenuSub className="rounded-xl">
-							   <DropdownMenuSubTrigger className="flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors !hover:bg-red-50">
-								   Update Status
-							   </DropdownMenuSubTrigger>
-							   <DropdownMenuSubContent className="w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg mr-2">
-								   <DropdownMenuItem
-									   onClick={(e) => {
-										   e.stopPropagation();
-										   openStatusModal(row, 'active');
-									   }}
-									   className={cn(
-										   "flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors",
-										   row.status === 'active' ? 'bg-bg-secondary' : 'hover:bg-bg-tertiary'
-									   )}
-								   >
-									   <div className="flex items-center justify-between w-full gap-2">
-										   <span>Enabled</span>
-										   {row.status === 'active' ? <MaterialIcon icon="check" size={20} className={'text-content-brand'} /> : <></>}
-									   </div>
-								   </DropdownMenuItem>
-								   <DropdownMenuItem
-									   onClick={(e) => {
-										   e.stopPropagation();
-										   openStatusModal(row, 'inactive');
-									   }}
-									   className={cn(
-										   "flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors",
-										   row.status === 'inactive' ? 'bg-bg-secondary' : 'hover:bg-bg-tertiary'
-									   )}
-								   >
-									   <div className="flex items-center justify-between gap-2 w-full">
-										   <span>Disabled</span>
-										   {row.status === 'inactive' ? <MaterialIcon icon="check" size={20} className={'text-content-brand'} /> : <></>}
-									   </div>
-								   </DropdownMenuItem>
-							   </DropdownMenuSubContent>
-						   </DropdownMenuSub>
-					   </DropdownMenuContent>
-				   </DropdownMenu>
-			   )
-		   }
-	   ];
+					<div className="flex items-center gap-3">
+						<div
+							className="w-8 h-8 rounded-full flex items-center justify-center"
+							style={{ backgroundColor: getRandomLightColor(row.name || row.id || "avatar") }}
+						>
+							<span className="text-sm font-semibold text-content-primary">{row.avatar || (row.name ? row.name[0] : '')}</span>
+						</div>
+						<button
+							className="font-medium text-content-primary hover:text-content-brand hover:underline transition-colors text-left"
+						>
+							{row.name}
+						</button>
+					</div>
+				</Link>
+			)
+		},
+		{
+			key: 'email',
+			header: 'Email',
+			sortable: true,
+			icon: <MaterialIcon className={'text-content-secondary'} icon="email" size={16} />,
+			render: (row) => (
+				<span className="font-normal text-content-primary">{row.email}</span>
+			)
+		},
+		{
+			key: 'subscription',
+			header: 'Subscription',
+			sortable: true,
+			icon: <MaterialIcon className={'text-content-secondary'} icon="diamond" size={16} />,
+			render: (row) => (
+				<span className="font-normal text-content-primary">{row.subscription || 'Subscriber'}</span>
+			)
+		},
+		{
+			key: 'purchased',
+			header: 'Purchased',
+			sortable: true,
+			icon: <MaterialIcon className={'text-content-secondary'} icon="shopping_cart" size={16} />,
+			render: (row) => (
+				<span className="font-normal text-content-primary">{row.purchased ?? 0}</span>
+			)
+		},
+		{
+			key: 'refunded',
+			header: 'Refunded',
+			sortable: true,
+			icon: <MaterialIcon className={'text-content-secondary'} icon="currency_exchange" size={16} />,
+			render: (row) => (
+				<span className="font-normal text-content-primary">{row.refunded ?? 0}</span>
+			)
+		},
+		{
+			key: 'status',
+			header: 'Status',
+			sortable: true,
+			icon: <MaterialIcon className={'text-content-secondary'} icon="flag" size={16} />,
+			render: (row) => (
+				<div className="flex items-center gap-2">
+					<div className={cn(
+						"w-2 h-2 rounded-full",
+						row.status === 'active' ? "bg-green-700" : "bg-red-700"
+					)} />
+					<span className={cn(
+						"text-sm font-medium",
+						row.status === 'active' ? "text-green-700" : "text-red-700"
+					)}>
+						{row.status === 'active' ? 'Enabled' : 'Disabled'}
+					</span>
+				</div>
+			)
+		},
+		{
+			key: 'actions',
+			header: '',
+			render: (row) => (
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button variant="ghost" size="icon" className="h-8 w-8">
+							<MaterialIcon icon="more_vert" size={16} />
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align="end" className="w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg">
+						<DropdownMenuSub className="rounded-xl">
+							<DropdownMenuSubTrigger className="flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors !hover:bg-red-50">
+								Update Status
+							</DropdownMenuSubTrigger>
+							<DropdownMenuSubContent className="w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg mr-2">
+								<DropdownMenuItem
+									onClick={(e) => {
+										e.stopPropagation();
+										openStatusModal(row, 'active');
+									}}
+									className={cn(
+										"flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors",
+										row.status === 'active' ? 'bg-bg-secondary' : 'hover:bg-bg-tertiary'
+									)}
+								>
+									<div className="flex items-center justify-between w-full gap-2">
+										<span>Enabled</span>
+										{row.status === 'active' ? <MaterialIcon icon="check" size={20} className={'text-content-brand'} /> : <></>}
+									</div>
+								</DropdownMenuItem>
+								<DropdownMenuItem
+									onClick={(e) => {
+										e.stopPropagation();
+										openStatusModal(row, 'inactive');
+									}}
+									className={cn(
+										"flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors",
+										row.status === 'inactive' ? 'bg-bg-secondary' : 'hover:bg-bg-tertiary'
+									)}
+								>
+									<div className="flex items-center justify-between gap-2 w-full">
+										<span>Disabled</span>
+										{row.status === 'inactive' ? <MaterialIcon icon="check" size={20} className={'text-content-brand'} /> : <></>}
+									</div>
+								</DropdownMenuItem>
+							</DropdownMenuSubContent>
+						</DropdownMenuSub>
+					</DropdownMenuContent>
+				</DropdownMenu>
+			)
+		}
+	];
 
 	const statusOptions = [
 		{ value: 'active', label: 'Enabled' },
@@ -448,141 +452,152 @@ const Settings = () => {
 		}
 	];
 
-		 return (
-			 <div className="p-8" style={{ '--brand-color': brandColor }}>
-			   <Alert type={alert.type} message={alert.message} onClose={() => setAlert({ type: '', message: '' })} />
-			   {/* Header */}
-			   <div className="flex items-center justify-between mb-6 mt-0">
-				   <h1 className="w-full font-bold text-[32px] leading-[32px] tracking-[-0.025em]">
-					   Settings
-				   </h1>
-			   </div>
-				 <div>
-					 {/* Navigation Tabs */}
-					 <div className="flex h-[46px] border-b border-borderColor-primary mb-0">
-						 <button
-							 onClick={() => setActiveTab('customers')}
-							 className={cn(
-								 "relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
-								 activeTab === 'customers'
-									 ? "text-content-brand"
-									 : "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
-							 )}
-							 style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
-						 >
-							 Customers
-									 {activeTab === 'customers' && (
-										 <span
-											 className={cn(
-												 "absolute left-0 rounded-full -bottom-[2px] w-full h-[2px]",
-											 )}
-											 style={{ backgroundColor: 'var(--brand-color)' }}
-										 />
-									 )}
-						 </button>
-						 <button
-							 onClick={() => setActiveTab('pricing')}
-							 className={cn(
-								 "relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
-								 activeTab === 'pricing'
-									 ? "text-content-brand"
-									 : "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
-							 )}
-							 style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
-						 >
-							 Pricing plans
-									 {activeTab === 'pricing' && (
-										 <span
-											 className={cn(
-												 "absolute left-0 rounded-full -bottom-[2px] w-full h-[2px]",
-											 )}
-											 style={{ backgroundColor: 'var(--brand-color)' }}
-										 />
-									 )}
-						 </button>
-						 <button
-							 onClick={() => setActiveTab('appearance')}
-							 className={cn(
-								 "relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
-								 activeTab === 'appearance'
-									 ? "text-content-brand"
-									 : "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
-							 )}
-							 style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
-						 >
-							 Appearance
-									 {activeTab === 'appearance' && (
-										 <span
-											 className={cn(
-												 "absolute left-0 rounded-full -bottom-[2px] w-full h-[2px]",
-											 )}
-											 style={{ backgroundColor: 'var(--brand-color)' }}
-										 />
-									 )}
-						 </button>
-					 </div>
-				 </div>
-					{/* Appearance Tab Content */}
-					{activeTab === 'appearance' && (
-						<div className="mt-[22px]">
-							<h2 className="text-2xl font-semibold text-content-primary mb-6">Appearance</h2>
-							<div className="bg-white rounded-lg shadow p-6 w-full max-w-2xl">
-								<div className="flex flex-col gap-6">
-									<div className="flex flex-col gap-2">
-										<label htmlFor="brandColorInput" className="block text-sm font-bold mb-1 ">Brand Color</label>
-										<span className="text-sm leading-5 text-content-secondary mb-2">Select or customize your brand color</span>
+	return (
+		<div className="p-8" style={{ '--brand-color': brandColor }}>
+			<Alert type={alert.type} message={alert.message} onClose={() => setAlert({ type: '', message: '' })} />
+			{/* Header */}
+			<div className="flex items-center justify-between mb-6 mt-0">
+				<h1 className="w-full font-bold text-[32px] leading-[32px] tracking-[-0.025em]">
+					Settings
+				</h1>
+			</div>
+			<div>
+				{/* Navigation Tabs */}
+				<div className="flex h-[46px] border-b border-borderColor-primary mb-0">
+					<button
+						onClick={() => setActiveTab('customers')}
+						className={cn(
+							"relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
+							activeTab === 'customers'
+								? "text-content-brand"
+								: "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
+						)}
+						style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
+					>
+						Customers
+						{activeTab === 'customers' && (
+							<span
+								className={cn(
+									"absolute left-0 rounded-full -bottom-[2px] w-full h-[2px]",
+								)}
+								style={{ backgroundColor: 'var(--brand-color)' }}
+							/>
+						)}
+					</button>
+					<button
+						onClick={() => setActiveTab('pricing')}
+						className={cn(
+							"relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
+							activeTab === 'pricing'
+								? "text-content-brand"
+								: "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
+						)}
+						style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
+					>
+						Pricing plans
+						{activeTab === 'pricing' && (
+							<span
+								className={cn(
+									"absolute left-0 rounded-full -bottom-[2px] w-full h-[2px]",
+								)}
+								style={{ backgroundColor: 'var(--brand-color)' }}
+							/>
+						)}
+					</button>
+					<button
+						onClick={() => setActiveTab('appearance')}
+						className={cn(
+							"relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
+							activeTab === 'appearance'
+								? "text-content-brand"
+								: "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
+						)}
+						style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
+					>
+						Appearance
+						{activeTab === 'appearance' && (
+							<span
+								className={cn(
+									"absolute left-0 rounded-full -bottom-[2px] w-full h-[2px]",
+								)}
+								style={{ backgroundColor: 'var(--brand-color)' }}
+							/>
+						)}
+					</button>
+				</div>
+			</div>
+			{/* Appearance Tab Content */}
+			{activeTab === 'appearance' && (
+				<div className="mt-[22px]">
+					<h2 className="text-2xl font-semibold text-content-primary mb-6">Appearance</h2>
+					<div className="bg-bg-primary rounded-2xl border border-borderColor-primary px-6 py-5">
+						<div className="space-y-5">
+							<div className="space-y-4 flex justify-between">
+								<div className='flex items-start gap-32'>
+									<div className="space-y-1">
+										<h3 className="text-sm font-semibold text-black">Brand Color</h3>
+										<p className="text-sm text-content-primary">Select or customize your brand color</p>
 									</div>
-									<div className="flex items-center gap-4">
-										{/* <div className="w-8 h-8 rounded bg-white border flex items-center justify-center">
-											<span className="w-6 h-6 rounded" style={{ backgroundColor: brandColor, display: 'inline-block' }}></span>
-										</div> */}
-										<input
-											id="brandColorInput"
-											type="color"
-											value={brandColor}
-											onChange={e => setBrandColor(e.target.value)}
-											className="w-10 h-10 border rounded"
-											disabled={brandColorLoading}
-										/>
+
+									<div className="flex justify-start gap-3 mt-2">
+										<div className="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center overflow-hidden bg-white relative">
+											<input
+												type="color"
+												value={brandColor}
+												onChange={e => setBrandColor(e.target.value)}
+												className="absolute inset-0 opacity-0 cursor-pointer w-8 h-8"
+											/>
+											<div
+												className="w-full h-full"
+												style={{ backgroundColor: brandColor }}
+											/>
+										</div>
 										<input
 											type="text"
-											value={brandColor}
+											value={brandColor.toUpperCase()}
 											onChange={e => setBrandColor(e.target.value)}
-											className="border rounded px-3 py-2 text-base w-[120px]"
-											disabled={brandColorLoading}
+											className="w-[100px] h-8 px-3 border border-gray-200 rounded-lg text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-content-brand focus:border-transparent"
 										/>
-										<div className="flex gap-2 ml-auto">
-											<button
-												type="button"
-												className="px-4 py-2 bg-gray-100 text-gray-700 rounded border border-gray-300 hover:bg-gray-200"
-												disabled={brandColorSaving || brandColorLoading}
-												onClick={() => setBrandColor('#2563EB')}
-											>
-												Cancel
-											</button>
-											<button
-												onClick={handleSaveBrandColor}
-												className="px-4 py-2 bg-bg-brand text-white rounded hover:bg-blue-700 disabled:opacity-50"
-												disabled={brandColorSaving || brandColorLoading}
-											>
-												{brandColorSaving ? 'Saving...' : 'Save changes'}
-											</button>
-										</div>
 									</div>
+								</div>
+
+								<div className="flex items-start gap-3 pt-20">
+									<button
+										type="button"
+										className="h-9 px-4 text-sm font-medium text-gray-700 hover:text-gray-800 rounded-lg border transition-colors"
+										onClick={() => setBrandColor('#2563EB')}
+									>
+										Cancel
+									</button>
+									<button
+										onClick={handleSaveBrandColor}
+										disabled={brandColor === initialBrandColor}
+										className={`relative h-9 px-4 text-sm font-medium text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 overflow-hidden ${brandColor === initialBrandColor
+												? 'bg-gray-400 cursor-not-allowed'
+												: 'bg-[var(--brand-color)]'
+											}`}
+										style={{ '--brand-color': brandColor }}
+									>
+										<span className="relative z-10">Save changes</span>
+										<span
+											className={`absolute inset-0 bg-black bg-opacity-0 transition-opacity duration-300 ${brandColor !== initialBrandColor && 'hover:bg-opacity-20'
+												}`}
+										></span>
+									</button>
 								</div>
 							</div>
 						</div>
-					)}
+					</div>
+				</div>
+			)}			{/* Customers Tab Content */}
+			{activeTab === 'customers' && (
+				<div>
+					<div className="flex items-center justify-between mt-[22px] mb-5">
+						<h2 className="text-2xl font-semibold text-content-primary">Customers</h2>
+					</div>
 
-			   {/* Customers Tab Content */}
-			   {activeTab === 'customers' && (
-				   <div>
-					   <div className="flex items-center justify-between mt-[22px] mb-5">
-						   <h2 className="text-2xl font-semibold text-content-primary">Customers</h2>
-					   </div>
-
-					   {/* Customer Table */}
-						<Table
+					{/* Customer Table */}
+					<Table
 						columns={columns}
 						data={paginatedData}
 						page={tableState.page}
@@ -606,17 +621,17 @@ const Settings = () => {
 						onSelectAll={handleSelectAll}
 						filters={filters}
 					/>
-					   {/* Confirm Modal for status change */}
-					   <Modal
-						   open={modalOpen}
-						   onOpenChange={setModalOpen}
-						   type={`${modalStatus === 'inactive' ? 'delete' : 'confirm'}`}
-						   title={`${modalStatus === 'inactive' ? 'Disable' : 'Enable'} purchase ability?`}
-						   content={`Are you sure you want to ${modalStatus === 'inactive' ? 'disable' : 'enable'} purchase ability for ${modalUser?.name}?`}
-						   buttonText={modalStatus === 'inactive' ? 'Set Disabled' : 'Set Enabled'}
-						   onConfirm={handleConfirmStatus}
-						   loading={updateUserStatus.isLoading}
-					   />
+					{/* Confirm Modal for status change */}
+					<Modal
+						open={modalOpen}
+						onOpenChange={setModalOpen}
+						type={`${modalStatus === 'inactive' ? 'delete' : 'confirm'}`}
+						title={`${modalStatus === 'inactive' ? 'Disable' : 'Enable'} purchase ability?`}
+						content={`Are you sure you want to ${modalStatus === 'inactive' ? 'disable' : 'enable'} purchase ability for ${modalUser?.name}?`}
+						buttonText={modalStatus === 'inactive' ? 'Set Disabled' : 'Set Enabled'}
+						onConfirm={handleConfirmStatus}
+						loading={updateUserStatus.isLoading}
+					/>
 				</div>
 			)}
 
@@ -626,49 +641,49 @@ const Settings = () => {
 					<div className="flex items-center justify-between mt-[22px] mb-5">
 						<h2 className="text-2xl font-semibold text-content-primary">Pricing Plan</h2>
 					</div>
-								 <Table
-									 columns={pricingColumns}
-									 data={pricingPlans}
-									 page={1}
-									 pageSize={10}
-									 total={pricingPlans.length}
-									 onPageChange={() => { }}
-									 onPageSizeChange={() => { }}
-									 onSortChange={() => { }}
-									 sort={{ key: '', direction: 'asc' }}
-									 search={''}
-									 onSearch={() => { }}
-									 rowSelection={false}
-									 selectedRows={[]}
-									 onRowSelect={() => { }}
-									 onSelectAll={() => { }}
-									 filters={[]}
-									 loading={loadingPricing}
-								 />
-								 {/* Modal for editing lead sale count */}
-								 <Modal
-									 open={editCountModal.open}
-									 onOpenChange={open => setEditCountModal(m => ({ ...m, open }))}
-									 type="confirm"
-									 title={`Edit Lead Sale Count for ${editCountModal.plan?.name || ''}`}
-									 content={
-										 <div className="flex flex-col gap-2">
-											 <label htmlFor="leadCountInput" className="text-sm font-medium">Lead Sale Count</label>
-											 <input
-												 id="leadCountInput"
-												 type="number"
-												 min={1}
-												 className="border rounded px-3 py-2 text-base"
-												 value={editCountModal.count}
-												 onChange={e => setEditCountModal(m => ({ ...m, count: e.target.value }))}
-												 autoFocus
-											 />
-										 </div>
-									 }
-									 buttonText="Save"
-									 onConfirm={handleSaveLeadCount}
-									 loading={editCountLoading}
-								 />
+					<Table
+						columns={pricingColumns}
+						data={pricingPlans}
+						page={1}
+						pageSize={10}
+						total={pricingPlans.length}
+						onPageChange={() => { }}
+						onPageSizeChange={() => { }}
+						onSortChange={() => { }}
+						sort={{ key: '', direction: 'asc' }}
+						search={''}
+						onSearch={() => { }}
+						rowSelection={false}
+						selectedRows={[]}
+						onRowSelect={() => { }}
+						onSelectAll={() => { }}
+						filters={[]}
+						loading={loadingPricing}
+					/>
+					{/* Modal for editing lead sale count */}
+					<Modal
+						open={editCountModal.open}
+						onOpenChange={open => setEditCountModal(m => ({ ...m, open }))}
+						type="confirm"
+						title={`Edit Lead Sale Count for ${editCountModal.plan?.name || ''}`}
+						content={
+							<div className="flex flex-col gap-2">
+								<label htmlFor="leadCountInput" className="text-sm font-medium">Lead Sale Count</label>
+								<input
+									id="leadCountInput"
+									type="number"
+									min={1}
+									className="border rounded px-3 py-2 text-base"
+									value={editCountModal.count}
+									onChange={e => setEditCountModal(m => ({ ...m, count: e.target.value }))}
+									autoFocus
+								/>
+							</div>
+						}
+						buttonText="Save"
+						onConfirm={handleSaveLeadCount}
+						loading={editCountLoading}
+					/>
 				</div>)}
 		</div>
 	);
