@@ -141,8 +141,9 @@ export const routes = [
   {
     path: "admin",
     element: (
-      // <AdminRoute>
+      <ProtectedRoute>
         <AdminLayout />
+      </ProtectedRoute>
     ),
     children: [
       {
@@ -161,7 +162,9 @@ export const routes = [
   },
   {
     path: "/",
-    element: <UserLayout />,
+    element: (<ProtectedRoute>
+      <UserLayout />,
+          </ProtectedRoute>),
     children: [
       {
         index: true,
