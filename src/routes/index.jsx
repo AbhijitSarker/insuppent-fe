@@ -1,5 +1,5 @@
 import FindLeads from '@/pages/User/FindLeads';
-import { Navigate, createBrowserRouter } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import UserLayout from "../layouts/UserLayout";
 import AdminLayout from "../layouts/AdminLayout";
 import AdminLeads from "../pages/Admin/AdminLeads";
@@ -108,7 +108,7 @@ const UnauthorizedPage = () => (
   </div>
 );
 
-export const router = createBrowserRouter([
+export const routes = [
   {
     path: "/",
     element: <RootRedirect />,
@@ -143,7 +143,6 @@ export const router = createBrowserRouter([
     element: (
       // <AdminRoute>
         <AdminLayout />
-      // </AdminRoute>
     ),
     children: [
       {
@@ -167,17 +166,17 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: (
-          // <ProtectedRoute>
+          <ProtectedRoute>
             <FindLeads />
-          // </ProtectedRoute>
+          </ProtectedRoute>
         ),
       },
       {
         path: "my-leads",
         element: (
-          // <ProtectedRoute>
+          <ProtectedRoute>
             <MyLeads />
-          // </ProtectedRoute>
+          </ProtectedRoute>
         ),
       },
       {
@@ -199,4 +198,4 @@ export const router = createBrowserRouter([
       // },
     ],
   },
-]);
+];
