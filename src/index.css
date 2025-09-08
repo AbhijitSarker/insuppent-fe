@@ -1,11 +1,20 @@
 /* Hide scrollbars but keep scroll functionality */
-html, body, * {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
+html,
+body,
+* {
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
 }
-html::-webkit-scrollbar, body::-webkit-scrollbar, *::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari, Opera */
 }
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -64,6 +73,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar, *::-webkit-scrollbar {
 .bg-brand-color {
   background-color: var(--brand-color) !important;
 }
+
 .material-icons,
 .material-icons-outlined,
 .material-icons-round,
@@ -102,18 +112,17 @@ html::-webkit-scrollbar, body::-webkit-scrollbar, *::-webkit-scrollbar {
   font-family: 'Material Icons Two Tone';
 }
 
-/* AI Email Button Gradient Styles */
+/* AI Email Button Styles */
 .ai-gradient-hover {
   position: relative;
   border: 1.5px solid transparent;
   border-radius: 8px;
   background-clip: padding-box;
-  transition: background-image 0.2s ease;
+  transition: border-color 0.2s ease;
 }
 
 .ai-gradient-hover:hover {
-  background-image: linear-gradient(white, white), 
-  linear-gradient(130deg, #3792FE -10%, #BD2DED 50%, #F77545 110%);
+  border-color: #c4c4c4;
   background-origin: border-box;
-  background-clip: padding-box, border-box;
+  background-clip: padding-box;
 }
