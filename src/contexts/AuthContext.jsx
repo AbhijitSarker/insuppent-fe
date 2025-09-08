@@ -29,14 +29,25 @@ export const AuthProvider = ({ children }) => {
       const response = await axiosOpen.get(`/auth/verify?uid=${uid}&token=${token}`);
 
       if (response.data.success) {
-        setUser(response.data.data.user);
+        const userData = response.data.data.user;
+        
+        // Set user data in state
+        setUser(userData);
         setIsAuthenticated(true);
 
         // Clear URL parameters after successful auth
         const cleanUrl = window.location.origin + window.location.pathname;
         window.history.replaceState({}, document.title, cleanUrl);
+        
+        // Check role and redirect
+        const roles = Array.isArray(userData.role) ? userData.role : [userData.role];
+        const isAdminUser = roles.includes('administrator') || roles.includes('bbp_keymaster');
+      
 
-        return { success: true, user: response.data.data.user };
+        // Redirect based on role
+        window.location.href = isAdminUser ? '/admin' : '/';
+
+        return { success: true, user: userData };
       }
 
       return { success: false, message: response.data.message };
@@ -56,11 +67,14 @@ export const AuthProvider = ({ children }) => {
     try {
       setLoading(true);
       const response = await axiosSecure.get('/auth/me');
+      
       if (response.data.success) {
         setUser(response.data.data.user);
         setIsAuthenticated(true);
         return { success: true, user: response.data.data.user };
       }
+      setUser(null);
+      setIsAuthenticated(false);
       return { success: false };
     } catch (error) {
       // Not authenticated
@@ -98,8 +112,8 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       setIsAuthenticated(false);
       setLoading(false);
-      // Redirect to WordPress login
-      window.location.href = WP_LOGIN_URL;
+      // Redirect to login page
+      window.location.href = '/auth/login';
     }
   };
 
@@ -110,7 +124,12 @@ export const AuthProvider = ({ children }) => {
 
   // Helper functions
   const isAdmin = () => {
-    return user?.role?.includes('administrator') || user?.role?.includes('bbp_keymaster') || false;
+    // If role is a string, convert it to array
+    const roles = Array.isArray(user?.role) ? user?.role : [user?.role];
+    const result = roles.includes('administrator') || roles.includes('bbp_keymaster');
+    
+    console.log('isAdmin result:', result);
+    return result;
   };
 
   const hasRole = (role) => {
@@ -132,14 +151,18 @@ export const AuthProvider = ({ children }) => {
         const result = await authenticateWithWordPress(uid, token);
         if (!result.success) {
           console.error('WordPress authentication failed:', result.message);
-          // Don't redirect immediately, show error or let user try again
-          setLoading(false);
+          window.location.href = '/auth/login';
         }
-      } else {
-        // Check if user is already authenticated via session
-        console.log('Checking existing auth status...');
-        await checkAuthStatus();
       }
+      // Only check auth status if we're not on the login or signup pages
+      else if (!window.location.pathname.startsWith('/auth/')) {
+        console.log('Checking existing auth status...');
+        const authStatus = await checkAuthStatus();
+        if (!authStatus.success && !window.location.pathname.startsWith('/auth/')) {
+          window.location.href = '/auth/login';
+        }
+      }
+      setLoading(false);
     };
 
     initAuth();
@@ -157,6 +180,9 @@ export const AuthProvider = ({ children }) => {
     }
   }, [isAuthenticated]);
 
+  // State to store where to redirect after auth
+  const [redirectPath, setRedirectPath] = useState(null);
+
   const value = {
     user,
     loading,
@@ -169,6 +195,8 @@ export const AuthProvider = ({ children }) => {
     redirectToWordPress,
     checkAuthStatus,
     authenticateWithWordPress,
+    redirectPath,
+    setRedirectPath,
   };
 
   return (

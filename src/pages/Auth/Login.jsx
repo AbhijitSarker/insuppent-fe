@@ -7,9 +7,10 @@ const Login = () => {
   const { login } = useAuth();
   const [searchParams] = useSearchParams();
   const error = searchParams.get('error');
+  const WP_LOGIN_URL = import.meta.env.VITE_WP_LOGIN_URL || 'https://staging2.insuppent.com/wp-login.php';
 
   const handleLogin = () => {
-    login(); // This will redirect to WordPress SSO
+    window.location.href = WP_LOGIN_URL;
   };
 
   useEffect(() => {

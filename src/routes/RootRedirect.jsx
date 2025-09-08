@@ -14,9 +14,9 @@ const LoadingSpinner = () => (
 );
 
 const RootRedirect = () => {
-  const { user, loading, isAuthenticated, isAdmin, redirectToWordPress } = useAuth();
+  const { user, loading, isAuthenticated, isAdmin, redirectToWordPress, redirectPath } = useAuth();
   const location = useLocation();
-
+  
   // Check if we have WordPress auth parameters
   const urlParams = new URLSearchParams(location.search);
   const hasAuthParams = urlParams.get('uid') && urlParams.get('token');
@@ -27,7 +27,7 @@ const RootRedirect = () => {
       // Don't auto-redirect, let user choose to login
       console.log('User not authenticated, showing login option');
     }
-  }, [loading, isAuthenticated, hasAuthParams]);
+  }, [loading, isAuthenticated, hasAuthParams, user]);
 
   if (loading || hasAuthParams) {
     return (
@@ -60,15 +60,10 @@ const RootRedirect = () => {
     );
   }
 
-  // User is authenticated, redirect based on role
-  if (user) {
-    if (isAdmin()) {
-      console.log('Redirecting admin user to admin dashboard');
-      return <Navigate to="/admin" replace />;
-    } else {
-      console.log('Redirecting regular user to dashboard');
-      return <Navigate to="/dashboard" replace />;
-    }
+    // User is authenticated, use the redirectPath from context
+  if (user && redirectPath) {
+    console.log('Redirecting to:', redirectPath);
+    return <Navigate to={redirectPath} replace />;
   }
 
   // Fallback
