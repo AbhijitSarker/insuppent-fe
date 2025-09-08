@@ -93,10 +93,10 @@ const Settings = () => {
 							<MaterialIcon icon="more_vert" size={16} />
 						</Button>
 					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end" className="rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg">
+					<DropdownMenuContent align="end" className="w-[160px] sm:w-[180px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg">
 						<DropdownMenuItem
 							onClick={() => setEditCountModal({ open: true, plan: row, count: row.leadCount })}
-							className="flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors hover:bg-bg-tertiary"
+							className="flex cursor-pointer items-center rounded-xl px-2 sm:px-3 py-2 text-xs sm:text-sm outline-none transition-colors hover:bg-bg-tertiary"
 						>
 							Edit Lead Sale Count
 						</DropdownMenuItem>
@@ -310,15 +310,15 @@ const Settings = () => {
 			icon: <MaterialIcon className={'text-content-secondary'} icon="group" size={16} />,
 			render: (row) => (
 				<Link to={`/admin/customers/${row.id}`}>
-					<div className="flex items-center gap-3">
+					<div className="flex items-center gap-2 sm:gap-3">
 						<div
-							className="w-8 h-8 rounded-full flex items-center justify-center"
+							className="w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm"
 							style={{ backgroundColor: getRandomLightColor(row.name || row.id || "avatar") }}
 						>
-							<span className="text-sm font-semibold text-content-primary">{row.avatar || (row.name ? row.name[0] : '')}</span>
+							<span className="font-semibold text-content-primary">{row.avatar || (row.name ? row.name[0] : '')}</span>
 						</div>
 						<button
-							className="font-medium text-content-primary hover:text-content-brand hover:underline transition-colors text-left"
+							className="font-medium text-content-primary hover:text-content-brand hover:underline transition-colors text-left text-xs sm:text-sm"
 						>
 							{row.name}
 						</button>
@@ -332,7 +332,7 @@ const Settings = () => {
 			sortable: true,
 			icon: <MaterialIcon className={'text-content-secondary'} icon="email" size={16} />,
 			render: (row) => (
-				<span className="font-normal text-content-primary">{row.email}</span>
+				<span className="font-normal text-content-primary text-xs sm:text-sm">{row.email}</span>
 			)
 		},
 		{
@@ -341,7 +341,7 @@ const Settings = () => {
 			sortable: true,
 			icon: <MaterialIcon className={'text-content-secondary'} icon="diamond" size={16} />,
 			render: (row) => (
-				<span className="font-normal text-content-primary">{row.subscription || 'Subscriber'}</span>
+				<span className="font-normal text-content-primary text-xs sm:text-sm">{row.subscription || 'Subscriber'}</span>
 			)
 		},
 		{
@@ -350,7 +350,7 @@ const Settings = () => {
 			sortable: true,
 			icon: <MaterialIcon className={'text-content-secondary'} icon="shopping_cart" size={16} />,
 			render: (row) => (
-				<span className="font-normal text-content-primary">{row.purchased ?? 0}</span>
+				<span className="font-normal text-content-primary text-xs sm:text-sm">{row.purchased ?? 0}</span>
 			)
 		},
 		{
@@ -359,7 +359,7 @@ const Settings = () => {
 			sortable: true,
 			icon: <MaterialIcon className={'text-content-secondary'} icon="currency_exchange" size={16} />,
 			render: (row) => (
-				<span className="font-normal text-content-primary">{row.refunded ?? 0}</span>
+				<span className="font-normal text-content-primary text-xs sm:text-sm">{row.refunded ?? 0}</span>
 			)
 		},
 		{
@@ -368,13 +368,13 @@ const Settings = () => {
 			sortable: true,
 			icon: <MaterialIcon className={'text-content-secondary'} icon="flag" size={16} />,
 			render: (row) => (
-				<div className="flex items-center gap-2">
+				<div className="flex items-center gap-1 sm:gap-2">
 					<div className={cn(
-						"w-2 h-2 rounded-full",
+						"w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full",
 						row.status === 'active' ? "bg-green-700" : "bg-red-700"
 					)} />
 					<span className={cn(
-						"text-sm font-medium",
+						"text-xs sm:text-sm font-medium",
 						row.status === 'active' ? "text-green-700" : "text-red-700"
 					)}>
 						{row.status === 'active' ? 'Enabled' : 'Disabled'}
@@ -388,29 +388,29 @@ const Settings = () => {
 			render: (row) => (
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<Button variant="ghost" size="icon" className="h-8 w-8">
+						<Button variant="ghost" size="icon" className="h-6 w-6 sm:h-8 sm:w-8">
 							<MaterialIcon icon="more_vert" size={16} />
 						</Button>
 					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end" className="w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg">
+					<DropdownMenuContent align="end" className="w-[140px] sm:w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg">
 						<DropdownMenuSub className="rounded-xl">
-							<DropdownMenuSubTrigger className="flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors !hover:bg-red-50">
+							<DropdownMenuSubTrigger className="flex cursor-pointer items-center rounded-xl px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm outline-none transition-colors !hover:bg-red-50">
 								Update Status
 							</DropdownMenuSubTrigger>
-							<DropdownMenuSubContent className="w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg mr-2">
+							<DropdownMenuSubContent className="w-[140px] sm:w-[160px] rounded-xl border border-borderColor-secondary bg-white p-1 shadow-lg mr-2">
 								<DropdownMenuItem
 									onClick={(e) => {
 										e.stopPropagation();
 										openStatusModal(row, 'active');
 									}}
 									className={cn(
-										"flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors",
+										"flex cursor-pointer items-center rounded-xl px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm outline-none transition-colors",
 										row.status === 'active' ? 'bg-bg-secondary' : 'hover:bg-bg-tertiary'
 									)}
 								>
 									<div className="flex items-center justify-between w-full gap-2">
 										<span>Enabled</span>
-										{row.status === 'active' ? <MaterialIcon icon="check" size={20} className={'text-content-brand'} /> : <></>}
+										{row.status === 'active' ? <MaterialIcon icon="check" size={16} sm:size={20} className={'text-content-brand'} /> : <></>}
 									</div>
 								</DropdownMenuItem>
 								<DropdownMenuItem
@@ -419,13 +419,13 @@ const Settings = () => {
 										openStatusModal(row, 'inactive');
 									}}
 									className={cn(
-										"flex cursor-pointer items-center rounded-xl px-3 py-2 text-sm outline-none transition-colors",
+										"flex cursor-pointer items-center rounded-xl px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm outline-none transition-colors",
 										row.status === 'inactive' ? 'bg-bg-secondary' : 'hover:bg-bg-tertiary'
 									)}
 								>
 									<div className="flex items-center justify-between gap-2 w-full">
 										<span>Disabled</span>
-										{row.status === 'inactive' ? <MaterialIcon icon="check" size={20} className={'text-content-brand'} /> : <></>}
+										{row.status === 'inactive' ? <MaterialIcon icon="check" size={16} sm:size={20} className={'text-content-brand'} /> : <></>}
 									</div>
 								</DropdownMenuItem>
 							</DropdownMenuSubContent>
@@ -454,21 +454,21 @@ const Settings = () => {
 	];
 
 	return (
-		<div className="p-8" style={{ '--brand-color': brandColor }}>
+		<div className="p-4 md:p-6 lg:p-8" style={{ '--brand-color': brandColor }}>
 			<Alert type={alert.type} message={alert.message} onClose={() => setAlert({ type: '', message: '' })} />
 			{/* Header */}
-			<div className="flex items-center justify-between mb-6 mt-0">
-				<h1 className="w-full font-bold text-[32px] leading-[32px] tracking-[-0.025em]">
+			<div className="flex items-center justify-between mb-4 md:mb-6 mt-0">
+				<h1 className="w-full font-bold text-2xl md:text-[32px] leading-[1.2] md:leading-[32px] tracking-[-0.025em]">
 					Settings
 				</h1>
 			</div>
 			<div>
 				{/* Navigation Tabs */}
-				<div className="flex h-[46px] border-b border-borderColor-primary mb-0">
+				<div className="flex flex-wrap h-auto md:h-[46px] border-b border-borderColor-primary mb-0 overflow-x-auto">
 					<button
 						onClick={() => setActiveTab('customers')}
 						className={cn(
-							"relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
+							"relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors whitespace-nowrap",
 							activeTab === 'customers'
 								? "text-content-brand"
 								: "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
@@ -488,7 +488,7 @@ const Settings = () => {
 					<button
 						onClick={() => setActiveTab('pricing')}
 						className={cn(
-							"relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
+							"relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors whitespace-nowrap",
 							activeTab === 'pricing'
 								? "text-content-brand"
 								: "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
@@ -508,7 +508,7 @@ const Settings = () => {
 					<button
 						onClick={() => setActiveTab('appearance')}
 						className={cn(
-							"relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors",
+							"relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors whitespace-nowrap",
 							activeTab === 'appearance'
 								? "text-content-brand"
 								: "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
@@ -529,12 +529,12 @@ const Settings = () => {
 			</div>
 			{/* Appearance Tab Content */}
 			{activeTab === 'appearance' && (
-				<div className="mt-[22px]">
-					<h2 className="text-2xl font-semibold text-content-primary mb-6">Appearance</h2>
-					<div className="bg-bg-primary rounded-2xl border border-borderColor-primary px-6 py-5">
+				<div className="mt-4 md:mt-[22px]">
+					<h2 className="text-xl md:text-2xl font-semibold text-content-primary mb-4 md:mb-6">Appearance</h2>
+					<div className="bg-bg-primary rounded-2xl border border-borderColor-primary px-4 md:px-6 py-4 md:py-5">
 						<div className="space-y-5">
-							<div className="space-y-4 flex justify-between">
-								<div className='flex items-start gap-32'>
+							<div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 lg:gap-8 xl:gap-12">
+								<div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-8 lg:gap-12 xl:gap-32">
 									<div className="space-y-1">
 										<h3 className="text-sm font-semibold text-black">Brand Color</h3>
 										<p className="text-sm text-content-primary">Select or customize your brand color</p>
@@ -562,10 +562,10 @@ const Settings = () => {
 									</div>
 								</div>
 
-								<div className="flex items-start gap-3 pt-20">
+								<div className="flex items-center justify-end gap-3 mt-4 md:mt-16 lg:mt-24">
 									<button
 										type="button"
-										className="h-9 px-4 text-sm font-medium text-gray-700 hover:text-gray-800 rounded-lg border transition-colors"
+										className="h-9 px-3 sm:px-4 text-sm font-medium text-gray-700 hover:text-gray-800 rounded-lg border transition-colors"
 										onClick={() => setBrandColor('#2563EB')}
 									>
 										Cancel
@@ -573,7 +573,7 @@ const Settings = () => {
 									<button
 										onClick={handleSaveBrandColor}
 										disabled={brandColor === initialBrandColor}
-										className={`relative h-9 px-4 text-sm font-medium text-white rounded-lg transition-colors overflow-hidden ${brandColor === initialBrandColor
+										className={`relative h-9 px-3 sm:px-4 text-sm font-medium text-white rounded-lg transition-colors overflow-hidden ${brandColor === initialBrandColor
 												? 'bg-gray-400 cursor-not-allowed'
 												: 'bg-[var(--brand-color)]'
 											}`}
@@ -593,35 +593,37 @@ const Settings = () => {
 			)}			{/* Customers Tab Content */}
 			{activeTab === 'customers' && (
 				<div>
-					<div className="flex items-center justify-between mt-[22px] mb-5">
-						<h2 className="text-2xl font-semibold text-content-primary">Customers</h2>
+					<div className="flex items-center justify-between mt-4 md:mt-[22px] mb-3 md:mb-5">
+						<h2 className="text-xl md:text-2xl font-semibold text-content-primary">Customers</h2>
 					</div>
 
 					{/* Customer Table */}
-					<Table
-						columns={columns}
-						data={paginatedData}
-						page={tableState.page}
-						pageSize={tableState.pageSize}
-						total={totalCount}
-						onPageChange={handlePageChange}
-						onPageSizeChange={(newPageSize) => {
-							setTableState(prev => ({
-								...prev,
-								pageSize: newPageSize,
-								page: 1
-							}));
-						}}
-						onSortChange={handleSortChange}
-						sort={tableState.sort}
-						search={tableState.search}
-						onSearch={handleSearch}
-						rowSelection={false}
-						selectedRows={selectedRows}
-						onRowSelect={handleRowSelect}
-						onSelectAll={handleSelectAll}
-						filters={filters}
-					/>
+					<div className="overflow-x-auto">
+						<Table
+							columns={columns}
+							data={paginatedData}
+							page={tableState.page}
+							pageSize={tableState.pageSize}
+							total={totalCount}
+							onPageChange={handlePageChange}
+							onPageSizeChange={(newPageSize) => {
+								setTableState(prev => ({
+									...prev,
+									pageSize: newPageSize,
+									page: 1
+								}));
+							}}
+							onSortChange={handleSortChange}
+							sort={tableState.sort}
+							search={tableState.search}
+							onSearch={handleSearch}
+							rowSelection={false}
+							selectedRows={selectedRows}
+							onRowSelect={handleRowSelect}
+							onSelectAll={handleSelectAll}
+							filters={filters}
+						/>
+					</div>
 					{/* Confirm Modal for status change */}
 					<Modal
 						open={modalOpen}
@@ -639,28 +641,30 @@ const Settings = () => {
 			{/* Pricing Plans Tab Content */}
 			{activeTab === 'pricing' && (
 				<div>
-					<div className="flex items-center justify-between mt-[22px] mb-5">
-						<h2 className="text-2xl font-semibold text-content-primary">Pricing Plan</h2>
+					<div className="flex items-center justify-between mt-4 md:mt-[22px] mb-3 md:mb-5">
+						<h2 className="text-xl md:text-2xl font-semibold text-content-primary">Pricing Plan</h2>
 					</div>
-					<Table
-						columns={pricingColumns}
-						data={pricingPlans}
-						page={1}
-						pageSize={10}
-						total={pricingPlans.length}
-						onPageChange={() => { }}
-						onPageSizeChange={() => { }}
-						onSortChange={() => { }}
-						sort={{ key: '', direction: 'asc' }}
-						search={''}
-						onSearch={() => { }}
-						rowSelection={false}
-						selectedRows={[]}
-						onRowSelect={() => { }}
-						onSelectAll={() => { }}
-						filters={[]}
-						loading={loadingPricing}
-					/>
+					<div className="overflow-x-auto">
+						<Table
+							columns={pricingColumns}
+							data={pricingPlans}
+							page={1}
+							pageSize={10}
+							total={pricingPlans.length}
+							onPageChange={() => { }}
+							onPageSizeChange={() => { }}
+							onSortChange={() => { }}
+							sort={{ key: '', direction: 'asc' }}
+							search={''}
+							onSearch={() => { }}
+							rowSelection={false}
+							selectedRows={[]}
+							onRowSelect={() => { }}
+							onSelectAll={() => { }}
+							filters={[]}
+							loading={loadingPricing}
+						/>
+					</div>
 					{/* Modal for editing lead sale count */}
 					<Modal
 						open={editCountModal.open}

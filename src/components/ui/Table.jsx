@@ -230,13 +230,13 @@ export function Table({
   if (isMobile && CardComponent) {
     return (
       <div className={cn("", className)}>
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+        <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-4 mb-3 sm:mb-4">
           {searchFilterVisibility && (
-            <div className="flex flex-1 flex-wrap items-center gap-4">
-              <div className="relative w-full lg:w-[400px]">
+            <div className="flex flex-1 flex-wrap items-center gap-2 sm:gap-4 w-full">
+              <div className="relative w-full sm:w-[300px] md:w-[350px] lg:w-[400px]">
                 <MaterialIcon
                   icon="search"
-                  size={20}
+                  size={18}
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-content-tertiary pointer-events-none"
                 />
                 <Input
@@ -244,16 +244,16 @@ export function Table({
                   placeholder="Search"
                   value={internalSearch}
                   onChange={handleSearch}
-                  className="w-full md:w-[400px] h-9 pl-10 pr-3 py-2 bg-white border border-borderColor-primary rounded-lg text-sm text-content-primary focus:ring-1 focus:ring-content-brand focus:border-content-brand placeholder:text-content-tertiary font-['Inter'] font-normal text-[14px] leading-[20px] tracking-[0%]"
+                  className="w-full h-8 sm:h-9 pl-9 sm:pl-10 pr-2 sm:pr-3 py-1.5 sm:py-2 bg-white border border-borderColor-primary rounded-lg text-xs sm:text-sm text-content-primary focus:ring-1 focus:ring-content-brand focus:border-content-brand placeholder:text-content-tertiary font-['Inter'] font-normal leading-[20px] tracking-[0%]"
                 />
               </div>
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                 {filters.map((filter) => (
                   <Select
                     key={filter.key}
                     value={filter.value || (filter.isMulti ? [] : "__ALL__")}
                     onValueChange={(value) => handleFilterChange(filter, value)}
-                    className="h-[36px]"
+                    className="h-[32px] sm:h-[36px] text-xs sm:text-sm"
                     icon={filter.icon}
                     label={filter.label}
                     isMulti={filter.isMulti}
@@ -265,6 +265,7 @@ export function Table({
                         value={opt.value}
                         isMulti={filter.isMulti}
                         data-state={filter.value}
+                        className="text-xs sm:text-sm"
                       >
                         {opt.label}
                       </SelectItem>
@@ -276,8 +277,9 @@ export function Table({
                   <Button
                     size="sm"
                     onClick={handleExport}
-                    className="bg-bg-brand hover:brightness-90 transition-colors duration-200 p-2 rounded-lg text-white text-sm font-semibold leading-5 flex items-center justify-center]"          >
-                    <MaterialIcon icon="file_upload" size={20} className="text-white p-0" />
+                    className="bg-bg-brand hover:brightness-90 transition-colors duration-200 p-1.5 sm:p-2 rounded-lg text-white text-xs sm:text-sm font-semibold leading-5 flex items-center justify-center"
+                  >
+                    <MaterialIcon icon="file_upload" size={16} className="text-white p-0" />
                   </Button>
                 )}
                 {(filters.some(f => (f.isMulti ? (f.value && f.value.length > 0) : (f.value && f.value !== "__ALL__")))) && (
@@ -285,9 +287,9 @@ export function Table({
                     variant="outline"
                     size="sm"
                     onClick={handleClearFilters}
-                    className="flex items-center gap-2 px-3 py-2 h-9 text-sm font-semibold border-none rounded-lg !hover:bg-blue-100 !bg-transparent text-content-brand hover:text-content-brand shadow-none"
+                    className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 h-8 sm:h-9 text-xs sm:text-sm font-semibold border-none rounded-lg !hover:bg-blue-100 !bg-transparent text-content-brand hover:text-content-brand shadow-none"
                   >
-                    <MaterialIcon icon="close" size={20} className="text-content-brand p-0" />
+                    <MaterialIcon icon="close" size={16} sm:size={20} className="text-content-brand p-0" />
                     Clear filter
                   </Button>
                 )}
@@ -359,14 +361,14 @@ export function Table({
   // Desktop/table view
   return (
     <div className={cn("", className)}>
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+      <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-4 mb-3 sm:mb-4">
         {
           searchFilterVisibility && (
-            <div className="flex flex-1 flex-wrap items-center gap-4 w-full sm:w-full">
-              <div className="relative w-[400px]">
+            <div className="flex flex-1 flex-wrap items-center gap-2 sm:gap-4 w-full">
+              <div className="relative w-full sm:w-[300px] md:w-[350px] lg:w-[400px]">
                 <MaterialIcon
                   icon="search"
-                  size={20}
+                  size={18}
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-content-tertiary pointer-events-none"
                 />
                 <Input
@@ -374,12 +376,12 @@ export function Table({
                   placeholder="Search"
                   value={internalSearch}
                   onChange={handleSearch}
-                  className="w-[400px] h-9 pl-10 pr-3 py-2 bg-white border border-borderColor-primary rounded-lg text-sm text-content-primary focus:ring-1 focus:ring-content-brand focus:border-content-brand placeholder:text-content-tertiary font-['Inter'] font-normal text-[14px] leading-[20px] tracking-[0%]"
+                  className="w-full h-8 sm:h-9 pl-9 sm:pl-10 pr-2 sm:pr-3 py-1.5 sm:py-2 bg-white border border-borderColor-primary rounded-lg text-xs sm:text-sm text-content-primary focus:ring-1 focus:ring-content-brand focus:border-content-brand placeholder:text-content-tertiary font-['Inter'] font-normal leading-[20px] tracking-[0%]"
                 />
               </div>
 
-              <div className="flex justify-between w-max">
-                <div className="flex flex-wrap items-center gap-3">
+              <div className="flex justify-between w-full sm:w-max">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                   {filters.map((filter) => (
                     <Select
                       key={filter.key}
