@@ -5,9 +5,14 @@ import AdminLayout from "../layouts/AdminLayout";
 import AdminLeads from "../pages/Admin/AdminLeads";
 import Settings from "../pages/Admin/Settings";
 import Customers from "../pages/Admin/Customers";
+import AdminLogin from "../pages/Admin/Auth/AdminLogin";
+import AdminSignup from "../pages/Admin/Auth/AdminSignup";
+import ForgotPassword from "../pages/Admin/Auth/ForgotPassword";
+import ResetPassword from "../pages/Admin/Auth/ResetPassword";
 import Login from "../pages/Auth/Login";
 import Signup from "../pages/Auth/Signup";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import RootRedirect from "./RootRedirect";
 import MyLeads from '@/pages/User/MyLeads';
 
@@ -44,18 +49,14 @@ const ProtectedRoute = ({ children, requireRole = null }) => {
 
 // Admin protected route
 const AdminRoute = ({ children }) => {
-  const { user, loading, isAuthenticated, isAdmin } = useAuth();
+  const { admin, loading, isAuthenticated } = useAdminAuth();
 
   if (loading) {
     return <LoadingSpinner />;
   }
 
-  if (!isAuthenticated || !user) {
-    return <Navigate to="/auth/login" replace />;
-  }
-
-  if (!isAdmin()) {
-    return <Navigate to="/" replace />;
+  if (!isAuthenticated || !admin) {
+    return <Navigate to="/admin/login" replace />;
   }
 
   return children;
@@ -140,24 +141,47 @@ export const routes = [
   },
   {
     path: "admin",
-    element: (
-      <AdminRoute>
-        <AdminLayout />
-      </AdminRoute>
-    ),
     children: [
+      // Admin auth routes - no protection needed
       {
-        index: true,
-        element: <AdminLeads />,
+        path: "login",
+        element: <AdminLogin />
       },
       {
-        path: "settings",
-        element: <Settings />,
+        path: "signup",
+        element: <AdminSignup />
       },
       {
-        path: "customers/:customerId",
-        element: <Customers />,
+        path: "forgot-password",
+        element: <ForgotPassword />
       },
+      {
+        path: "reset-password/:token",
+        element: <ResetPassword />
+      },
+      // Protected admin routes
+      {
+        path: "",
+        element: (
+          <AdminRoute>
+            <AdminLayout />
+          </AdminRoute>
+        ),
+        children: [
+          {
+            index: true,
+            element: <AdminLeads />,
+          },
+          {
+            path: "settings",
+            element: <Settings />,
+          },
+          {
+            path: "customers/:customerId",
+            element: <Customers />,
+          },
+        ],
+      }
     ],
   },
   {

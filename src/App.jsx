@@ -1,6 +1,7 @@
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
+import { AdminAuthProvider } from "./contexts/AdminAuthContext";
 import { routes } from "./routes";
 
 function App() {
@@ -9,7 +10,9 @@ function App() {
 
   return (
     <AuthProvider>
-      <RouterProvider router={router} />
+      <AdminAuthProvider>
+        <RouterProvider router={router} />
+      </AdminAuthProvider>
     </AuthProvider>
   );
 }
