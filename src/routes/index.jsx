@@ -54,9 +54,9 @@ const AdminRoute = ({ children }) => {
     return <Navigate to="/auth/login" replace />;
   }
 
-  // if (!isAdmin()) {
-  //   return <Navigate to="/unauthorized" replace />;
-  // }
+  if (!isAdmin()) {
+    return <Navigate to="/" replace />;
+  }
 
   return children;
 };
@@ -109,10 +109,10 @@ const UnauthorizedPage = () => (
 );
 
 export const routes = [
-  {
-    path: "/",
-    element: <RootRedirect />,
-  },
+  // {
+  //   path: "/",
+  //   element: <RootRedirect />,
+  // },
   {
     path: "/unauthorized",
     element: <UnauthorizedPage />,
@@ -141,9 +141,9 @@ export const routes = [
   {
     path: "admin",
     element: (
-      <ProtectedRoute>
+      <AdminRoute>
         <AdminLayout />
-      </ProtectedRoute>
+      </AdminRoute>
     ),
     children: [
       {
