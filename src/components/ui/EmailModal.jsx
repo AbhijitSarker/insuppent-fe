@@ -27,7 +27,6 @@ const EmailModal = ({ open, onClose, lead }) => {
             <div className="rounded-3xl absolute left-1/2 bottom-0 w-full -translate-x-1/2 h-[90vh] bg-bg-secondary  flex flex-col border-t border-borderColor-primary animate-slideUpModal">
                 {/* Header with icon and title */}
                 <div className="flex items-center gap-4 px-5 py-5 border-b border-borderColor-primary bg-white rounded-t-3xl">
-                    <img src={aiSvg} alt="" />
                     <h2 className="text-2xl text-content-primary tracking-tight font-semibold">AI Generated Email</h2>
                     <div className="flex-1" />
                     <button onClick={onClose} className="text-2xl px-2 py-1 rounded hover:bg-muted/60 transition-colors" title="Close">
