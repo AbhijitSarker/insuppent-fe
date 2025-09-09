@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }) => {
       
 
         // Redirect based on role
-        window.location.href = isAdminUser ? '/admin' : '/';
+        window.location.href = '/';
 
         return { success: true, user: userData };
       }
