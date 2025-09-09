@@ -57,12 +57,13 @@ const Settings = () => {
 	const { data: leadPricing = {}, isLoading: loadingLeadPricing } = useLeadPricing();
 	const updateLeadPricingMutation = useUpdateLeadPricing();
 	const [leadPricingState, setLeadPricingState] = useState({
-		subscriber: { home: 20.50, auto: 20.50, mortgage: 20.50 },
-		startup: { home: 20.50, auto: 20.50, mortgage: 20.50 },
-		agency: { home: 20.50, auto: 20.50, mortgage: 20.50 }
+		Subscriber: { home: 20.50, auto: 20.50, mortgage: 20.50 },
+		Startup: { home: 20.50, auto: 20.50, mortgage: 20.50 },
+		Agency: { home: 20.50, auto: 20.50, mortgage: 20.50 }
 	});
 	const [originalPricingState, setOriginalPricingState] = useState(null);
 	const [hasPricingChanges, setHasPricingChanges] = useState(false);
+	const [changedPricingValues, setChangedPricingValues] = useState({});
 
 	// Fetch pricing plans (lead sale counts) from API
 	useEffect(() => {
@@ -172,6 +173,8 @@ const Settings = () => {
 			setLeadPricingState(leadPricing);
 			// Store the original state for comparison to detect changes
 			setOriginalPricingState(JSON.stringify(leadPricing));
+			// Reset tracked changes
+			setChangedPricingValues({});
 			setHasPricingChanges(false);
 		}
 	}, [leadPricing]);
@@ -191,15 +194,27 @@ const Settings = () => {
 	
 	// Handle lead pricing change
 	const handleLeadPricingChange = (membership, type, value) => {
+		// Make sure we use the correct case for membership
+		const correctCaseMembership = membership.charAt(0).toUpperCase() + membership.slice(1).toLowerCase();
+		
 		const newState = {
 			...leadPricingState,
-			[membership]: {
-				...leadPricingState[membership],
+			[correctCaseMembership]: {
+				...leadPricingState[correctCaseMembership],
 				[type]: parseFloat(value) || 0
 			}
 		};
 		
 		setLeadPricingState(newState);
+		
+		// Track changed values
+		setChangedPricingValues({
+			...changedPricingValues,
+			[correctCaseMembership]: {
+				...(changedPricingValues[correctCaseMembership] || {}),
+				[type]: parseFloat(value) || 0
+			}
+		});
 		
 		// Check if there are changes compared to the original state
 		if (originalPricingState) {
@@ -212,15 +227,18 @@ const Settings = () => {
 	const [leadPricingSaving, setLeadPricingSaving] = useState(false);
 	const handleSaveLeadPricing = async () => {
 		console.log('Saving lead pricing with data:', leadPricingState);
+		console.log('Changed values only:', changedPricingValues);
 		setLeadPricingSaving(true);
 		try {
-			await updateLeadPricingMutation.mutateAsync(leadPricingState);
+			// Only send the changed values to the backend
+			await updateLeadPricingMutation.mutateAsync(changedPricingValues);
 			console.log('Lead pricing updated successfully');
 			setAlert({ type: 'success', message: 'Lead pricing updated.' });
 			
 			// Update original state and reset changes flag
 			setOriginalPricingState(JSON.stringify(leadPricingState));
 			setHasPricingChanges(false);
+			setChangedPricingValues({});
 		} catch (e) {
 			console.error('Error saving lead pricing:', e);
 			setAlert({ type: 'error', message: 'Failed to update lead pricing.' });
@@ -802,8 +820,8 @@ const Settings = () => {
 												type="number"
 												step="0.01"
 												min="0"
-												value={leadPricingState.subscriber?.home || 0}
-												onChange={(e) => handleLeadPricingChange('subscriber', 'home', e.target.value)}
+												value={leadPricingState.Subscriber?.home || 0}
+												onChange={(e) => handleLeadPricingChange('Subscriber', 'home', e.target.value)}
 												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
 											/>
 										</div>
@@ -817,8 +835,8 @@ const Settings = () => {
 												type="number"
 												step="0.01"
 												min="0"
-												value={leadPricingState.subscriber?.auto || 0}
-												onChange={(e) => handleLeadPricingChange('subscriber', 'auto', e.target.value)}
+												value={leadPricingState.Subscriber?.auto || 0}
+												onChange={(e) => handleLeadPricingChange('Subscriber', 'auto', e.target.value)}
 												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
 											/>
 										</div>
@@ -832,8 +850,8 @@ const Settings = () => {
 												type="number"
 												step="0.01"
 												min="0"
-												value={leadPricingState.subscriber?.mortgage || 0}
-												onChange={(e) => handleLeadPricingChange('subscriber', 'mortgage', e.target.value)}
+												value={leadPricingState.Subscriber?.mortgage || 0}
+												onChange={(e) => handleLeadPricingChange('Subscriber', 'mortgage', e.target.value)}
 												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
 											/>
 										</div>
@@ -854,8 +872,8 @@ const Settings = () => {
 												type="number"
 												step="0.01"
 												min="0"
-												value={leadPricingState.startup?.home || 0}
-												onChange={(e) => handleLeadPricingChange('startup', 'home', e.target.value)}
+												value={leadPricingState.Startup?.home || 0}
+												onChange={(e) => handleLeadPricingChange('Startup', 'home', e.target.value)}
 												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
 											/>
 										</div>
@@ -869,8 +887,8 @@ const Settings = () => {
 												type="number"
 												step="0.01"
 												min="0"
-												value={leadPricingState.startup?.auto || 0}
-												onChange={(e) => handleLeadPricingChange('startup', 'auto', e.target.value)}
+												value={leadPricingState.Startup?.auto || 0}
+												onChange={(e) => handleLeadPricingChange('Startup', 'auto', e.target.value)}
 												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
 											/>
 										</div>
@@ -884,8 +902,8 @@ const Settings = () => {
 												type="number"
 												step="0.01"
 												min="0"
-												value={leadPricingState.startup?.mortgage || 0}
-												onChange={(e) => handleLeadPricingChange('startup', 'mortgage', e.target.value)}
+												value={leadPricingState.Startup?.mortgage || 0}
+												onChange={(e) => handleLeadPricingChange('Startup', 'mortgage', e.target.value)}
 												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
 											/>
 										</div>
@@ -906,8 +924,8 @@ const Settings = () => {
 												type="number"
 												step="0.01"
 												min="0"
-												value={leadPricingState.agency?.home || 0}
-												onChange={(e) => handleLeadPricingChange('agency', 'home', e.target.value)}
+												value={leadPricingState.Agency?.home || 0}
+												onChange={(e) => handleLeadPricingChange('Agency', 'home', e.target.value)}
 												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
 											/>
 										</div>
@@ -921,8 +939,8 @@ const Settings = () => {
 												type="number"
 												step="0.01"
 												min="0"
-												value={leadPricingState.agency?.auto || 0}
-												onChange={(e) => handleLeadPricingChange('agency', 'auto', e.target.value)}
+												value={leadPricingState.Agency?.auto || 0}
+												onChange={(e) => handleLeadPricingChange('Agency', 'auto', e.target.value)}
 												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
 											/>
 										</div>
@@ -936,8 +954,8 @@ const Settings = () => {
 												type="number"
 												step="0.01"
 												min="0"
-												value={leadPricingState.agency?.mortgage || 0}
-												onChange={(e) => handleLeadPricingChange('agency', 'mortgage', e.target.value)}
+												value={leadPricingState.Agency?.mortgage || 0}
+												onChange={(e) => handleLeadPricingChange('Agency', 'mortgage', e.target.value)}
 												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
 											/>
 										</div>

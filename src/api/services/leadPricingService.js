@@ -7,19 +7,20 @@ export const getLeadPricing = async () => {
     const res = await axiosAdmin.get('/settings/lead-pricing');
     return res.data.pricing;
   } catch (error) {
+    console.error('Failed to fetch lead pricing:', error);
     // If API call fails, use the same data structure as backend
     return {
-      subscriber: {
+      Subscriber: {
         home: 20.50,
         auto: 20.50,
         mortgage: 20.50,
       },
-      startup: {
+      Startup: {
         home: 20.50,
         auto: 20.50,
         mortgage: 20.50,
       },
-      agency: {
+      Agency: {
         home: 20.50,
         auto: 20.50,
         mortgage: 20.50,

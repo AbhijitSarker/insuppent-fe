@@ -5,6 +5,7 @@ import Alert from '@/components/ui/alert';
 import { Table } from '@/components/ui/Table';
 import LeadCard from '@/components/ui/LeadCard';
 import { usePublicLeads } from '@/api/hooks/useLeads';
+import { useUserLeadPricing } from '@/api/hooks/useUserLeadPricing';
 import { Badge } from '@/components/ui/badge';
 import MaterialIcon from '@/components/ui/MaterialIcon';
 import Button from '@/components/ui/button';
@@ -48,6 +49,7 @@ const FindLeads = () => {
     }, [tableState]);
 
     const { data: leadsData, isLoading } = usePublicLeads();
+    const { membershipLevel, getPriceForLeadType, isReady: pricingReady, isPricingLoading } = useUserLeadPricing();
 
     const filteredAndSortedData = useMemo(() => {
         if (!leadsData?.data) return [];
@@ -199,14 +201,28 @@ const FindLeads = () => {
         {
             key: 'price',
             header: 'Action',
-            render: (row) => (
-                <button
-                    className="text-content-brand px-3 rounded-lg py-1 font-medium hover:text-white hover:bg-bg-brand hover:brightness-1 transition-colors duration-200 leading-[18px]"
-                    onClick={() => setCheckoutLeads([row])}
-                >
-                    Buy ${row.price?.toFixed(2) ?? '--'}
-                </button>
-            )
+            render: (row) => {
+                const price = pricingReady && row.type ? 
+                    getPriceForLeadType(row.type) : 
+                    row.price;
+                
+                return (
+                    <button
+                        className="text-content-brand px-3 rounded-lg py-1 font-medium hover:text-white hover:bg-bg-brand hover:brightness-1 transition-colors duration-200 leading-[18px]"
+                        onClick={() => {
+                            // Update price based on membership before checkout
+                            if (pricingReady && row.type) {
+                                const membershipPrice = getPriceForLeadType(row.type);
+                                setCheckoutLeads([{ ...row, price: membershipPrice || row.price }]);
+                            } else {
+                                setCheckoutLeads([row]);
+                            }
+                        }}
+                    >
+                        Buy ${price?.toFixed(2) ?? '--'}
+                    </button>
+                );
+            }
         }
     ];
 
@@ -256,6 +272,14 @@ const FindLeads = () => {
                 <h1 className="w-full font-bold text-[2rem] sm:text-[32px] leading-[32px] tracking-[-0.025em] text-bg-secondary md:text-content-primary">
                     Find Leads
                 </h1>
+                {isPricingLoading && (
+                    <span className="text-sm text-content-secondary">Loading pricing...</span>
+                )}
+                {process.env.NODE_ENV === 'development' && membershipLevel && (
+                    <span className="text-sm text-content-secondary ml-2">
+                        Membership: {membershipLevel}
+                    </span>
+                )}
                 {/* <Link to="/admin">Admin</Link> */}
             </div>
             <div className={`flex gap-2 items-center ${selectedRows.length > 0 ? '' : 'hidden'}`}>
@@ -265,7 +289,17 @@ const FindLeads = () => {
                 </span>
                 <button
                     className="bg-bg-brand hover:brightness-90 transition-colors duration-200 px-3 py-2 rounded-lg text-white text-sm font-semibold leading-5 flex items-center justify-center min-w-[90px]"
-                    onClick={() => setCheckoutLeads(selectedRows)}
+                    onClick={() => {
+                        // Update prices based on membership before checkout
+                        const leadsWithUpdatedPrices = selectedRows.map(lead => {
+                            if (pricingReady && lead.type) {
+                                const membershipPrice = getPriceForLeadType(lead.type);
+                                return { ...lead, price: membershipPrice || lead.price };
+                            }
+                            return lead;
+                        });
+                        setCheckoutLeads(leadsWithUpdatedPrices);
+                    }}
                 >
                     Buy Selected
                 </button>
@@ -321,7 +355,25 @@ const FindLeads = () => {
                 }
                 paginationDelta={2}
                 searchFilterVisibility={selectedRows.length > 0 ? false : true}
-                cardComponent={(props) => <LeadCard {...props} onBuy={(lead) => setCheckoutLeads([lead])} />}
+                cardComponent={(props) => {
+                    const price = pricingReady && props.lead?.type ? 
+                        getPriceForLeadType(props.lead.type) : 
+                        props.lead.price;
+                    
+                    return <LeadCard 
+                        {...props} 
+                        leadPrice={price} 
+                        onBuy={(lead) => {
+                            // Update price based on membership before checkout
+                            if (pricingReady && lead.type) {
+                                const membershipPrice = getPriceForLeadType(lead.type);
+                                setCheckoutLeads([{ ...lead, price: membershipPrice || lead.price }]);
+                            } else {
+                                setCheckoutLeads([lead]);
+                            }
+                        }} 
+                    />;
+                }}
                 isMobile={isMobile}
             />
         </div>

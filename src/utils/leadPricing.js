@@ -5,17 +5,17 @@
 
 // Default pricing (should match the backend default)
 const defaultPricing = {
-  subscriber: {
+  Subscriber: {
     auto: 20.50,
     home: 20.50,
     mortgage: 20.50,
   },
-  startup: {
+  Startup: {
     auto: 20.50,
     home: 20.50,
     mortgage: 20.50,
   },
-  agency: {
+  Agency: {
     auto: 20.50,
     home: 20.50,
     mortgage: 20.50,
@@ -50,11 +50,13 @@ export const getPricingData = () => {
 export const calculateLeadPrice = (memberLevel, leadType) => {
   const pricing = getPricingData();
 
-  const normalizedLevel = String(memberLevel).toLowerCase();
+  // Normalize inputs for case-insensitive comparison
+  const normalizedLevel = String(memberLevel).charAt(0).toUpperCase() + String(memberLevel).slice(1).toLowerCase();
   const normalizedType = String(leadType).toLowerCase();
 
   if (!pricing[normalizedLevel] || !pricing[normalizedLevel][normalizedType]) {
+    console.warn(`Price not found for ${normalizedLevel} - ${normalizedType}`);
     return null;
   }
-  return pricing[normalizedLevel][normalizedType];
+  return parseFloat(pricing[normalizedLevel][normalizedType]);
 };

@@ -53,7 +53,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from '@/lib/utils';
 
-const LeadCard = ({ lead, onBuy, onShowEmails, onUpdateStatus, onComment, onStatusChange }) => {
+const LeadCard = ({ lead, onBuy, onShowEmails, onUpdateStatus, onComment, onStatusChange, leadPrice }) => {
     return (
         <div className="rounded-xl border border-borderColor-primary bg-white mb-4 divide-y divide-borderColor-secondary w-full max-w-md mx-auto sm:max-w-full">
             <div className="px-4 py-3 pb-2 border-b border-borderColor-secondary flex items-center justify-between  gap-2">
@@ -226,12 +226,12 @@ const LeadCard = ({ lead, onBuy, onShowEmails, onUpdateStatus, onComment, onStat
                     )
                 }
 
-                {lead.price && (
+                {(lead.price || leadPrice) && (
                     <button
                         className="text-content-brand px-3 rounded-lg py-1 font-medium leading-[17px] text-[14px] w-full sm:w-auto"
                         onClick={() => onBuy && onBuy(lead)}
                     >
-                        Buy ${lead.price?.toFixed(2)}
+                        Buy ${(leadPrice || lead.price)?.toFixed(2)}
                     </button>
                 )}
             </div>
