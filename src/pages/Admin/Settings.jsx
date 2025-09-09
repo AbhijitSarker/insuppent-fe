@@ -42,12 +42,27 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { axiosSecure } from '@/api/axios/config';
 
+// Import the lead pricing hooks and utilities
+import { useLeadPricing, useUpdateLeadPricing } from '../../api/hooks/useLeadPricing';
+import { getPricingData } from '../../utils/leadPricing';
+
 const Settings = () => {
 	// Pricing plans state and handlers
 	const [pricingPlans, setPricingPlans] = useState([]);
 	const [loadingPricing, setLoadingPricing] = useState(false);
 	const [editCountModal, setEditCountModal] = useState({ open: false, plan: null, count: '' });
 	const [editCountLoading, setEditCountLoading] = useState(false);
+	
+	// Lead pricing states
+	const { data: leadPricing = {}, isLoading: loadingLeadPricing } = useLeadPricing();
+	const updateLeadPricingMutation = useUpdateLeadPricing();
+	const [leadPricingState, setLeadPricingState] = useState({
+		subscriber: { home: 20.50, auto: 20.50, mortgage: 20.50 },
+		startup: { home: 20.50, auto: 20.50, mortgage: 20.50 },
+		agency: { home: 20.50, auto: 20.50, mortgage: 20.50 }
+	});
+	const [originalPricingState, setOriginalPricingState] = useState(null);
+	const [hasPricingChanges, setHasPricingChanges] = useState(false);
 
 	// Fetch pricing plans (lead sale counts) from API
 	useEffect(() => {
@@ -150,6 +165,16 @@ const Settings = () => {
 		};
 		fetchBrandColor();
 	}, []);
+	
+	// Initialize lead pricing state when data is loaded
+	useEffect(() => {
+		if (leadPricing && Object.keys(leadPricing).length > 0) {
+			setLeadPricingState(leadPricing);
+			// Store the original state for comparison to detect changes
+			setOriginalPricingState(JSON.stringify(leadPricing));
+			setHasPricingChanges(false);
+		}
+	}, [leadPricing]);
 
 	// Save brand color to backend
 	const handleSaveBrandColor = async () => {
@@ -161,6 +186,46 @@ const Settings = () => {
 			setAlert({ type: 'success', message: 'Brand color updated.' });
 		} finally {
 			setBrandColorSaving(false);
+		}
+	};
+	
+	// Handle lead pricing change
+	const handleLeadPricingChange = (membership, type, value) => {
+		const newState = {
+			...leadPricingState,
+			[membership]: {
+				...leadPricingState[membership],
+				[type]: parseFloat(value) || 0
+			}
+		};
+		
+		setLeadPricingState(newState);
+		
+		// Check if there are changes compared to the original state
+		if (originalPricingState) {
+			const hasChanges = JSON.stringify(newState) !== originalPricingState;
+			setHasPricingChanges(hasChanges);
+		}
+	};
+	
+	// Save lead pricing changes
+	const [leadPricingSaving, setLeadPricingSaving] = useState(false);
+	const handleSaveLeadPricing = async () => {
+		console.log('Saving lead pricing with data:', leadPricingState);
+		setLeadPricingSaving(true);
+		try {
+			await updateLeadPricingMutation.mutateAsync(leadPricingState);
+			console.log('Lead pricing updated successfully');
+			setAlert({ type: 'success', message: 'Lead pricing updated.' });
+			
+			// Update original state and reset changes flag
+			setOriginalPricingState(JSON.stringify(leadPricingState));
+			setHasPricingChanges(false);
+		} catch (e) {
+			console.error('Error saving lead pricing:', e);
+			setAlert({ type: 'error', message: 'Failed to update lead pricing.' });
+		} finally {
+			setLeadPricingSaving(false);
 		}
 	};
 	const [tableState, setTableState] = useState({
@@ -525,6 +590,26 @@ const Settings = () => {
 							/>
 						)}
 					</button>
+					<button
+						onClick={() => setActiveTab('leadPricing')}
+						className={cn(
+							"relative text-content-primary flex h-[46px] items-center px-2 pt-2 pb-4 text-sm font-semibold border-b-2 border-transparent leading-[20px] transition-colors whitespace-nowrap",
+							activeTab === 'leadPricing'
+								? "text-content-brand"
+								: "text-content-primary hover:border-b-2 hover:border-borderColor-primary"
+						)}
+						style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
+					>
+						Lead Pricing
+						{activeTab === 'leadPricing' && (
+							<span
+								className={cn(
+									"absolute left-0 rounded-full -bottom-[2px] w-full h-[2px]",
+								)}
+								style={{ backgroundColor: 'var(--brand-color)' }}
+							/>
+						)}
+					</button>
 				</div>
 			</div>
 			{/* Appearance Tab Content */}
@@ -690,6 +775,194 @@ const Settings = () => {
 						loading={editCountLoading}
 					/>
 				</div>)}
+				
+			{/* Lead Pricing Tab Content */}
+			{activeTab === 'leadPricing' && (
+				<div>
+					<div className="flex items-center justify-between mt-4 md:mt-[22px] mb-3 md:mb-5">
+						<h2 className="text-xl md:text-2xl font-semibold text-content-primary">Lead Pricing</h2>
+					</div>
+					
+					{loadingLeadPricing ? (
+						<div className="flex justify-center items-center h-40">
+							<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-content-brand"></div>
+						</div>
+					) : (
+						<div className="bg-bg-primary rounded-2xl border border-borderColor-primary p-6">
+							{/* Subscriber Pricing */}
+							<div className="mb-8">
+								<h3 className="text-lg font-semibold mb-4">Subscriber</h3>
+								<div className="grid grid-cols-3 gap-4">
+									<div>
+										<label htmlFor="subscriber-home" className="block text-sm font-medium text-gray-700 mb-1">Home</label>
+										<div className="relative">
+											<span className="absolute left-3 top-2 text-content-secondary">$</span>
+											<input
+												id="subscriber-home"
+												type="number"
+												step="0.01"
+												min="0"
+												value={leadPricingState.subscriber?.home || 0}
+												onChange={(e) => handleLeadPricingChange('subscriber', 'home', e.target.value)}
+												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
+											/>
+										</div>
+									</div>
+									<div>
+										<label htmlFor="subscriber-auto" className="block text-sm font-medium text-gray-700 mb-1">Auto</label>
+										<div className="relative">
+											<span className="absolute left-3 top-2 text-content-secondary">$</span>
+											<input
+												id="subscriber-auto"
+												type="number"
+												step="0.01"
+												min="0"
+												value={leadPricingState.subscriber?.auto || 0}
+												onChange={(e) => handleLeadPricingChange('subscriber', 'auto', e.target.value)}
+												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
+											/>
+										</div>
+									</div>
+									<div>
+										<label htmlFor="subscriber-mortgage" className="block text-sm font-medium text-gray-700 mb-1">Mortgage Protection</label>
+										<div className="relative">
+											<span className="absolute left-3 top-2 text-content-secondary">$</span>
+											<input
+												id="subscriber-mortgage"
+												type="number"
+												step="0.01"
+												min="0"
+												value={leadPricingState.subscriber?.mortgage || 0}
+												onChange={(e) => handleLeadPricingChange('subscriber', 'mortgage', e.target.value)}
+												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
+											/>
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							{/* Startup Pricing */}
+							<div className="mb-8">
+								<h3 className="text-lg font-semibold mb-4">Startup</h3>
+								<div className="grid grid-cols-3 gap-4">
+									<div>
+										<label htmlFor="startup-home" className="block text-sm font-medium text-gray-700 mb-1">Home</label>
+										<div className="relative">
+											<span className="absolute left-3 top-2 text-content-secondary">$</span>
+											<input
+												id="startup-home"
+												type="number"
+												step="0.01"
+												min="0"
+												value={leadPricingState.startup?.home || 0}
+												onChange={(e) => handleLeadPricingChange('startup', 'home', e.target.value)}
+												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
+											/>
+										</div>
+									</div>
+									<div>
+										<label htmlFor="startup-auto" className="block text-sm font-medium text-gray-700 mb-1">Auto</label>
+										<div className="relative">
+											<span className="absolute left-3 top-2 text-content-secondary">$</span>
+											<input
+												id="startup-auto"
+												type="number"
+												step="0.01"
+												min="0"
+												value={leadPricingState.startup?.auto || 0}
+												onChange={(e) => handleLeadPricingChange('startup', 'auto', e.target.value)}
+												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
+											/>
+										</div>
+									</div>
+									<div>
+										<label htmlFor="startup-mortgage" className="block text-sm font-medium text-gray-700 mb-1">Mortgage Protection</label>
+										<div className="relative">
+											<span className="absolute left-3 top-2 text-content-secondary">$</span>
+											<input
+												id="startup-mortgage"
+												type="number"
+												step="0.01"
+												min="0"
+												value={leadPricingState.startup?.mortgage || 0}
+												onChange={(e) => handleLeadPricingChange('startup', 'mortgage', e.target.value)}
+												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
+											/>
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							{/* Agency Pricing */}
+							<div className="mb-8">
+								<h3 className="text-lg font-semibold mb-4">Agency</h3>
+								<div className="grid grid-cols-3 gap-4">
+									<div>
+										<label htmlFor="agency-home" className="block text-sm font-medium text-gray-700 mb-1">Home</label>
+										<div className="relative">
+											<span className="absolute left-3 top-2 text-content-secondary">$</span>
+											<input
+												id="agency-home"
+												type="number"
+												step="0.01"
+												min="0"
+												value={leadPricingState.agency?.home || 0}
+												onChange={(e) => handleLeadPricingChange('agency', 'home', e.target.value)}
+												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
+											/>
+										</div>
+									</div>
+									<div>
+										<label htmlFor="agency-auto" className="block text-sm font-medium text-gray-700 mb-1">Auto</label>
+										<div className="relative">
+											<span className="absolute left-3 top-2 text-content-secondary">$</span>
+											<input
+												id="agency-auto"
+												type="number"
+												step="0.01"
+												min="0"
+												value={leadPricingState.agency?.auto || 0}
+												onChange={(e) => handleLeadPricingChange('agency', 'auto', e.target.value)}
+												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
+											/>
+										</div>
+									</div>
+									<div>
+										<label htmlFor="agency-mortgage" className="block text-sm font-medium text-gray-700 mb-1">Mortgage Protection</label>
+										<div className="relative">
+											<span className="absolute left-3 top-2 text-content-secondary">$</span>
+											<input
+												id="agency-mortgage"
+												type="number"
+												step="0.01"
+												min="0"
+												value={leadPricingState.agency?.mortgage || 0}
+												onChange={(e) => handleLeadPricingChange('agency', 'mortgage', e.target.value)}
+												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
+											/>
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							{/* Save button */}
+							<div className="flex justify-start mt-6">
+								<button
+									onClick={handleSaveLeadPricing}
+									disabled={!hasPricingChanges || leadPricingSaving || updateLeadPricingMutation.isLoading}
+									className={`py-2 px-4 rounded-md ${
+										hasPricingChanges 
+											? 'bg-blue-600 hover:bg-blue-700 text-white' 
+											: 'bg-gray-200 hover:bg-gray-300 text-gray-800'
+									} ${(leadPricingSaving || updateLeadPricingMutation.isLoading) ? 'opacity-70 cursor-not-allowed' : ''}`}
+								>
+									{leadPricingSaving || updateLeadPricingMutation.isLoading ? 'Saving...' : 'Save changes'}
+								</button>
+							</div>
+						</div>
+					)}
+				</div>
+			)}
 		</div>
 	);
 };
