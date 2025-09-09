@@ -5,9 +5,13 @@ import AdminLayout from "../layouts/AdminLayout";
 import AdminLeads from "../pages/Admin/AdminLeads";
 import Settings from "../pages/Admin/Settings";
 import Customers from "../pages/Admin/Customers";
+import AdminLogin from "../pages/Admin/Auth/AdminLogin";
+import AdminSignup from "../pages/Admin/Auth/AdminSignup";
+import ChangePassword from "../pages/Admin/Auth/ChangePassword";
 import Login from "../pages/Auth/Login";
 import Signup from "../pages/Auth/Signup";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import RootRedirect from "./RootRedirect";
 import MyLeads from '@/pages/User/MyLeads';
 
@@ -22,60 +26,53 @@ const LoadingSpinner = () => (
   </div>
 );
 
-// Protected route for authenticated users only
-const ProtectedRoute = ({ children, requireRole = null }) => {
-  const { user, loading, isAuthenticated, hasRole } = useAuth();
+// User route - only checks WordPress auth
+const ProtectedRoute = ({ children }) => {
+  const { user, loading, isAuthenticated } = useAuth();
+
+  // If this is an admin route, don't check WordPress auth
+  if (window.location.pathname.startsWith('/admin')) {
+    return children;
+  }
 
   if (loading) {
     return <LoadingSpinner />;
   }
 
+  // Only check WordPress auth for user routes
   if (!isAuthenticated || !user) {
     return <Navigate to="/auth/login" replace />;
   }
 
-  // // Check for specific role if required
-  // if (requireRole && !hasRole(requireRole)) {
-  //   return <Navigate to="/unauthorized" replace />;
-  // }
-
   return children;
 };
 
-// Admin protected route
+// Admin route - only checks admin JWT auth
 const AdminRoute = ({ children }) => {
-  const { user, loading, isAuthenticated, isAdmin } = useAuth();
+  const { admin, loading, isAuthenticated } = useAdminAuth();
 
   if (loading) {
     return <LoadingSpinner />;
   }
 
-  if (!isAuthenticated || !user) {
-    return <Navigate to="/auth/login" replace />;
-  }
-
-  if (!isAdmin()) {
-    return <Navigate to="/" replace />;
+  if (!isAuthenticated || !admin) {
+    return <Navigate to="/admin/login" replace />;
   }
 
   return children;
 };
 
-// Auth route - redirects authenticated users away from login/signup
+// Auth route - only for WordPress user authentication
 const AuthRoute = ({ children }) => {
-  const { user, loading, isAuthenticated, isAdmin } = useAuth();
+  const { user, loading, isAuthenticated } = useAuth();
 
   if (loading) {
     return <LoadingSpinner />;
   }
 
+  // If user is already authenticated with WordPress, redirect to home
   if (isAuthenticated && user) {
-    // Redirect based on user role
-    if (isAdmin()) {
-      return <Navigate to="/admin" replace />;
-    } else {
-      return <Navigate to="/" replace />;
-    }
+    return <Navigate to="/" replace />;
   }
 
   return children;
@@ -109,10 +106,10 @@ const UnauthorizedPage = () => (
 );
 
 export const routes = [
-  // {
-  //   path: "/",
-  //   element: <RootRedirect />,
-  // },
+  {
+    path: "/",
+    element: <RootRedirect />,
+  },
   {
     path: "/unauthorized",
     element: <UnauthorizedPage />,
@@ -140,24 +137,47 @@ export const routes = [
   },
   {
     path: "admin",
-    element: (
-      <AdminRoute>
-        <AdminLayout />
-      </AdminRoute>
-    ),
     children: [
+      // Admin auth routes - no protection needed
       {
-        index: true,
-        element: <AdminLeads />,
+        path: "login",
+        element: <AdminLogin />
       },
       {
-        path: "settings",
-        element: <Settings />,
+        path: "signup",
+        element: <AdminSignup />
       },
       {
-        path: "customers/:customerId",
-        element: <Customers />,
+        path: "change-password",
+        element: (
+          // <AdminRoute>
+            <ChangePassword />
+          // </AdminRoute>
+        ),
       },
+      // Protected admin routes
+      {
+        path: "",
+        element: (
+          <AdminRoute>
+            <AdminLayout />
+          </AdminRoute>
+        ),
+        children: [
+          {
+            index: true,
+            element: <AdminLeads />,
+          },
+          {
+            path: "settings",
+            element: <Settings />,
+          },
+          {
+            path: "customers/:customerId",
+            element: <Customers />,
+          },
+        ],
+      }
     ],
   },
   {

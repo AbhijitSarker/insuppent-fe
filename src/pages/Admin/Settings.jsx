@@ -475,7 +475,7 @@ const Settings = () => {
 						)}
 						style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
 					>
-						Customers
+						Members
 						{activeTab === 'customers' && (
 							<span
 								className={cn(
@@ -594,7 +594,7 @@ const Settings = () => {
 			{activeTab === 'customers' && (
 				<div>
 					<div className="flex items-center justify-between mt-4 md:mt-[22px] mb-3 md:mb-5">
-						<h2 className="text-xl md:text-2xl font-semibold text-content-primary">Customers</h2>
+						<h2 className="text-xl md:text-2xl font-semibold text-content-primary">Members</h2>
 					</div>
 
 					{/* Customer Table */}

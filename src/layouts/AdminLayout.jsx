@@ -13,7 +13,7 @@ const adminRoutes = [
     label: "Settings",
     icon: "settings",
     href: "/admin/settings",
-  }
+  },
 ];
 
 const AdminLayout = () => {

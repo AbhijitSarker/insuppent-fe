@@ -9,11 +9,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import { useNavigate } from "react-router-dom";
 
 const AdminNavbar = ({ onMenuClick }) => {
-  const { user, logout } = useAuth();
+  const { admin, logout } = useAdminAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -41,18 +41,34 @@ const AdminNavbar = ({ onMenuClick }) => {
         </Button>
       </div>
       <div className="flex items-center gap-4">
-        {user && (
+        {admin && (
           <div className="flex items-center gap-3">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="w-8 h-8 rounded-full bg-bg-brand flex items-center justify-center text-white text-sm font-medium focus:outline-none">
-                  {user.name?.charAt(0)?.toUpperCase() || 'U'}
+                  {admin.name?.charAt(0)?.toUpperCase() || 'A'}
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel className="font-semibold">{user.name || 'User'}</DropdownMenuLabel>
+                <DropdownMenuLabel className="font-semibold">
+                  <div>{admin.name || 'Admin'}</div>
+                  <div className="text-sm text-gray-500 font-normal">{admin.email}</div>
+                </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="text-content-red cursor-pointer">Logout</DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => navigate('/admin/change-password')} 
+                  className="cursor-pointer"
+                >
+                  <MaterialIcon icon="key" className="mr-2" size={16} />
+                  Change Password
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={handleLogout} 
+                  className="text-content-red cursor-pointer"
+                >
+                  <MaterialIcon icon="logout" className="mr-2" size={16} />
+                  Logout
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
