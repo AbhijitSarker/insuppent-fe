@@ -154,8 +154,8 @@ export const AuthProvider = ({ children }) => {
           window.location.href = '/auth/login';
         }
       }
-      // Only check auth status if we're not on the login or signup pages
-      else if (!window.location.pathname.startsWith('/auth/')) {
+      // Only check auth status if we're not on auth or admin routes
+      else if (!window.location.pathname.startsWith('/auth/') && !window.location.pathname.startsWith('/admin')) {
         console.log('Checking existing auth status...');
         const authStatus = await checkAuthStatus();
         if (!authStatus.success && !window.location.pathname.startsWith('/auth/')) {

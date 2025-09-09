@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { axiosOpen, axiosSecure } from '@/api/axios/config';
+import { axiosAdmin } from '@/api/axios/config';
 
 const AdminAuthContext = createContext();
 
@@ -11,23 +11,27 @@ export const AdminAuthProvider = ({ children }) => {
   // Login admin
   const loginAdmin = async (email, password) => {
     try {
-      const response = await axiosOpen.post('/admin/auth/login', {
+      const response = await axiosAdmin.post('/admin/auth/login', {
         email,
         password,
       });
 
       if (response.data.success) {
-        const { admin, token } = response.data.data;
+        const token = response.data.data.token;
+        if (!token) {
+          throw new Error('No token received from server');
+        }
         localStorage.setItem('adminToken', token);
-        setAdmin(admin);
+        setAdmin(response.data.data.admin);
         setIsAuthenticated(true);
         return { success: true };
       }
-      return { success: false, message: response.data.message };
+      throw new Error('Login failed');
     } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.message || 'Login failed',
+      console.error('Admin login failed:', error.message);
+      return { 
+        success: false, 
+        error: error.response?.data?.message || error.message || 'Login failed'
       };
     }
   };
@@ -36,33 +40,41 @@ export const AdminAuthProvider = ({ children }) => {
   const checkAuthStatus = async () => {
     try {
       const token = localStorage.getItem('adminToken');
+      console.log('Admin tokenzz:', token);
       if (!token) {
+        setLoading(false);
         throw new Error('No token');
       }
 
-      const response = await axiosSecure.get('/admin/auth/profile');
+      const response = await axiosAdmin.get('/admin/auth/profile');
       if (response.data.success) {
         setAdmin(response.data.data);
         setIsAuthenticated(true);
+        setLoading(false);
         return { success: true };
       }
-      return { success: false };
+      throw new Error('Profile fetch failed');
     } catch (error) {
+      console.log('Admin auth check failed:', error.message);
       setAdmin(null);
       setIsAuthenticated(false);
       localStorage.removeItem('adminToken');
-      return { success: false };
-    } finally {
       setLoading(false);
+      return { success: false };
     }
   };
 
   // Logout
-  const logout = () => {
-    localStorage.removeItem('adminToken');
-    setAdmin(null);
-    setIsAuthenticated(false);
-    window.location.href = '/admin/login';
+  const logout = async () => {
+    try {
+      // Attempt to call logout endpoint if it exists
+      await axiosAdmin.post('/admin/auth/logout').catch(() => {});
+    } finally {
+      localStorage.removeItem('adminToken');
+      setAdmin(null);
+      setIsAuthenticated(false);
+      window.location.href = '/admin/login';
+    }
   };
 
   // Check auth status on mount

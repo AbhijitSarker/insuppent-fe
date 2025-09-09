@@ -7,8 +7,7 @@ import Settings from "../pages/Admin/Settings";
 import Customers from "../pages/Admin/Customers";
 import AdminLogin from "../pages/Admin/Auth/AdminLogin";
 import AdminSignup from "../pages/Admin/Auth/AdminSignup";
-import ForgotPassword from "../pages/Admin/Auth/ForgotPassword";
-import ResetPassword from "../pages/Admin/Auth/ResetPassword";
+import ChangePassword from "../pages/Admin/Auth/ChangePassword";
 import Login from "../pages/Auth/Login";
 import Signup from "../pages/Auth/Signup";
 import { useAuth } from "@/contexts/AuthContext";
@@ -27,27 +26,28 @@ const LoadingSpinner = () => (
   </div>
 );
 
-// Protected route for authenticated users only
-const ProtectedRoute = ({ children, requireRole = null }) => {
-  const { user, loading, isAuthenticated, hasRole } = useAuth();
+// User route - only checks WordPress auth
+const ProtectedRoute = ({ children }) => {
+  const { user, loading, isAuthenticated } = useAuth();
+
+  // If this is an admin route, don't check WordPress auth
+  if (window.location.pathname.startsWith('/admin')) {
+    return children;
+  }
 
   if (loading) {
     return <LoadingSpinner />;
   }
 
+  // Only check WordPress auth for user routes
   if (!isAuthenticated || !user) {
     return <Navigate to="/auth/login" replace />;
   }
 
-  // // Check for specific role if required
-  // if (requireRole && !hasRole(requireRole)) {
-  //   return <Navigate to="/unauthorized" replace />;
-  // }
-
   return children;
 };
 
-// Admin protected route
+// Admin route - only checks admin JWT auth
 const AdminRoute = ({ children }) => {
   const { admin, loading, isAuthenticated } = useAdminAuth();
 
@@ -62,21 +62,17 @@ const AdminRoute = ({ children }) => {
   return children;
 };
 
-// Auth route - redirects authenticated users away from login/signup
+// Auth route - only for WordPress user authentication
 const AuthRoute = ({ children }) => {
-  const { user, loading, isAuthenticated, isAdmin } = useAuth();
+  const { user, loading, isAuthenticated } = useAuth();
 
   if (loading) {
     return <LoadingSpinner />;
   }
 
+  // If user is already authenticated with WordPress, redirect to home
   if (isAuthenticated && user) {
-    // Redirect based on user role
-    if (isAdmin()) {
-      return <Navigate to="/admin" replace />;
-    } else {
-      return <Navigate to="/" replace />;
-    }
+    return <Navigate to="/" replace />;
   }
 
   return children;
@@ -110,10 +106,10 @@ const UnauthorizedPage = () => (
 );
 
 export const routes = [
-  // {
-  //   path: "/",
-  //   element: <RootRedirect />,
-  // },
+  {
+    path: "/",
+    element: <RootRedirect />,
+  },
   {
     path: "/unauthorized",
     element: <UnauthorizedPage />,
@@ -152,12 +148,12 @@ export const routes = [
         element: <AdminSignup />
       },
       {
-        path: "forgot-password",
-        element: <ForgotPassword />
-      },
-      {
-        path: "reset-password/:token",
-        element: <ResetPassword />
+        path: "change-password",
+        element: (
+          // <AdminRoute>
+            <ChangePassword />
+          // </AdminRoute>
+        ),
       },
       // Protected admin routes
       {

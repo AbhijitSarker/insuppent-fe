@@ -1,7 +1,7 @@
-import { axiosSecure } from '../axios/config';
+import { axiosAdmin, axiosSecure } from '../axios/config';
 
 export const getLeads = async () => {
-  const response = await axiosSecure.get('/leads');
+  const response = await axiosAdmin.get('/leads');
   return response.data;
 };
 

@@ -1,20 +1,34 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, Navigate } from 'react-router-dom';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const navigate = useNavigate();
-  const { loginAdmin } = useAdminAuth();
+  const { loginAdmin, isAuthenticated, loading: authLoading } = useAdminAuth();
+
+  // Show loading state while checking authentication
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-4 border-t-transparent border-blue-500"></div>
+      </div>
+    );
+  }
+
+  // If already authenticated as admin, redirect to admin dashboard
+  if (isAuthenticated) {
+    return <Navigate to="/admin" replace />;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
+    setIsSubmitting(true);
 
     try {
       const result = await loginAdmin(email, password);
@@ -26,7 +40,7 @@ const AdminLogin = () => {
     } catch (err) {
       setError('An error occurred during login');
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -81,19 +95,14 @@ const AdminLogin = () => {
           <div>
             <button
               type="submit"
-              disabled={loading}
+              disabled={isSubmitting}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              {loading ? 'Signing in...' : 'Sign in'}
+              {isSubmitting ? 'Signing in...' : 'Sign in'}
             </button>
           </div>
 
           <div className="flex items-center justify-between">
-            <div className="text-sm">
-              <Link to="/admin/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
-                Create new admin account
-              </Link>
-            </div>
             <div className="text-sm">
               <Link to="/admin/forgot-password" className="font-medium text-indigo-600 hover:text-indigo-500">
                 Forgot password?

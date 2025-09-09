@@ -15,9 +15,18 @@ const LoadingSpinner = () => (
 
 const RootRedirect = () => {
   const { user, loading, isAuthenticated, isAdmin, redirectToWordPress, redirectPath } = useAuth();
+  const { isAuthenticated: isAdminAuthenticated } = useAdminAuth();
   const location = useLocation();
   
-  // Check if we have WordPress auth parameters
+  // Check if this is an admin route
+  const isAdminRoute = location.pathname.startsWith('/admin');
+
+  // If it's an admin route, only check admin authentication
+  if (isAdminRoute) {
+    return isAdminAuthenticated ? <Navigate to="/admin" replace /> : <Navigate to="/admin/login" replace />;
+  }
+  
+  // For non-admin routes, check WordPress auth parameters
   const urlParams = new URLSearchParams(location.search);
   const hasAuthParams = urlParams.get('uid') && urlParams.get('token');
 
