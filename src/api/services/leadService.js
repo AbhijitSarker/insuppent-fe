@@ -11,7 +11,7 @@ export const getPublicLeads = async () => {
 };
 
 export const updateStatus = async (leadId, status) => {
-  const response = await axiosSecure.patch(`/leads/${leadId}/status`, { status });
+  const response = await axiosAdmin.patch(`/leads/${leadId}/status`, { status });
   return response.data;
 };
 

@@ -1,4 +1,4 @@
-import { axiosOpen, axiosSecure } from '../axios/config';
+import { axiosOpen } from '../axios/config';
 
 export const authService = {
   // SSO Login - redirects to WordPress OAuth

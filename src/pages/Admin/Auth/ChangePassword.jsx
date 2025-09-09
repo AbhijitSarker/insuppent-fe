@@ -49,19 +49,21 @@ const ChangePassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="px-6 py-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Change Password
           </h2>
-          <p className="text-sm text-gray-600 mb-6">
-            Update your admin account password. Please make sure to use a strong password.
+          <p className="mt-2 text-center text-sm text-gray-600">
+            Update your admin account password
           </p>
-          
-          <form onSubmit={handleSubmit} className="space-y-6">
+        </div>
+
+        <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+          <div className="rounded-md shadow-sm -space-y-px">
             <div>
-              <label htmlFor="currentPassword" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="currentPassword" className="sr-only">
                 Current Password
               </label>
               <input
@@ -69,15 +71,14 @@ const ChangePassword = () => {
                 name="currentPassword"
                 type="password"
                 required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-bg-brand focus:border-bg-brand focus:z-10 sm:text-sm"
                 value={formData.currentPassword}
                 onChange={handleChange}
-                placeholder="Enter your current password"
+                placeholder="Current Password"
               />
             </div>
-
             <div>
-              <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="newPassword" className="sr-only">
                 New Password
               </label>
               <input
@@ -85,15 +86,14 @@ const ChangePassword = () => {
                 name="newPassword"
                 type="password"
                 required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-bg-brand focus:border-bg-brand focus:z-10 sm:text-sm"
                 value={formData.newPassword}
                 onChange={handleChange}
-                placeholder="Enter your new password"
+                placeholder="New Password (min. 6 characters)"
               />
             </div>
-
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="confirmPassword" className="sr-only">
                 Confirm New Password
               </label>
               <input
@@ -101,32 +101,34 @@ const ChangePassword = () => {
                 name="confirmPassword"
                 type="password"
                 required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-bg-brand focus:border-bg-brand focus:z-10 sm:text-sm"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                placeholder="Confirm your new password"
+                placeholder="Confirm New Password"
               />
             </div>
+          </div>
 
-            <div className="flex justify-end space-x-4">
-              <button
-                type="button"
-                onClick={() => navigate('/admin')}
-                disabled={isSubmitting}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-              >
-                {isSubmitting ? 'Changing Password...' : 'Change Password'}
-              </button>
-            </div>
-          </form>
-        </div>
+          <div>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-bg-brand hover:brightness-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-bg-brand"
+            >
+              {isSubmitting ? 'Updating Password...' : 'Update Password'}
+            </button>
+          </div>
+
+          <div>
+            <button
+              type="button"
+              onClick={() => navigate('/admin')}
+              className="group relative w-full flex justify-center py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-bg-brand"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
