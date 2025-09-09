@@ -210,7 +210,6 @@ const FindLeads = () => {
                     <button
                         className="text-content-brand px-3 rounded-lg py-1 font-medium hover:text-white hover:bg-bg-brand hover:brightness-1 transition-colors duration-200 leading-[18px]"
                         onClick={() => {
-                            // Update price based on membership before checkout
                             if (pricingReady && row.type) {
                                 const membershipPrice = getPriceForLeadType(row.type);
                                 setCheckoutLeads([{ ...row, price: membershipPrice || row.price }]);
