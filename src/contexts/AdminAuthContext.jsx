@@ -40,7 +40,6 @@ export const AdminAuthProvider = ({ children }) => {
   const checkAuthStatus = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      console.log('Admin tokenzz:', token);
       if (!token) {
         setLoading(false);
         throw new Error('No token');

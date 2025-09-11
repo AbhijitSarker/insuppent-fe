@@ -1,6 +1,7 @@
 // contexts/AuthContext.jsx
 import { axiosOpen, axiosSecure } from '@/api/axios/config';
 import React, { createContext, useContext, useState, useEffect } from 'react';
+
 const AuthContext = createContext();
 
 const WP_LOGIN_URL = import.meta.env.VITE_WP_LOGIN_URL || 'https://staging2.insuppent.com/wp-login.php';
@@ -9,65 +10,28 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  
-  // Get current URL parameters directly
-  const currentLocation = window.location;
-  const searchParams = new URLSearchParams(currentLocation.search);
+  const [redirectPath, setRedirectPath] = useState(null);
 
-  // Extract URL parameters
+  // Get current URL parameters
   const getUrlParams = () => {
+    const searchParams = new URLSearchParams(window.location.search);
     return {
       uid: searchParams.get('uid'),
       token: searchParams.get('token'),
     };
   };
 
-  // Verify with WordPress and authenticate
-  const authenticateWithWordPress = async (uid, token) => {
-    try {
-      setLoading(true);
-      const response = await axiosOpen.get(`/auth/verify?uid=${uid}&token=${token}`);
-
-      if (response.data.success) {
-        const userData = response.data.data.user;
-        
-        // Set user data in state
-        setUser(userData);
-        setIsAuthenticated(true);
-
-        // Clear URL parameters after successful auth
-        const cleanUrl = window.location.origin + window.location.pathname;
-        window.history.replaceState({}, document.title, cleanUrl);
-        
-        // Check role and redirect
-        const roles = Array.isArray(userData.role) ? userData.role : [userData.role];
-        const isAdminUser = roles.includes('administrator') || roles.includes('bbp_keymaster');
-      
-
-        // Redirect based on role
-        window.location.href = '/';
-
-        return { success: true, user: userData };
-      }
-
-      return { success: false, message: response.data.message };
-    } catch (error) {
-      console.error('Authentication failed:', error);
-      return {
-        success: false,
-        message: error.response?.data?.message || 'Authentication failed'
-      };
-    } finally {
-      setLoading(false);
-    }
+  // Check if user is authenticated by checking the authStatus cookie
+  const checkAuthStatusFromCookie = () => {
+    return document.cookie.includes('authStatus=true');
   };
 
-  // Check current authentication status
+  // Check current authentication status with server
   const checkAuthStatus = async () => {
     try {
       setLoading(true);
       const response = await axiosSecure.get('/auth/me');
-      
+
       if (response.data.success) {
         setUser(response.data.data.user);
         setIsAuthenticated(true);
@@ -81,6 +45,47 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       setIsAuthenticated(false);
       return { success: false };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Verify with WordPress and authenticate
+  const authenticateWithWordPress = async (uid, token) => {
+    try {
+      setLoading(true);
+      const response = await axiosOpen.get(`/auth/verify?uid=${uid}&token=${token}`);
+
+      if (response.data.success) {
+        const userData = response.data.data;
+
+        // Set user data in state
+        setUser(userData);
+        setIsAuthenticated(true);
+
+        // Clear URL parameters after successful auth
+        const cleanUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
+
+        // Check role and redirect
+        const roles = Array.isArray(userData.role) ? userData.role : [userData.role];
+        const isAdminUser = roles.includes('administrator') || roles.includes('bbp_keymaster');
+
+        // Only redirect if not already authenticated
+        if (!checkAuthStatusFromCookie()) {
+          window.location.href = '/';
+        }
+
+        return { success: true, user: userData };
+      }
+
+      return { success: false, message: response.data.message };
+    } catch (error) {
+      console.error('Authentication failed:', error);
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Authentication failed'
+      };
     } finally {
       setLoading(false);
     }
@@ -127,7 +132,7 @@ export const AuthProvider = ({ children }) => {
     // If role is a string, convert it to array
     const roles = Array.isArray(user?.role) ? user?.role : [user?.role];
     const result = roles.includes('administrator') || roles.includes('bbp_keymaster');
-    
+
     console.log('isAdmin result:', result);
     return result;
   };
@@ -139,6 +144,27 @@ export const AuthProvider = ({ children }) => {
   const isMember = () => {
     return user?.membership && user.membership !== 'Subscriber';
   };
+
+  // Check authentication status on mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        if (checkAuthStatusFromCookie()) {
+          const response = await axiosOpen.get('/auth/check');
+          if (response.data.success) {
+            setUser(response.data.data);
+            setIsAuthenticated(true);
+          }
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
 
   // Initialize authentication
   useEffect(() => {
@@ -166,7 +192,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     initAuth();
-  }, [location.search]);
+  }, []); // Removed location.search dependency as it's not defined
 
   // Periodic auth refresh (every 30 minutes)
   useEffect(() => {
@@ -179,9 +205,6 @@ export const AuthProvider = ({ children }) => {
       return () => clearInterval(interval);
     }
   }, [isAuthenticated]);
-
-  // State to store where to redirect after auth
-  const [redirectPath, setRedirectPath] = useState(null);
 
   const value = {
     user,
