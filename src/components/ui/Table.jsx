@@ -277,9 +277,9 @@ export function Table({
                   <Button
                     size="sm"
                     onClick={handleExport}
-                    className="bg-bg-brand hover:brightness-90 transition-colors duration-200 p-1.5 sm:p-2 rounded-lg text-white text-xs sm:text-sm font-semibold leading-5 flex items-center justify-center"
+                    className="bg-bg-brand hover:brightness-90 transition-colors duration-200 py-1.5 sm:p-2 rounded-lg text-white text-xs sm:text-sm font-semibold leading-5 flex items-center justify-center"
                   >
-                    <MaterialIcon icon="file_upload" size={16} className="text-white p-0" />
+                    <MaterialIcon icon="file_upload" size={16} className="text-white px-1.5" />
                   </Button>
                 )}
                 {(filters.some(f => (f.isMulti ? (f.value && f.value.length > 0) : (f.value && f.value !== "__ALL__")))) && (

@@ -30,18 +30,29 @@ export const AuthProvider = ({ children }) => {
   const checkAuthStatus = async () => {
     try {
       setLoading(true);
-      const response = await axiosSecure.get('/auth/me');
+      
+      // First check if we have the auth status cookie
+      if (!checkAuthStatusFromCookie()) {
+        console.log('No auth status cookie found');
+        setUser(null);
+        setIsAuthenticated(false);
+        return { success: false };
+      }
+
+      const response = await axiosOpen.get('/auth/check', { withCredentials: true });
 
       if (response.data.success) {
-        setUser(response.data.data.user);
+        setUser(response.data.data);
         setIsAuthenticated(true);
-        return { success: true, user: response.data.data.user };
+        return { success: true, user: response.data.data };
       }
+
+      console.log('Auth check failed:', response.data);
       setUser(null);
       setIsAuthenticated(false);
       return { success: false };
     } catch (error) {
-      // Not authenticated
+      console.error('Auth check error:', error);
       setUser(null);
       setIsAuthenticated(false);
       return { success: false };
@@ -109,15 +120,26 @@ export const AuthProvider = ({ children }) => {
 
   // Logout
   const logout = async () => {
+    setLoading(true);
     try {
-      await axiosSecure.post('/auth/logout');
+      const response = await axiosSecure.post('/auth/logout', {}, { withCredentials: true });
+      if (response.data.success) {
+        console.log('Logout successful');
+      } else {
+        console.error('Logout failed:', response.data.message);
+      }
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
+      // Clear local state regardless of server response
       setUser(null);
       setIsAuthenticated(false);
       setLoading(false);
-      // Redirect to login page
+      
+      // Clear any local storage if you're using it
+      localStorage.removeItem('adminToken');
+      
+      // Force reload and redirect to ensure clean state
       window.location.href = '/auth/login';
     }
   };
@@ -169,26 +191,38 @@ export const AuthProvider = ({ children }) => {
   // Initialize authentication
   useEffect(() => {
     const initAuth = async () => {
-      const { uid, token } = getUrlParams();
+      try {
+        setLoading(true);
+        const { uid, token } = getUrlParams();
 
-      // If we have uid and token in URL, authenticate with WordPress
-      if (uid && token) {
-        console.log('Authenticating with WordPress...', { uid, token: token.substring(0, 10) + '...' });
-        const result = await authenticateWithWordPress(uid, token);
-        if (!result.success) {
-          console.error('WordPress authentication failed:', result.message);
-          window.location.href = '/auth/login';
+        // If we have uid and token in URL, authenticate with WordPress
+        if (uid && token) {
+          console.log('Authenticating with WordPress...', { uid, token: token.substring(0, 10) + '...' });
+          const result = await authenticateWithWordPress(uid, token);
+          if (!result.success) {
+            console.error('WordPress authentication failed:', result.message);
+            setLoading(false);
+            window.location.href = '/auth/login';
+            return;
+          }
         }
-      }
-      // Only check auth status if we're not on auth or admin routes
-      else if (!window.location.pathname.startsWith('/auth/') && !window.location.pathname.startsWith('/admin')) {
-        console.log('Checking existing auth status...');
-        const authStatus = await checkAuthStatus();
-        if (!authStatus.success && !window.location.pathname.startsWith('/auth/')) {
-          window.location.href = '/auth/login';
+        
+        // Check auth status if we're not on auth routes
+        if (!window.location.pathname.startsWith('/auth/')) {
+          console.log('Checking existing auth status...');
+          const authStatus = await checkAuthStatus();
+          
+          // Only redirect if we're not loading and auth failed
+          if (!authStatus.success) {
+            console.log('Auth check failed, redirecting to login');
+            window.location.href = '/auth/login';
+          }
         }
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     initAuth();

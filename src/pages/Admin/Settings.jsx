@@ -577,7 +577,7 @@ const Settings = () => {
 						)}
 						style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}
 					>
-						Pricing plans
+						Lead Sale Count
 						{activeTab === 'pricing' && (
 							<span
 								className={cn(
@@ -744,7 +744,7 @@ const Settings = () => {
 			{activeTab === 'pricing' && (
 				<div>
 					<div className="flex items-center justify-between mt-4 md:mt-[22px] mb-3 md:mb-5">
-						<h2 className="text-xl md:text-2xl font-semibold text-content-primary">Pricing Plan</h2>
+						<h2 className="text-xl md:text-2xl font-semibold text-content-primary">Lead Sale Count</h2>
 					</div>
 					<div className="overflow-x-auto">
 						<Table
@@ -821,7 +821,7 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Subscriber?.home || 0}
 												onChange={(e) => handleLeadPricingChange('Subscriber', 'home', e.target.value)}
-												className="w-full pl-7 pr-3  py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
+												className="w-full pl-7 pr-3  py-2 border border-borderColor-primary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>
@@ -836,7 +836,7 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Subscriber?.auto || 0}
 												onChange={(e) => handleLeadPricingChange('Subscriber', 'auto', e.target.value)}
-												className="w-full pl-7 pr-3  py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
+												className="w-full pl-7 pr-3  py-2 border border-borderColor-primary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>
@@ -851,7 +851,7 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Subscriber?.mortgage || 0}
 												onChange={(e) => handleLeadPricingChange('Subscriber', 'mortgage', e.target.value)}
-												className="w-full pl-7 pr-3  py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
+												className="w-full pl-7 pr-3  py-2 border border-borderColor-primary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>
@@ -873,7 +873,7 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Startup?.home || 0}
 												onChange={(e) => handleLeadPricingChange('Startup', 'home', e.target.value)}
-												className="w-full pl-7 pr-3  py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
+												className="w-full pl-7 pr-3  py-2 border border-borderColor-primary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>
@@ -888,7 +888,7 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Startup?.auto || 0}
 												onChange={(e) => handleLeadPricingChange('Startup', 'auto', e.target.value)}
-												className="w-full pl-7 pr-3  py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
+												className="w-full pl-7 pr-3  py-2 border border-borderColor-primary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>
@@ -903,7 +903,7 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Startup?.mortgage || 0}
 												onChange={(e) => handleLeadPricingChange('Startup', 'mortgage', e.target.value)}
-												className="w-full pl-7 pr-3  py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
+												className="w-full pl-7 pr-3  py-2 border border-borderColor-primary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>
@@ -925,7 +925,7 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Agency?.home || 0}
 												onChange={(e) => handleLeadPricingChange('Agency', 'home', e.target.value)}
-												className="w-full pl-7 pr-3  py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
+												className="w-full pl-7 pr-3  py-2 border border-borderColor-primary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>
@@ -940,7 +940,7 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Agency?.auto || 0}
 												onChange={(e) => handleLeadPricingChange('Agency', 'auto', e.target.value)}
-												className="w-full pl-7 pr-3  py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
+												className="w-full pl-7 pr-3  py-2 border border-borderColor-primary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>
@@ -955,7 +955,7 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Agency?.mortgage || 0}
 												onChange={(e) => handleLeadPricingChange('Agency', 'mortgage', e.target.value)}
-												className="w-full pl-7 pr-3  py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
+												className="w-full pl-7 pr-3  py-2 border border-borderColor-primary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>

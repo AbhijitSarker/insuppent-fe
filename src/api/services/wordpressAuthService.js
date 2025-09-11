@@ -36,13 +36,15 @@ class WordPressAuthService {
         }
     }
 
-    // Logout
+    // Logout - uses the main auth context logout
     async logout() {
         try {
-            const response = await axiosSecure.post('/auth/logout');
+            const response = await axiosSecure.post('/auth/logout', {}, { withCredentials: true });
             return response.data;
         } catch (error) {
             console.error('Logout error:', error);
+            // Always clear cookies on the client side even if server request fails
+            window.location.href = '/auth/login';
             throw error;
         }
     }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link, Navigate } from 'react-router-dom';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
+import logo from '../../../../public/Insuplex360.svg';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
@@ -48,7 +49,8 @@ const AdminLogin = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          <img className="mx-auto h-16 w-auto" src={logo} alt="Insuppent Logo" />            
+          <h2 className="mt-6 text-center text-2xl font-bold text-gray-900">
             Admin Login
           </h2>
         </div>
