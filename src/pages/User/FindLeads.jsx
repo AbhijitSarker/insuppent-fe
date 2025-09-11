@@ -271,15 +271,7 @@ const FindLeads = () => {
                 <h1 className="w-full font-bold text-[2rem] sm:text-[32px] leading-[32px] tracking-[-0.025em] text-bg-secondary md:text-content-primary">
                     Find Leads
                 </h1>
-                {isPricingLoading && (
-                    <span className="text-sm text-content-secondary">Loading pricing...</span>
-                )}
-                {process.env.NODE_ENV === 'development' && membershipLevel && (
-                    <span className="text-sm text-content-secondary ml-2">
-                        Membership: {membershipLevel}
-                    </span>
-                )}
-                {/* <Link to="/admin">Admin</Link> */}
+        
             </div>
             <div className={`flex gap-2 items-center ${selectedRows.length > 0 ? '' : 'hidden'}`}>
 
