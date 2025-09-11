@@ -374,7 +374,7 @@ const AdminLeads = () => {
 
 	const typeOptions = [
 		{ value: 'auto', label: 'Auto' },
-		{ value: 'mortgage', label: 'Mortgage' },
+		{ value: 'mortgage', label: 'Mortgage Protection' },
 		{ value: 'home', label: 'Home' },
 	];
 
