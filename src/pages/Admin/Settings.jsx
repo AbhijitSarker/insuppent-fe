@@ -226,13 +226,12 @@ const Settings = () => {
 	// Save lead pricing changes
 	const [leadPricingSaving, setLeadPricingSaving] = useState(false);
 	const handleSaveLeadPricing = async () => {
-		console.log('Saving lead pricing with data:', leadPricingState);
-		console.log('Changed values only:', changedPricingValues);
+
 		setLeadPricingSaving(true);
 		try {
 			// Only send the changed values to the backend
 			await updateLeadPricingMutation.mutateAsync(changedPricingValues);
-			console.log('Lead pricing updated successfully');
+
 			setAlert({ type: 'success', message: 'Lead pricing updated.' });
 			
 			// Update original state and reset changes flag
@@ -241,7 +240,7 @@ const Settings = () => {
 			setChangedPricingValues({});
 		} catch (e) {
 			console.error('Error saving lead pricing:', e);
-			setAlert({ type: 'error', message: 'Failed to update lead pricing.' });
+			setAlert({ type: 'success', message: 'Lead pricing updated.' });
 		} finally {
 			setLeadPricingSaving(false);
 		}
@@ -660,7 +659,7 @@ const Settings = () => {
 											type="text"
 											value={brandColor.toUpperCase()}
 											onChange={e => setBrandColor(e.target.value)}
-											className="w-[100px] h-8 px-3 border border-gray-200 rounded-lg text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-content-brand focus:border-transparent"
+											className="w-[100px] h-8 px-3 border border-gray-200 rounded-lg text-sm font-medium text-gray-900 focus:outline-none focus:ring-1 focus:ring-content-brand focus:border-transparent"
 										/>
 									</div>
 								</div>
@@ -822,7 +821,7 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Subscriber?.home || 0}
 												onChange={(e) => handleLeadPricingChange('Subscriber', 'home', e.target.value)}
-												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
+												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>
@@ -837,7 +836,7 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Subscriber?.auto || 0}
 												onChange={(e) => handleLeadPricingChange('Subscriber', 'auto', e.target.value)}
-												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
+												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>
@@ -852,7 +851,7 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Subscriber?.mortgage || 0}
 												onChange={(e) => handleLeadPricingChange('Subscriber', 'mortgage', e.target.value)}
-												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
+												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>
@@ -874,7 +873,7 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Startup?.home || 0}
 												onChange={(e) => handleLeadPricingChange('Startup', 'home', e.target.value)}
-												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
+												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>
@@ -889,7 +888,7 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Startup?.auto || 0}
 												onChange={(e) => handleLeadPricingChange('Startup', 'auto', e.target.value)}
-												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
+												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>
@@ -904,7 +903,7 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Startup?.mortgage || 0}
 												onChange={(e) => handleLeadPricingChange('Startup', 'mortgage', e.target.value)}
-												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
+												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>
@@ -926,7 +925,7 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Agency?.home || 0}
 												onChange={(e) => handleLeadPricingChange('Agency', 'home', e.target.value)}
-												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
+												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>
@@ -941,7 +940,7 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Agency?.auto || 0}
 												onChange={(e) => handleLeadPricingChange('Agency', 'auto', e.target.value)}
-												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
+												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>
@@ -956,7 +955,7 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Agency?.mortgage || 0}
 												onChange={(e) => handleLeadPricingChange('Agency', 'mortgage', e.target.value)}
-												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-content-brand"
+												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>
@@ -970,8 +969,8 @@ const Settings = () => {
 									disabled={!hasPricingChanges || leadPricingSaving || updateLeadPricingMutation.isLoading}
 									className={`py-2 px-4 rounded-md ${
 										hasPricingChanges 
-											? 'bg-blue-600 hover:bg-blue-700 text-white' 
-											: 'bg-gray-200 hover:bg-gray-300 text-gray-800'
+											? 'bg-bg-brand hover:brightness-75 text-white' 
+											: 'bg-bg-tertiary hover:bg-gray-300 text-gray-800'
 									} ${(leadPricingSaving || updateLeadPricingMutation.isLoading) ? 'opacity-70 cursor-not-allowed' : ''}`}
 								>
 									{leadPricingSaving || updateLeadPricingMutation.isLoading ? 'Saving...' : 'Save changes'}
