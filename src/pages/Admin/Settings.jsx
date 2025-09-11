@@ -667,7 +667,7 @@ const Settings = () => {
 								<div className="flex items-center justify-end gap-3 mt-4 md:mt-16 lg:mt-24">
 									<button
 										type="button"
-										className="h-9 px-3 sm:px-4 text-sm font-medium text-gray-700 hover:text-gray-800 rounded-lg border transition-colors"
+										className="h-9 px-3 sm:px-4 text-sm font-semibold text-content-secondary hover:text-gray-800 rounded-lg border transition-colors"
 										onClick={() => setBrandColor('#2563EB')}
 									>
 										Cancel
@@ -805,15 +805,15 @@ const Settings = () => {
 							<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-content-brand"></div>
 						</div>
 					) : (
-						<div className="bg-bg-primary rounded-2xl border border-borderColor-primary p-6">
+						<div className="bg-bg-primary rounded-lg border border-borderColor-primary p-6">
 							{/* Subscriber Pricing */}
 							<div className="mb-8">
 								<h3 className="text-lg font-semibold mb-4">Subscriber</h3>
-								<div className="grid grid-cols-3 gap-4">
+								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 									<div>
-										<label htmlFor="subscriber-home" className="block text-sm font-medium text-gray-700 mb-1">Home</label>
+										<label htmlFor="subscriber-home" className="block text-sm font-semibold text-content-secondary mb-1">Home</label>
 										<div className="relative">
-											<span className="absolute left-3 top-2 text-content-secondary">$</span>
+											<span className="absolute font-semibold left-3 top-2 text-content-secondary">$</span>
 											<input
 												id="subscriber-home"
 												type="number"
@@ -821,14 +821,14 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Subscriber?.home || 0}
 												onChange={(e) => handleLeadPricingChange('Subscriber', 'home', e.target.value)}
-												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
+												className="w-full pl-7 pr-3  py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>
 									<div>
-										<label htmlFor="subscriber-auto" className="block text-sm font-medium text-gray-700 mb-1">Auto</label>
+										<label htmlFor="subscriber-auto" className="block text-sm font-semibold text-content-secondary mb-1">Auto</label>
 										<div className="relative">
-											<span className="absolute left-3 top-2 text-content-secondary">$</span>
+											<span className="absolute font-semibold left-3 top-2 text-content-secondary">$</span>
 											<input
 												id="subscriber-auto"
 												type="number"
@@ -836,14 +836,14 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Subscriber?.auto || 0}
 												onChange={(e) => handleLeadPricingChange('Subscriber', 'auto', e.target.value)}
-												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
+												className="w-full pl-7 pr-3  py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>
 									<div>
-										<label htmlFor="subscriber-mortgage" className="block text-sm font-medium text-gray-700 mb-1">Mortgage Protection</label>
+										<label htmlFor="subscriber-mortgage" className="block text-sm font-semibold text-content-secondary mb-1">Mortgage Protection</label>
 										<div className="relative">
-											<span className="absolute left-3 top-2 text-content-secondary">$</span>
+											<span className="absolute font-semibold left-3 top-2 text-content-secondary">$</span>
 											<input
 												id="subscriber-mortgage"
 												type="number"
@@ -851,7 +851,7 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Subscriber?.mortgage || 0}
 												onChange={(e) => handleLeadPricingChange('Subscriber', 'mortgage', e.target.value)}
-												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
+												className="w-full pl-7 pr-3  py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>
@@ -861,11 +861,11 @@ const Settings = () => {
 							{/* Startup Pricing */}
 							<div className="mb-8">
 								<h3 className="text-lg font-semibold mb-4">Startup</h3>
-								<div className="grid grid-cols-3 gap-4">
+								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 									<div>
-										<label htmlFor="startup-home" className="block text-sm font-medium text-gray-700 mb-1">Home</label>
+										<label htmlFor="startup-home" className="block text-sm font-semibold text-content-secondary mb-1">Home</label>
 										<div className="relative">
-											<span className="absolute left-3 top-2 text-content-secondary">$</span>
+											<span className="absolute font-semibold left-3 top-2 text-content-secondary">$</span>
 											<input
 												id="startup-home"
 												type="number"
@@ -873,14 +873,14 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Startup?.home || 0}
 												onChange={(e) => handleLeadPricingChange('Startup', 'home', e.target.value)}
-												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
+												className="w-full pl-7 pr-3  py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>
 									<div>
-										<label htmlFor="startup-auto" className="block text-sm font-medium text-gray-700 mb-1">Auto</label>
+										<label htmlFor="startup-auto" className="block text-sm font-semibold text-content-secondary mb-1">Auto</label>
 										<div className="relative">
-											<span className="absolute left-3 top-2 text-content-secondary">$</span>
+											<span className="absolute font-semibold left-3 top-2 text-content-secondary">$</span>
 											<input
 												id="startup-auto"
 												type="number"
@@ -888,14 +888,14 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Startup?.auto || 0}
 												onChange={(e) => handleLeadPricingChange('Startup', 'auto', e.target.value)}
-												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
+												className="w-full pl-7 pr-3  py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>
 									<div>
-										<label htmlFor="startup-mortgage" className="block text-sm font-medium text-gray-700 mb-1">Mortgage Protection</label>
+										<label htmlFor="startup-mortgage" className="block text-sm font-semibold text-content-secondary mb-1">Mortgage Protection</label>
 										<div className="relative">
-											<span className="absolute left-3 top-2 text-content-secondary">$</span>
+											<span className="absolute font-semibold left-3 top-2 text-content-secondary">$</span>
 											<input
 												id="startup-mortgage"
 												type="number"
@@ -903,7 +903,7 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Startup?.mortgage || 0}
 												onChange={(e) => handleLeadPricingChange('Startup', 'mortgage', e.target.value)}
-												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
+												className="w-full pl-7 pr-3  py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>
@@ -913,11 +913,11 @@ const Settings = () => {
 							{/* Agency Pricing */}
 							<div className="mb-8">
 								<h3 className="text-lg font-semibold mb-4">Agency</h3>
-								<div className="grid grid-cols-3 gap-4">
+								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 									<div>
-										<label htmlFor="agency-home" className="block text-sm font-medium text-gray-700 mb-1">Home</label>
+										<label htmlFor="agency-home" className="block text-sm font-semibold text-content-secondary mb-1">Home</label>
 										<div className="relative">
-											<span className="absolute left-3 top-2 text-content-secondary">$</span>
+											<span className="absolute font-semibold left-3 top-2 text-content-secondary">$</span>
 											<input
 												id="agency-home"
 												type="number"
@@ -925,14 +925,14 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Agency?.home || 0}
 												onChange={(e) => handleLeadPricingChange('Agency', 'home', e.target.value)}
-												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
+												className="w-full pl-7 pr-3  py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>
 									<div>
-										<label htmlFor="agency-auto" className="block text-sm font-medium text-gray-700 mb-1">Auto</label>
+										<label htmlFor="agency-auto" className="block text-sm font-semibold text-content-secondary mb-1">Auto</label>
 										<div className="relative">
-											<span className="absolute left-3 top-2 text-content-secondary">$</span>
+											<span className="absolute font-semibold left-3 top-2 text-content-secondary">$</span>
 											<input
 												id="agency-auto"
 												type="number"
@@ -940,14 +940,14 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Agency?.auto || 0}
 												onChange={(e) => handleLeadPricingChange('Agency', 'auto', e.target.value)}
-												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
+												className="w-full pl-7 pr-3  py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>
 									<div>
-										<label htmlFor="agency-mortgage" className="block text-sm font-medium text-gray-700 mb-1">Mortgage Protection</label>
+										<label htmlFor="agency-mortgage" className="block text-sm font-semibold text-content-secondary mb-1">Mortgage Protection</label>
 										<div className="relative">
-											<span className="absolute left-3 top-2 text-content-secondary">$</span>
+											<span className="absolute font-semibold left-3 top-2 text-content-secondary">$</span>
 											<input
 												id="agency-mortgage"
 												type="number"
@@ -955,7 +955,7 @@ const Settings = () => {
 												min="0"
 												value={leadPricingState.Agency?.mortgage || 0}
 												onChange={(e) => handleLeadPricingChange('Agency', 'mortgage', e.target.value)}
-												className="w-full pl-7 pr-3 py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
+												className="w-full pl-7 pr-3  py-2 border border-borderColor-secondary rounded-lg focus:outline-none focus:ring-1 focus:ring-content-brand"
 											/>
 										</div>
 									</div>

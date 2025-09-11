@@ -184,7 +184,7 @@ const FindLeads = () => {
             icon: <MaterialIcon className={'text-content-secondary'} icon="local_offer" size={16} />,
             render: (row) => (
                 <Badge variant={row.type} icon={row.type}>
-                    {row.type?.charAt(0).toUpperCase() + row.type?.slice(1)}
+                    {row.type === 'mortgage' ? 'Mortgage Protection' : row.type?.charAt(0).toUpperCase() + row.type?.slice(1)}
                 </Badge>
             )
         },
