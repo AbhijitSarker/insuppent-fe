@@ -30,44 +30,49 @@ const RootRedirect = () => {
   const urlParams = new URLSearchParams(location.search);
   const hasAuthParams = urlParams.get('uid') && urlParams.get('token');
 
-  useEffect(() => {
-    // If not loading and not authenticated and no auth params, show login prompt
-    if (!loading && !isAuthenticated && !hasAuthParams) {
-      // Don't auto-redirect, let user choose to login
-      console.log('User not authenticated, showing login option');
-    }
-  }, [loading, isAuthenticated, hasAuthParams, user]);
-
-  if (loading || hasAuthParams) {
+  // If we have auth params, don't do anything else - let the auth process complete
+  if (hasAuthParams) {
     return (
       <div className="flex flex-col justify-center items-center h-screen bg-gray-100">
         <LoadingSpinner />
-        <p className="mt-4 text-gray-600">
-          {hasAuthParams ? 'Authenticating with WordPress...' : 'Loading...'}
-        </p>
+        <p className="mt-4 text-gray-600">Authenticating with WordPress...</p>
       </div>
     );
   }
 
-  if (!isAuthenticated) {
+  // Show loading state while checking auth
+  if (loading) {
     return (
       <div className="flex flex-col justify-center items-center h-screen bg-gray-100">
-        <div className="text-center p-8 bg-white rounded-lg shadow-md max-w-md">
-          <h1 className="text-3xl font-bold text-gray-800 mb-4">Welcome to Insuppent</h1>
-          <p className="text-gray-600 mb-6">Please login through WordPress to access the application.</p>
-          <button
-            onClick={redirectToWordPress}
-            className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-          >
-            Login with WordPress
-          </button>
-          <div className="mt-4 text-sm text-gray-500">
-            <p>Don't have an account? Contact administrator for access.</p>
-          </div>
-        </div>
+        <LoadingSpinner />
+        <p className="mt-4 text-gray-600">Loading...</p>
       </div>
     );
   }
+
+  // If authenticated, redirect to home
+  if (isAuthenticated && user) {
+    return <Navigate to="/my-leads" replace />;
+  }
+
+  // If not authenticated and not loading, show login page
+  return (
+    <div className="flex flex-col justify-center items-center h-screen bg-gray-100">
+      <div className="text-center p-8 bg-white rounded-lg shadow-md max-w-md">
+        <h1 className="text-3xl font-bold text-gray-800 mb-4">Welcome to Insuppent</h1>
+        <p className="text-gray-600 mb-6">Please login through WordPress to access the application.</p>
+        <button
+          onClick={redirectToWordPress}
+          className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+        >
+          Login with WordPress
+        </button>
+        <div className="mt-4 text-sm text-gray-500">
+          <p>Don't have an account? Contact administrator for access.</p>
+        </div>
+      </div>
+    </div>
+  );
 
     // User is authenticated, use the redirectPath from context
   if (user && redirectPath) {

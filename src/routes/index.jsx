@@ -28,18 +28,27 @@ const LoadingSpinner = () => (
 
 // User route - only checks WordPress auth
 const ProtectedRoute = ({ children }) => {
-  const { user, loading, isAuthenticated } = useAuth();
+  const { user, loading, isAuthenticated, redirectToWordPress } = useAuth();
+  
+  // Check for auth params in URL
+  const hasAuthParams = new URLSearchParams(window.location.search).has('uid');
 
   // If this is an admin route, don't check WordPress auth
   if (window.location.pathname.startsWith('/admin')) {
     return children;
   }
 
+  // If we have auth params, show loading and let auth complete
+  if (hasAuthParams) {
+    return <LoadingSpinner />;
+  }
+
+  // Show loading state
   if (loading) {
     return <LoadingSpinner />;
   }
 
-  // Only check WordPress auth for user routes
+  // If not authenticated, redirect to WordPress login
   if (!isAuthenticated || !user) {
     return <Navigate to="/auth/login" replace />;
   }
@@ -65,6 +74,14 @@ const AdminRoute = ({ children }) => {
 // Auth route - only for WordPress user authentication
 const AuthRoute = ({ children }) => {
   const { user, loading, isAuthenticated } = useAuth();
+  
+  // Check for auth params in URL
+  const hasAuthParams = new URLSearchParams(window.location.search).has('uid');
+
+  // If we have auth params, let the auth process complete
+  if (hasAuthParams) {
+    return <LoadingSpinner />;
+  }
 
   if (loading) {
     return <LoadingSpinner />;

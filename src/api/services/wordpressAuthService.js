@@ -5,34 +5,47 @@ class WordPressAuthService {
     // Verify WordPress token
     async verifyToken(uid, token) {
         try {
-            const response = await axiosOpen.get(`/auth/verify?uid=${uid}&token=${token}`);
+            const response = await axiosOpen.get(`/auth/verify?uid=${uid}&token=${token}`, {
+                withCredentials: true
+            });
+            console.log('WordPress verify response:', response.data);
             return response.data;
-            console.log('WordPress verification response:', response.data);
         } catch (error) {
-            console.error('WordPress verification error:', error);
-            throw error;
+            console.error('WordPress verify error:', error.response?.data || error.message);
+            return {
+                success: false,
+                message: error.response?.data?.message || error.message
+            };
         }
     }
 
     // Get current user
     async getCurrentUser() {
         try {
-            const response = await axiosSecure.get('/auth/me');
+            const response = await axiosSecure.get('/auth/me', { withCredentials: true });
             return response.data;
         } catch (error) {
-            console.error('Get current user error:', error);
-            throw error;
+            console.error('Get current user error:', error.response?.data || error.message);
+            return { 
+                success: false, 
+                message: error.response?.data?.message || error.message 
+            };
         }
     }
 
     // Refresh authentication
     async refreshAuth() {
         try {
-            const response = await axiosSecure.post('/auth/refresh');
+            const response = await axiosSecure.post('/auth/refresh', {}, { withCredentials: true });
+            console.log('Refresh response:', response.data);
             return response.data;
         } catch (error) {
-            console.error('Refresh auth error:', error);
-            throw error;
+            console.error('Refresh error:', error.response?.data || error.message);
+            return { 
+                success: false, 
+                message: error.response?.data?.message || error.message,
+                error: error.response?.data 
+            };
         }
     }
 
@@ -42,16 +55,16 @@ class WordPressAuthService {
             const response = await axiosSecure.post('/auth/logout', {}, { withCredentials: true });
             return response.data;
         } catch (error) {
-            console.error('Logout error:', error);
-            // Always clear cookies on the client side even if server request fails
             window.location.href = '/auth/login';
-            throw error;
+            return { success: false, message: error.message };
         }
     }
 
     // Check if user has specific role
     hasRole(user, role) {
-        return user?.role?.includes(role) || false;
+        if (!user || !user.role) return false;
+        const roles = Array.isArray(user.role) ? user.role : [user.role];
+        return roles.includes(role);
     }
 
     // Check if user is admin
