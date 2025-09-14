@@ -1,162 +1,214 @@
-// contexts/AuthContext.jsx
-import wordpressAuthService from '../api/services/wordpressAuthService';
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { axiosOpen } from '@/api/axios/config';
 
 const AuthContext = createContext();
-
-const WP_LOGIN_URL = import.meta.env.VITE_WP_LOGIN_URL || 'https://staging2.insuppent.com/wp-login.php';
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [redirectPath, setRedirectPath] = useState(null);
 
-  // Get current URL parameters
-  const getUrlParams = () => {
-    const searchParams = new URLSearchParams(window.location.search);
-    return {
-      uid: searchParams.get('uid'),
-      token: searchParams.get('token'),
-    };
-  };
-
-  // Check current authentication status with server
-  const checkAuthStatus = async () => {
-    setLoading(true);
+  // Login with WordPress user credentials
+  const loginWithWpCredentials = async (uid, token) => {
     try {
-      const response = await wordpressAuthService.getCurrentUser();
-      if (response.success) {
-        setUser(response.data);
-        setIsAuthenticated(true);
-        return { success: true, user: response.data };
-      }
-      setUser(null);
-      setIsAuthenticated(false);
-      return { success: false };
-    } catch (error) {
-      setUser(null);
-      setIsAuthenticated(false);
-      return { success: false };
-    } finally {
-      setLoading(false);
-    }
-  };
+      setLoading(true);
 
-  // Verify with WordPress and authenticate
-  const authenticateWithWordPress = async (uid, token) => {
-    setLoading(true);
-    try {
-      const response = await wordpressAuthService.verifyToken(uid, token);
-      console.log('WordPress auth response:', response);
-      
-      if (response.success) {
-        // Set user data
-        setUser(response.data);
-        setIsAuthenticated(true);
-        
-        // Clear URL parameters after successful auth
-        const cleanUrl = window.location.origin + window.location.pathname;
-        window.history.replaceState({}, document.title, cleanUrl);
-        
-        // Don't redirect automatically - let the interceptor handle it
-        return { success: true, user: response.data };
-      }
-      
-      setUser(null);
-      setIsAuthenticated(false);
-      return { success: false, message: response.message };
-    } catch (error) {
-      console.error('WordPress auth error:', error);
-      setUser(null);
-      setIsAuthenticated(false);
-      return { success: false, message: error.message || 'Authentication failed' };
-    } finally {
-      setLoading(false);
-    }
-  };
+      const response = await axiosOpen.post('/user/auth/verify-wp-user', {
+        uid: uid,
+        token: token,
+      });
 
-  // Refresh authentication
-  const refreshAuth = async () => {
-    try {
-      const response = await wordpressAuthService.refreshAuth();
-      if (response.success) {
-        setUser(response.data.user || response.data);
+      if (response.data.success) {
+        const { user: userData, token: jwtToken } = response.data.data;
+
+        // Store token and user data
+        localStorage.setItem('userToken', jwtToken);
+        localStorage.setItem('userData', JSON.stringify(userData));
+
+        setUser(userData);
         setIsAuthenticated(true);
         return { success: true };
       }
-      return { success: false };
+
+      throw new Error('Authentication failed');
     } catch (error) {
+      console.error('WordPress login failed:', error.message);
+
+      // Clear any existing data
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('userData');
+      setUser(null);
+      setIsAuthenticated(false);
+
+      return {
+        success: false,
+        error: error.response?.data?.message || error.message || 'Authentication failed'
+      };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Get user profile from backend
+  const getUserProfile = async () => {
+    try {
+      const token = localStorage.getItem('userToken');
+      if (!token) {
+        throw new Error('No token found');
+      }
+
+      const response = await axiosOpen.get('/user/auth/profile', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.data.success) {
+        const userData = response.data.data;
+        localStorage.setItem('userData', JSON.stringify(userData));
+        setUser(userData);
+        setIsAuthenticated(true);
+        return { success: true, user: userData };
+      }
+
+      throw new Error('Failed to get profile');
+    } catch (error) {
+      console.error('Get profile failed:', error.message);
+
+      // If token is invalid, clear everything
+      if (error.response?.status === 401) {
+        logout();
+      }
+
+      return { success: false, error: error.message };
+    }
+  };
+
+  // Check authentication status on app load
+  const checkAuthStatus = async () => {
+    try {
+      const token = localStorage.getItem('userToken');
+      const userData = localStorage.getItem('userData');
+
+      if (!token || !userData) {
+        setLoading(false);
+        return { success: false };
+      }
+
+      // Parse stored user data
+      const parsedUserData = JSON.parse(userData);
+      setUser(parsedUserData);
+      setIsAuthenticated(true);
+
+      // Verify token is still valid by getting fresh profile
+      const profileResult = await getUserProfile();
+      setLoading(false);
+
+      return profileResult;
+    } catch (error) {
+      console.error('Auth check failed:', error.message);
+      logout();
+      setLoading(false);
+      return { success: false };
+    }
+  };
+
+  // Refresh token
+  const refreshToken = async () => {
+    try {
+      const token = localStorage.getItem('userToken');
+      if (!token) {
+        throw new Error('No token to refresh');
+      }
+
+      const response = await axiosOpen.post('/api/v1/user/auth/refresh-token', {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.data.success) {
+        const { user: userData, token: newToken } = response.data.data;
+
+        localStorage.setItem('userToken', newToken);
+        localStorage.setItem('userData', JSON.stringify(userData));
+
+        setUser(userData);
+        setIsAuthenticated(true);
+        return { success: true };
+      }
+
+      throw new Error('Token refresh failed');
+    } catch (error) {
+      console.error('Token refresh failed:', error.message);
       logout();
       return { success: false };
     }
   };
 
-  // Logout
-  const logout = async () => {
-    setLoading(true);
-    try {
-      await wordpressAuthService.logout();
-    } catch (error) {
-      // Always clear local state
-    } finally {
-      setUser(null);
-      setIsAuthenticated(false);
-      setLoading(false);
-      localStorage.removeItem('adminToken');
-      window.location.href = '/auth/login';
-    }
+  // Logout user
+  const logout = () => {
+    localStorage.removeItem('userToken');
+    localStorage.removeItem('userData');
+    setUser(null);
+    setIsAuthenticated(false);
+
+    // Redirect to login page
+    window.location.href = '/auth/login';
   };
 
-  // Redirect to WordPress login
-  const redirectToWordPress = () => {
-    window.location.href = wordpressAuthService.getLoginUrl();
-  };
+  // Handle URL parameters for WordPress redirect
+  const handleWpRedirect = async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const uid = urlParams.get('uid');
+    const token = urlParams.get('token');
 
-  // Helper functions
-  const isAdmin = () => wordpressAuthService.isAdmin(user);
-  const hasRole = (role) => wordpressAuthService.hasRole(user, role);
-  const isMember = () => wordpressAuthService.isMember(user);
-
-  // Check authentication status on mount
-  useEffect(() => {
-    checkAuthStatus();
-  }, []);
-
-  // Initialize authentication
-  useEffect(() => {
-    const { uid, token } = getUrlParams();
     if (uid && token) {
-      authenticateWithWordPress(uid, token);
-    }
-  }, []);
+      // Clear URL parameters
+      window.history.replaceState({}, document.title, window.location.pathname);
 
-  // Periodic auth refresh (every 30 minutes)
+      // Attempt to authenticate
+      const result = await loginWithWpCredentials(uid, token);
+
+      if (result.success) {
+        // Redirect to main app
+        window.location.href = '/';
+      } else {
+        // Handle authentication error
+        console.error('WordPress authentication failed:', result.error);
+        // You might want to show an error message to the user here
+      }
+    }
+  };
+
+  // Check auth status on mount and handle WordPress redirects
   useEffect(() => {
-    if (isAuthenticated) {
-      const interval = setInterval(() => {
-        console.log('Refreshing authentication...');
-        refreshAuth();
-      }, 30 * 60 * 1000); // 30 minutes
+    const initAuth = async () => {
+      // First check if this is a WordPress redirect
+      const urlParams = new URLSearchParams(window.location.search);
+      const uid = urlParams.get('uid');
+      const token = urlParams.get('token');
 
-      return () => clearInterval(interval);
-    }
-  }, [isAuthenticated]);
+      if (uid && token) {
+        await handleWpRedirect();
+      } else {
+        // Normal auth check
+        await checkAuthStatus();
+      }
+    };
+
+    initAuth();
+  }, []);
 
   const value = {
     user,
     loading,
     isAuthenticated,
-    isAdmin,
-    hasRole,
-    isMember,
+    loginWithWpCredentials,
+    getUserProfile,
+    refreshToken,
     logout,
-    refreshAuth,
-    redirectToWordPress,
     checkAuthStatus,
-    authenticateWithWordPress,
-    redirectPath,
-    setRedirectPath,
   };
 
   return (

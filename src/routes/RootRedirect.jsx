@@ -1,5 +1,6 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAdminAuth } from '@/contexts/AdminAuthContext';
 
 const LoadingSpinner = () => (
   <div className="flex justify-center items-center h-screen bg-gray-100">
@@ -15,7 +16,7 @@ const RootRedirect = () => {
   const { user, loading, isAuthenticated } = useAuth();
   const { isAuthenticated: isAdminAuthenticated } = useAdminAuth();
   const location = useLocation();
-  
+
   // Check if this is an admin route
   const isAdminRoute = location.pathname.startsWith('/admin');
 
@@ -33,13 +34,13 @@ const RootRedirect = () => {
     );
   }
 
-  // If authenticated, redirect to home
+  // If authenticated, redirect to main app
   if (isAuthenticated && user) {
     return <Navigate to="/my-leads" replace />;
   }
 
-  // Fallback
-  return <LoadingSpinner />;
+  // If not authenticated, redirect to login
+  return <Navigate to="/auth/login" replace />;
 };
 
 export default RootRedirect;

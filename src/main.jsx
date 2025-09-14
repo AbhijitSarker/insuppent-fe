@@ -5,6 +5,7 @@ import './index.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ThemeProvider } from "@/contexts/ThemeProvider";
 import { BrandColorProvider } from './contexts/BrandColorContext.jsx'
+import { AuthProvider } from './contexts/AuthContext.jsx'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,7 +21,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
           <BrandColorProvider>
+          <AuthProvider>
             <App />
+          </AuthProvider>
           </BrandColorProvider>
         </ThemeProvider>
       </QueryClientProvider>
