@@ -4,10 +4,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useSearchParams } from 'react-router-dom';
 
 const Login = () => {
-  const { login } = useAuth();
   const [searchParams] = useSearchParams();
   const error = searchParams.get('error');
-  const WP_LOGIN_URL = import.meta.env.VITE_WP_LOGIN_URL;
+  const WP_LOGIN_URL = import.meta.env.WP_LOGIN_URL;
 
   const handleLogin = () => {
     window.location.href = WP_LOGIN_URL;
