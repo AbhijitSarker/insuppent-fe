@@ -1,8 +1,3 @@
-/**
- * Frontend utility for lead pricing calculations
- * This matches the backend implementation
- */
-
 // Default pricing (should match the backend default)
 const defaultPricing = {
   Subscriber: {

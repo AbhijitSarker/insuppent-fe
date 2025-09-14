@@ -28,19 +28,11 @@ const LoadingSpinner = () => (
 
 // User route - only checks WordPress auth
 const ProtectedRoute = ({ children }) => {
-  const { user, loading, isAuthenticated, redirectToWordPress } = useAuth();
-  
-  // Check for auth params in URL
-  const hasAuthParams = new URLSearchParams(window.location.search).has('uid');
+  const { user, loading, isAuthenticated } = useAuth();
 
   // If this is an admin route, don't check WordPress auth
   if (window.location.pathname.startsWith('/admin')) {
     return children;
-  }
-
-  // If we have auth params, show loading and let auth complete
-  if (hasAuthParams) {
-    return <LoadingSpinner />;
   }
 
   // Show loading state
@@ -71,65 +63,10 @@ const AdminRoute = ({ children }) => {
   return children;
 };
 
-// Auth route - only for WordPress user authentication
-const AuthRoute = ({ children }) => {
-  const { user, loading, isAuthenticated } = useAuth();
-  
-  // Check for auth params in URL
-  const hasAuthParams = new URLSearchParams(window.location.search).has('uid');
-
-  // If we have auth params, let the auth process complete
-  if (hasAuthParams) {
-    return <LoadingSpinner />;
-  }
-
-  if (loading) {
-    return <LoadingSpinner />;
-  }
-
-  // If user is already authenticated with WordPress, redirect to home
-  if (isAuthenticated && user) {
-    return <Navigate to="/" replace />;
-  }
-
-  return children;
-};
-
-// Public route - accessible to everyone, but may show different content for authenticated users
-const PublicRoute = ({ children }) => {
-  return children;
-};
-
-// Unauthorized page component
-const UnauthorizedPage = () => (
-  <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-    <div className="text-center p-8 bg-white rounded-lg shadow-md">
-      <h1 className="text-4xl font-bold text-red-600 mb-4">403</h1>
-      <h2 className="text-2xl font-semibold text-gray-800 mb-4">Access Denied</h2>
-      <p className="text-gray-600 mb-6">You don't have permission to access this resource.</p>
-      <div className="space-x-4">
-        <button
-          onClick={() => window.history.back()}
-          className="px-4 py-2 bg-bg-brand text-white rounded hover:bg-opacity-20"
-        >
-          Go Back
-        </button>
-        <Navigate to="/" className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-opacity-20">
-          Home
-        </Navigate>
-      </div>
-    </div>
-  </div>
-);
-
 export const routes = [
   {
     path: "/",
     element: <RootRedirect />,
-  },
-  {
-    path: "/unauthorized",
-    element: <UnauthorizedPage />,
   },
   {
     path: "auth",
@@ -137,17 +74,13 @@ export const routes = [
       {
         path: "login",
         element: (
-          <AuthRoute>
             <Login />
-          </AuthRoute>
         ),
       },
       {
         path: "signup",
         element: (
-          <AuthRoute>
             <Signup />
-          </AuthRoute>
         ),
       },
     ],
@@ -155,7 +88,6 @@ export const routes = [
   {
     path: "admin",
     children: [
-      // Admin auth routes - no protection needed
       {
         path: "login",
         element: <AdminLogin />
@@ -167,9 +99,7 @@ export const routes = [
       {
         path: "change-password",
         element: (
-          // <AdminRoute>
             <ChangePassword />
-          // </AdminRoute>
         ),
       },
       // Protected admin routes
@@ -219,23 +149,6 @@ export const routes = [
           </ProtectedRoute>
         ),
       },
-      {
-        path: "profile",
-        element: (
-          // <ProtectedRoute>
-            <div>Profile Page - Protected Route</div>
-          // </ProtectedRoute>
-        ),
-      },
-      // Add more protected user routes here
-      // {
-      //   path: "purchase-history",
-      //   element: (
-      //     <ProtectedRoute>
-      //       <PurchaseHistory />
-      //     </ProtectedRoute>
-      //   ),
-      // },
     ],
   },
 ];
