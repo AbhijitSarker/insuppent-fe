@@ -27,11 +27,7 @@ const RootRedirect = () => {
 
   // Show loading state while checking auth
   if (loading) {
-    return (
-      <div className="flex flex-col justify-center items-center h-screen bg-gray-100">
-        <LoadingSpinner />
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   // If authenticated, redirect to main app

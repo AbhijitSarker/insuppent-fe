@@ -1,15 +1,14 @@
-// pages/Auth/Login.jsx
-import { useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+const WP_LOGIN_URL = import.meta.env.WP_LOGIN_URL;
 
 const Login = () => {
   const [searchParams] = useSearchParams();
   const error = searchParams.get('error');
-  const WP_LOGIN_URL = import.meta.env.WP_LOGIN_URL;
-
   const handleLogin = () => {
-    window.location.href = WP_LOGIN_URL;
+    setLoading(true);
+    window.location.href = 'https://insuppent.com/wp-login.php';
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -24,7 +23,6 @@ const Login = () => {
         <div className="text-center">
           {/* Logo placeholder - you'll add your logo here */}
           <div className="mb-8">
-            {/* Your logo component will go here */}
             {/* // add the logo here from the public folder  */}
             <img src="/Insuppent.webp" alt="Logo" className="mx-auto h-12 w-auto" />
           </div>

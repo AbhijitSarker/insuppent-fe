@@ -18,7 +18,7 @@ const AdminNavbar = ({ onMenuClick }) => {
 
   const handleLogout = () => {
     logout();
-    navigate('/auth/login');
+    navigate('/admin/login');
   };
 
   return (

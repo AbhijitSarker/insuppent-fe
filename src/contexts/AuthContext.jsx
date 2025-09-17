@@ -8,10 +8,14 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  // Track if we are currently handling a WP redirect
+  const [wpRedirectLoading, setWpRedirectLoading] = useState(false);
+
   // Login with WordPress user credentials
   const loginWithWpCredentials = async (uid, token) => {
     try {
       setLoading(true);
+      setWpRedirectLoading(true);
 
       const response = await axiosOpen.post('/user/auth/verify-wp-user', {
         uid: uid,
@@ -46,6 +50,7 @@ export const AuthProvider = ({ children }) => {
       };
     } finally {
       setLoading(false);
+      setWpRedirectLoading(false);
     }
   };
 
@@ -164,6 +169,7 @@ export const AuthProvider = ({ children }) => {
     const token = urlParams.get('token');
 
     if (uid && token) {
+      setWpRedirectLoading(true);
       // Clear URL parameters
       window.history.replaceState({}, document.title, window.location.pathname);
 
@@ -178,6 +184,7 @@ export const AuthProvider = ({ children }) => {
         console.error('WordPress authentication failed:', result.error);
         // You might want to show an error message to the user here
       }
+      setWpRedirectLoading(false);
     }
   };
 
@@ -190,6 +197,8 @@ export const AuthProvider = ({ children }) => {
       const token = urlParams.get('token');
 
       if (uid && token) {
+        setLoading(true);
+        setWpRedirectLoading(true);
         await handleWpRedirect();
       } else {
         // Normal auth check
@@ -202,7 +211,7 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     user,
-    loading,
+    loading: loading || wpRedirectLoading,
     isAuthenticated,
     loginWithWpCredentials,
     getUserProfile,

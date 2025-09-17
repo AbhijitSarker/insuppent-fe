@@ -35,7 +35,7 @@ const ProtectedRoute = ({ children }) => {
     return children;
   }
 
-  // Show loading state
+  // Show loading state (including during WP redirect)
   if (loading) {
     return <LoadingSpinner />;
   }
