@@ -14,5 +14,8 @@ export default defineConfig({
   },
   server: {
     port: 5173,
-  }
+  },
+  preview: {
+    allowedHosts: ["insuplex360.com"],
+  },
 });
