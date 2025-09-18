@@ -9,7 +9,7 @@ export const LoadingSpinner = () => {
             position: 'fixed',
             top: 0,
             left: 0,
-            background: 'rgba(0, 0, 0, 0.1)', // Optional: slight overlay
+            background: '#fff', // Optional: slight overlay
         }}>
             <div style={{
                 border: '4px solid #8B4513', // Brown color
